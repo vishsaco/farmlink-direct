@@ -154,6 +154,32 @@ export function PriceGuidanceCard({
         </div>
       )}
 
+      {/* Actionable Decision Badge */}
+      {guidance.action_recommendation && (
+        <div className="rounded-xl border border-[#173D32]/20 bg-[#DCE8DD]/40 p-3 space-y-1.5">
+          <div className="flex items-center justify-between">
+            <span className="rounded-full bg-[#173D32] px-2.5 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">
+              {guidance.action_recommendation.seller_badge}
+            </span>
+            <span className="text-[10px] font-bold text-[#173D32]">
+              +{guidance.action_recommendation.expected_gain_pct}% Gain
+            </span>
+          </div>
+          <p className="text-xs font-semibold text-[#17201D] leading-snug">
+            {guidance.action_recommendation.seller_advice}
+          </p>
+          <div className="pt-1 flex items-center justify-between text-[11px] text-[#7D8A65]">
+            <span>Optimal Date: <strong className="text-[#17201D]">{guidance.action_recommendation.optimal_harvest_date}</strong></span>
+            <a
+              href="/predict"
+              className="font-bold text-[#173D32] hover:underline flex items-center gap-0.5"
+            >
+              <span>Full AI Simulator 🔮 &rarr;</span>
+            </a>
+          </div>
+        </div>
+      )}
+
       {/* Suggested Price Breakdown */}
       <div className="grid grid-cols-2 gap-3">
         <div className="rounded-xl bg-[#F7F5EF] p-3 border border-[#E9E7E1]">

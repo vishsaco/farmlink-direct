@@ -143,10 +143,48 @@ export interface Order {
 
 export interface ForecastDay {
   date: string;
+  day_name?: string;
   low: number;
   base: number;
   high: number;
   confidence: "low" | "medium" | "high";
+}
+
+export interface ActionRecommendation {
+  seller_action: "hold" | "sell_now" | "stagger";
+  seller_badge: string;
+  seller_advice: string;
+  buyer_badge: string;
+  buyer_advice: string;
+  optimal_harvest_date: string;
+  optimal_price: number;
+  expected_gain_pct: number;
+  expected_gain_rupees_per_kg: number;
+}
+
+export interface MarketDrivers {
+  arrival_volume_trend: string;
+  weather_impact: string;
+  demand_index: string;
+  spoilage_risk_gauge: "low" | "medium" | "high";
+  shelf_life_ambient_days: number;
+  shelf_life_cold_days: number;
+}
+
+export interface PriceBreakdown {
+  farmlink_recommended: number;
+  apmc_mandi_modal: number;
+  retail_consumer_price: number;
+  farmer_extra_margin_per_kg: number;
+  buyer_savings_per_kg: number;
+}
+
+export interface MandiComparison {
+  market_name: string;
+  role: string;
+  price_per_kg: number;
+  distance_km: number;
+  status: string;
 }
 
 export interface PriceGuidance {
@@ -154,9 +192,15 @@ export interface PriceGuidance {
   market_cluster: string;
   today: ForecastDay;
   seven_day: ForecastDay[];
+  fourteen_day?: ForecastDay[];
   trend: "rising" | "falling" | "stable";
   avg_price: number;
+  avg_price_14?: number;
   explanation: string;
+  action_recommendation?: ActionRecommendation;
+  market_drivers?: MarketDrivers;
+  price_breakdown?: PriceBreakdown;
+  mandi_comparison?: MandiComparison[];
   source_version?: string;
   source_meta?: {
     source: string;
@@ -164,7 +208,32 @@ export interface PriceGuidance {
     market_name?: string;
     arrival_date?: string;
     message?: string;
+    base_price?: number;
   };
+}
+
+export interface SimulationDay {
+  day_index: number;
+  date: string;
+  day_name: string;
+  projected_price_per_kg: number;
+  saleable_qty_kg: number;
+  projected_revenue: number;
+  spoilage_loss_rupees: number;
+  confidence: "low" | "medium" | "high";
+}
+
+export interface RevenueSimulationResult {
+  commodity: Commodity;
+  quantity_kg: number;
+  storage_type: "ambient" | "cold";
+  today_revenue: number;
+  best_day_revenue: number;
+  optimal_day: string;
+  extra_profit_rupees: number;
+  extra_profit_pct: number;
+  simulation_curve: SimulationDay[];
+  action_recommendation?: ActionRecommendation;
 }
 
 // ─── Routing ────────────────────────────────────────────────

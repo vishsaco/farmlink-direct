@@ -7,6 +7,7 @@ import type {
   LotSearchResult,
   Order,
   PriceGuidance,
+  RevenueSimulationResult,
   RoutePlan,
   Timeline,
   Settlement,
@@ -236,6 +237,21 @@ class ApiClient {
     return this.request<PriceGuidance>(
       `/forecasts/${commodity}/?cluster=${cluster}`
     );
+  }
+
+  async simulateRevenue(
+    commodity: string,
+    quantityKg: number,
+    storageType: "ambient" | "cold" = "ambient"
+  ): Promise<RevenueSimulationResult> {
+    return this.request<RevenueSimulationResult>("/forecasts/simulate/", {
+      method: "POST",
+      body: JSON.stringify({
+        commodity,
+        quantity_kg: quantityKg,
+        storage_type: storageType,
+      }),
+    });
   }
 
   async syncMandi(commodity = "tomato", apiKey?: string): Promise<any> {

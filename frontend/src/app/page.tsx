@@ -271,6 +271,57 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* 2.5 AI PRODUCE MARKET PREDICTOR SHOWCASE */}
+      <section className="py-14 bg-gradient-to-r from-[#173D32] via-[#215445] to-[#173D32] text-white border-b border-[#E9E7E1]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="rounded-3xl border border-white/15 bg-white/10 p-8 sm:p-12 backdrop-blur-md flex flex-col lg:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden">
+            <div className="absolute -right-20 -bottom-20 h-64 w-64 rounded-full bg-[#C99B43]/20 blur-3xl pointer-events-none" />
+
+            <div className="space-y-4 max-w-2xl">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#C99B43]/40 bg-[#C99B43]/20 px-3.5 py-1 text-xs font-bold text-[#C99B43]">
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>New: AI Produce Price & Harvest Timing Advisor</span>
+              </div>
+
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-white tracking-tight">
+                {lang === "hi" ? "फसल बेचने का सही समय और लाभ जानें" : "Predict Harvest Prices & Maximize Net Profit"}
+              </h2>
+
+              <p className="text-sm text-[#DCE8DD] font-light leading-relaxed">
+                {lang === "hi"
+                  ? "7 एवं 14 दिन के सटीक लखनऊ मंडी मूल्य पूर्वानुमान, होल्ड बनाम सेल सलाह और लाइव उपज रेवेन्यू सिमुलेटर का उपयोग करें।"
+                  : "Leverage 7 & 14-day Lucknow APMC Agmarknet predictive intelligence, hold-vs-sell recommendations, and live batch revenue simulations to earn +15% to +25% higher farmer margins."}
+              </p>
+
+              <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-[#DCE8DD] pt-2">
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-[#C99B43]" />
+                  <span>10 Lucknow Commodities</span>
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-[#C99B43]" />
+                  <span>Cross-Mandi Arbitrage</span>
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-[#C99B43]" />
+                  <span>Spoilage Risk Gauging</span>
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
+              <Link
+                href="/predict"
+                className="flex items-center gap-2 rounded-full bg-[#C99B43] px-8 py-4 text-xs font-bold text-[#17201D] hover:bg-[#d8a84b] transition-all shadow-xl hover:scale-105 active:scale-95"
+              >
+                <span>Launch AI Predictor 🔮</span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 3. CORE ARCHITECTURE FEATURES */}
       <section className="py-20 bg-[#173D32] text-[#F7F5EF]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-12">
