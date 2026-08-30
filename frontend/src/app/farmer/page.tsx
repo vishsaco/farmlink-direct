@@ -37,6 +37,7 @@ import {
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { LocationPickerModal, LocationData } from "@/components/LocationPickerModal";
+import { getLiveAccurateLocation } from "@/lib/geo";
 
 const COMMODITY_OPTIONS: { id: Commodity; label: string; icon: string; image: string; defaultPrice: number }[] = [
   { id: "tomato", label: "Tomato (Tamatar)", icon: "🍅", image: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&auto=format&fit=crop&q=80", defaultPrice: 38 },
@@ -97,27 +98,22 @@ export default function FarmerDashboardPage() {
     }
   };
 
-  const handleGetGpsLocation = () => {
-    if (typeof window !== "undefined" && navigator.geolocation) {
-      setCapturingGps(true);
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          setCapturingGps(false);
-          const lat = Number(pos.coords.latitude.toFixed(4));
-          const lng = Number(pos.coords.longitude.toFixed(4));
-          setFarmLat(lat);
-          setFarmLng(lng);
-          setFarmCreatedMsg(`Captured Real GPS: ${lat}° N, ${lng}° E`);
-          setTimeout(() => setFarmCreatedMsg(null), 4000);
-        },
-        (err) => {
-          setCapturingGps(false);
-          alert("GPS permission was denied. Using Lucknow regional cluster coordinates.");
-        },
-        { enableHighAccuracy: true, timeout: 8000 }
-      );
-    } else {
-      alert("Geolocation is not supported by your browser.");
+  const handleGetGpsLocation = async () => {
+    setCapturingGps(true);
+    try {
+      const loc = await getLiveAccurateLocation();
+      setFarmLat(loc.lat);
+      setFarmLng(loc.lng);
+      if (loc.address) {
+        setFarmVillage(loc.address.split(",")[0]);
+      }
+      setFarmCreatedMsg(`Live GPS Captured: ${loc.lat}° N, ${loc.lng}° E (${loc.address.split(",")[0]})`);
+      setTimeout(() => setFarmCreatedMsg(null), 5000);
+    } catch (err: any) {
+      console.error("GPS capture error", err);
+      alert("Could not access live GPS. Please pick your farm location from the map.");
+    } finally {
+      setCapturingGps(false);
     }
   };
 

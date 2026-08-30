@@ -2,11 +2,20 @@
 
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { MapPin, Navigation, CheckCircle2, ExternalLink, X, Search, Sparkles, Compass } from "lucide-react";
+import {
+  MapPin,
+  Navigation,
+  CheckCircle2,
+  ExternalLink,
+  X,
+  Search,
+  Sparkles,
+  Compass,
+  Loader2,
+  RefreshCw,
+} from "lucide-react";
 import { useLanguage } from "@/lib/LanguageContext";
-
-// Dynamically import Leaflet Map to avoid SSR issues
-const MapInner = dynamic(() => import("@/components/MapInner"), { ssr: false });
+import { getLiveAccurateLocation, reverseGeocode, searchAddress, AccurateLocation } from "@/lib/geo";
 
 export interface LocationData {
   address: string;
@@ -29,7 +38,7 @@ const LUCKNOW_PRESETS: { name: string; type: "farm" | "buyer" | "hub" | "mandi";
   { name: "Malihabad Mango Belt, Lucknow", type: "farm", lat: 26.9200, lng: 80.7100, desc: "Dussehri Mango & Fruit Farmlands" },
   { name: "Kakori Agro Hub, Lucknow", type: "farm", lat: 26.8800, lng: 80.7900, desc: "Green Chilli & Vegetable Belt" },
   { name: "Dubagga APMC Mandi, Lucknow", type: "mandi", lat: 26.8650, lng: 80.8650, desc: "Central Produce Wholesale Market" },
-  { name: "Chinhat Agri Hub, Lucknow", type: "hub", lat: 26.8700, lng: 81.0200, desc: "Eastern Logistics & Potato/Onion Storage" },
+  { name: "Chinhat Agri Hub, Lucknow", type: "hub", lat: 26.8700, lng: 81.0200, desc: "Eastern Logistics & Cold Storage" },
   { name: "Gosainganj Organic Farms, Lucknow", type: "farm", lat: 26.7700, lng: 81.1200, desc: "Organic Vegetable & Leafy Greens Belt" },
   { name: "Mohanlalganj Depot, Lucknow", type: "hub", lat: 26.6800, lng: 80.9800, desc: "Southern Wheat & Grain Depot" },
   { name: "Sitapur Road Naveen Mandi, Lucknow", type: "mandi", lat: 26.9100, lng: 80.9400, desc: "APMC Agricultural Sthal" },
@@ -52,7 +61,12 @@ export function LocationPickerModal({
   const [lat, setLat] = useState<number>(initialLocation?.lat || 26.9824);
   const [lng, setLng] = useState<number>(initialLocation?.lng || 80.9247);
   const [capturingGps, setCapturingGps] = useState(false);
-  const [gpsSuccess, setGpsSuccess] = useState(false);
+  const [gpsSuccess, setGpsSuccess] = useState<string | null>(null);
+
+  // Live Address Search Suggestions
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<Array<{ display_name: string; lat: number; lon: number }>>([]);
+  const [searching, setSearching] = useState(false);
 
   useEffect(() => {
     if (initialLocation) {
@@ -64,37 +78,51 @@ export function LocationPickerModal({
 
   if (!isOpen) return null;
 
-  const handleUseCurrentGps = () => {
-    if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser");
-      return;
-    }
+  const handleUseCurrentLiveLocation = async () => {
     setCapturingGps(true);
-    setGpsSuccess(false);
-
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const userLat = Number(pos.coords.latitude.toFixed(4));
-        const userLng = Number(pos.coords.longitude.toFixed(4));
-        setLat(userLat);
-        setLng(userLng);
-        setSelectedAddress(`Current GPS Farm/Dock [${userLat}, ${userLng}], Lucknow Region`);
-        setCapturingGps(false);
-        setGpsSuccess(true);
-        setTimeout(() => setGpsSuccess(false), 3000);
-      },
-      (err) => {
-        console.warn("GPS lookup error, falling back to Bakshi Ka Talab", err);
-        setLat(26.9824);
-        setLng(80.9247);
-        setSelectedAddress("Bakshi Ka Talab, Lucknow");
-        setCapturingGps(false);
-      },
-      { enableHighAccuracy: true, timeout: 8000 }
-    );
+    setGpsSuccess(null);
+    try {
+      const loc = await getLiveAccurateLocation();
+      setLat(loc.lat);
+      setLng(loc.lng);
+      setSelectedAddress(loc.address);
+      setGpsSuccess(
+        loc.source === "gps"
+          ? `Live GPS Acquired: ${loc.lat}, ${loc.lng} (${loc.accuracyMeters ? `±${Math.round(loc.accuracyMeters)}m` : "Accurate"})`
+          : `Live Location Detected: ${loc.address}`
+      );
+      setTimeout(() => setGpsSuccess(null), 5000);
+    } catch (err: any) {
+      console.error("Live location error", err);
+      alert("Could not access live location. Please choose from the Lucknow zones or search your address.");
+    } finally {
+      setCapturingGps(false);
+    }
   };
 
-  const handleSelectPreset = (preset: typeof LUCKNOW_PRESETS[0]) => {
+  const handleSearchAddress = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+    setSearching(true);
+    try {
+      const results = await searchAddress(searchQuery);
+      setSearchResults(results);
+    } catch (err) {
+      console.error("Search error", err);
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  const handleSelectSearchResult = async (result: { display_name: string; lat: number; lon: number }) => {
+    setLat(result.lat);
+    setLng(result.lon);
+    setSelectedAddress(result.display_name.split(",").slice(0, 3).join(", "));
+    setSearchResults([]);
+    setSearchQuery("");
+  };
+
+  const handleSelectPreset = async (preset: typeof LUCKNOW_PRESETS[0]) => {
     setSelectedAddress(preset.name);
     setLat(preset.lat);
     setLng(preset.lng);
@@ -117,15 +145,15 @@ export function LocationPickerModal({
         {/* Top Header */}
         <div className="flex items-center justify-between border-b border-[#E9E7E1] pb-4">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#173D32] text-white">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#173D32] text-white shadow-xs">
               <MapPin className="h-5 w-5 text-[#C99B43]" />
             </div>
             <div>
               <h3 className="font-serif text-2xl font-bold text-[#17201D]">{title}</h3>
               <p className="text-xs text-[#7D8A65]">
                 {role === "buyer"
-                  ? "Select and confirm your delivery receiving dock address in Lucknow"
-                  : "Select and confirm your farm gate pickup location in Lucknow"}
+                  ? "Pinpoint and confirm your commercial receiving dock address in Lucknow"
+                  : "Pinpoint and confirm your exact farm gate pickup location in Lucknow"}
               </p>
             </div>
           </div>
@@ -137,36 +165,85 @@ export function LocationPickerModal({
           </button>
         </div>
 
-        {/* GPS Quick Action */}
-        <div className="flex flex-col sm:flex-row items-center gap-3 bg-[#F7F5EF] p-4 rounded-2xl border border-[#E9E7E1]">
-          <button
-            type="button"
-            onClick={handleUseCurrentGps}
-            disabled={capturingGps}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-full bg-[#173D32] px-5 py-2.5 text-xs font-bold text-white hover:bg-[#215445] transition shadow-xs disabled:opacity-50 shrink-0"
-          >
-            <Navigation className={`h-3.5 w-3.5 text-[#C99B43] ${capturingGps ? "animate-spin" : ""}`} />
-            <span>{capturingGps ? "Acquiring GPS..." : "📍 Use Current GPS Location"}</span>
-          </button>
+        {/* 1. SEAMLESS LIVE GPS ACTION */}
+        <div className="rounded-2xl border border-[#173D32]/20 bg-[#DCE8DD]/40 p-4 space-y-2">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={handleUseCurrentLiveLocation}
+              disabled={capturingGps}
+              className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-full bg-[#173D32] px-6 py-3 text-xs font-bold text-white hover:bg-[#215445] transition shadow-md disabled:opacity-50 shrink-0 active:scale-95"
+            >
+              {capturingGps ? (
+                <Loader2 className="h-4 w-4 text-[#C99B43] animate-spin" />
+              ) : (
+                <Navigation className="h-4 w-4 text-[#C99B43]" />
+              )}
+              <span>{capturingGps ? "Acquiring High-Precision GPS..." : "📍 Get My Exact Live Location"}</span>
+            </button>
 
-          <div className="text-xs text-[#7D8A65] flex-1 text-center sm:text-left">
-            {gpsSuccess ? (
-              <span className="font-bold text-[#173D32] flex items-center gap-1">
-                <CheckCircle2 className="h-3.5 w-3.5" />
-                <span>GPS Location Captured: {lat}, {lng}</span>
-              </span>
-            ) : (
-              <span>Automatically pin your device's exact location in Lucknow</span>
-            )}
+            <div className="text-xs text-[#173D32] font-semibold text-center sm:text-right">
+              {gpsSuccess ? (
+                <span className="text-[#173D32] flex items-center gap-1">
+                  <CheckCircle2 className="h-4 w-4 text-[#C99B43]" />
+                  <span>{gpsSuccess}</span>
+                </span>
+              ) : (
+                <span className="text-[#7D8A65]">1-Tap browser GPS with automatic village reverse-geocoding</span>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Lucknow Regional Quick Selectors */}
+        {/* 2. SEARCH ANY VILLAGE / LOCALITY */}
+        <div className="space-y-1.5">
+          <label className="block text-xs font-bold text-[#17201D] uppercase tracking-wider">
+            Search Any Place, Tehsil or Village in Lucknow:
+          </label>
+          <form onSubmit={handleSearchAddress} className="flex gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-[#7D8A65]" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="e.g. Malihabad, Gomti Nagar, Kakori, Mohanlalganj..."
+                className="w-full rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] pl-10 pr-4 py-2 text-xs font-medium focus:bg-white focus:border-[#173D32] focus:outline-none"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={searching || !searchQuery.trim()}
+              className="rounded-xl bg-[#173D32] px-4 py-2 text-xs font-bold text-white hover:bg-[#215445] transition disabled:opacity-50 shadow-xs"
+            >
+              {searching ? "Searching..." : "Search"}
+            </button>
+          </form>
+
+          {/* Search Results Dropdown */}
+          {searchResults.length > 0 && (
+            <div className="rounded-xl border border-[#E9E7E1] bg-white p-2 shadow-lg space-y-1 max-h-40 overflow-y-auto z-10">
+              {searchResults.map((item, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => handleSelectSearchResult(item)}
+                  className="w-full text-left p-2 rounded-lg hover:bg-[#F7F5EF] text-xs transition flex items-center gap-2"
+                >
+                  <MapPin className="h-3.5 w-3.5 text-[#C99B43] shrink-0" />
+                  <span className="truncate font-medium text-[#17201D]">{item.display_name}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* 3. LUCKNOW 12-ZONE PRESETS */}
         <div className="space-y-2">
           <label className="block text-xs font-bold text-[#17201D] uppercase tracking-wider">
-            Or Choose from Lucknow Agricultural & Commercial Zones:
+            Or Choose from Whole-Lucknow Agricultural Hubs:
           </label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-40 overflow-y-auto pr-1">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-36 overflow-y-auto pr-1">
             {LUCKNOW_PRESETS.map((preset, idx) => {
               const isSelected = lat === preset.lat && lng === preset.lng;
               return (
@@ -188,37 +265,37 @@ export function LocationPickerModal({
           </div>
         </div>
 
-        {/* Selected Location Confirmation Bar */}
-        <div className="rounded-2xl border border-[#E9E7E1] bg-white p-4 space-y-3">
+        {/* 4. CONFIRMED LOCATION DETAILS & GOOGLE MAPS PREVIEW */}
+        <div className="rounded-2xl border border-[#E9E7E1] bg-white p-4 space-y-3 shadow-inner">
           <div>
             <label className="block text-xs font-semibold text-[#17201D] mb-1">
-              Confirmed Location Address / Landmark:
+              Confirmed Address / Landmark:
             </label>
             <input
               type="text"
               value={selectedAddress}
               onChange={(e) => setSelectedAddress(e.target.value)}
-              className="w-full rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] px-3.5 py-2 text-xs font-bold text-[#17201D] focus:bg-white focus:border-[#173D32] focus:outline-none"
+              className="w-full rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] px-3.5 py-2.5 text-xs font-bold text-[#17201D] focus:bg-white focus:border-[#173D32] focus:outline-none"
             />
           </div>
 
-          <div className="flex items-center justify-between text-xs text-[#7D8A65] pt-1">
+          <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[#7D8A65] pt-1">
             <span className="font-mono font-medium">
-              Geo-Coordinates: <strong className="text-[#17201D]">{lat}, {lng}</strong>
+              Exact Coordinates: <strong className="text-[#17201D]">{lat}° N, {lng}° E</strong>
             </span>
             <a
               href={googleMapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 font-bold text-[#173D32] hover:underline"
+              className="inline-flex items-center gap-1 font-bold text-[#173D32] hover:underline bg-[#DCE8DD]/40 px-2.5 py-1 rounded-full border border-[#173D32]/20"
             >
-              <span>Verify on Google Maps</span>
+              <span>View Exact Pin in Google Maps</span>
               <ExternalLink className="h-3.5 w-3.5 text-[#C99B43]" />
             </a>
           </div>
         </div>
 
-        {/* Action Buttons */}
+        {/* 5. ACTION BUTTONS */}
         <div className="flex gap-3 pt-2">
           <button
             type="button"
