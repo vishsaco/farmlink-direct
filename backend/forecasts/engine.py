@@ -371,42 +371,49 @@ def get_price_guidance(commodity, market_cluster="Lucknow"):
     farmer_margin_gain = round(today_price - (mandi_modal * 0.82), 1)
     buyer_savings_per_kg = round(retail_price - today_price, 1)
 
-    # Cross-Mandi Price Arbitrage across 5 Lucknow Hubs
+    # Cross-Mandi Price Arbitrage across all 5 Prominent Lucknow APMC Hubs
     mandi_comparison = [
         {
-            "market_name": "Dubagga APMC Mandi",
-            "role": "Central Wholesale",
+            "market_name": "Dubagga APMC Wholesale Mandi",
+            "role": "Central Wholesale Terminal (Hardoi Rd)",
             "price_per_kg": round(today_price * 0.98, 1),
             "distance_km": 14,
-            "status": "High Volume",
+            "status": "Active Trading (2.5% Cess + 6% Aadhat)",
         },
         {
-            "market_name": "Naveen Mandi (Sitapur Rd)",
-            "role": "APMC Sub-Yard",
+            "market_name": "Sitapur Road Naveen Mandi Sthal",
+            "role": "Central APMC Yard (Faizullaganj)",
             "price_per_kg": round(today_price * 0.96, 1),
             "distance_km": 18,
-            "status": "Steady",
+            "status": "High Bulk Influx",
         },
         {
-            "market_name": "Malihabad Fruit & Veg Yard",
-            "role": "Direct Farmer Hub",
+            "market_name": "Malihabad Fruit & Veg Mandi",
+            "role": "Specialized Producer Hub",
             "price_per_kg": round(today_price * 0.94, 1),
             "distance_km": 28,
-            "status": "Producer Gate",
+            "status": "Packhouse Yard",
         },
         {
-            "market_name": "Mohanlalganj Krishi Mandi",
-            "role": "Southern Depot",
+            "market_name": "Mohanlalganj Krishi Upaj Mandi",
+            "role": "Southern Grain & Veg Depot",
             "price_per_kg": round(today_price * 0.93, 1),
             "distance_km": 24,
-            "status": "Moderate",
+            "status": "Moderate Supply",
         },
         {
-            "market_name": "FarmLink Direct Fair Trade",
-            "role": "Digital Farm Gate Escrow",
+            "market_name": "Bakshi Ka Talab Feeder Mandi (BKT)",
+            "role": "Northern Rural Aggregator Yard",
+            "price_per_kg": round(today_price * 0.92, 1),
+            "distance_km": 16,
+            "status": "Early Morning Feeder",
+        },
+        {
+            "market_name": "FarmLink Direct (Farm Gate)",
+            "role": "Direct Escrow Fair Trade",
             "price_per_kg": today_price,
             "distance_km": 0,
-            "status": "Highest Farmer Net (+22%)",
+            "status": "Highest In-Pocket Net (+22% Direct)",
         },
     ]
 
