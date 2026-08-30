@@ -266,37 +266,77 @@ export function Navbar(props: NavbarProps) {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-[#0f2720] border-t border-white/10 px-4 py-4 space-y-2">
+          <div className="md:hidden bg-[#0F2720] border-t border-[#C99B43]/20 px-4 py-5 space-y-3 shadow-2xl animate-calm-reveal">
+            {/* Primary Nav Link */}
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 href={link.path}
                 onClick={() => setMobileMenuOpen(false)}
-                className="block rounded-xl px-3 py-2 text-sm font-semibold text-white hover:bg-white/10"
+                className="flex items-center justify-between rounded-xl bg-white/10 px-4 py-3 text-sm font-bold text-white hover:bg-white/20 border border-white/10"
               >
-                {link.label}
+                <span>{link.label}</span>
+                <span className="text-[#C99B43]">&rarr;</span>
               </Link>
             ))}
+
+            {/* Quick Portals for Mobile */}
+            <div className="pt-2 border-t border-white/10">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#C99B43] block mb-2">
+                {lang === "hi" ? "त्वरित पोर्टल प्रवेश:" : "Direct Portals:"}
+              </span>
+              <div className="grid grid-cols-2 gap-2">
+                <Link
+                  href="/farmer"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="rounded-xl bg-white/5 p-2.5 text-xs font-semibold text-white hover:bg-white/15 border border-white/10 text-center"
+                >
+                  🌾 {t.farmerTitle}
+                </Link>
+                <Link
+                  href="/buyer"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="rounded-xl bg-white/5 p-2.5 text-xs font-semibold text-white hover:bg-white/15 border border-white/10 text-center"
+                >
+                  🛒 {t.buyerTitle}
+                </Link>
+                <Link
+                  href="/fpo"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="rounded-xl bg-white/5 p-2.5 text-xs font-semibold text-white hover:bg-white/15 border border-white/10 text-center"
+                >
+                  🤝 {t.fpoTitle}
+                </Link>
+                <Link
+                  href="/driver"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="rounded-xl bg-white/5 p-2.5 text-xs font-semibold text-white hover:bg-white/15 border border-white/10 text-center"
+                >
+                  🚚 {t.driverTitle}
+                </Link>
+              </div>
+            </div>
+
             {!user ? (
-              <div className="pt-2 border-t border-white/10 flex gap-2">
+              <div className="pt-3 border-t border-white/10 flex gap-2">
                 <button
                   onClick={() => openAuth("login")}
-                  className="flex-1 rounded-xl bg-white/10 py-2 text-xs font-bold text-white text-center"
+                  className="flex-1 rounded-xl bg-white/15 py-3 text-xs font-bold text-white text-center border border-white/20"
                 >
                   {t.signIn}
                 </button>
                 <button
                   onClick={() => openAuth("register")}
-                  className="flex-1 rounded-xl bg-[#C99B43] py-2 text-xs font-bold text-[#17201D] text-center"
+                  className="flex-1 rounded-xl bg-[#C99B43] py-3 text-xs font-bold text-[#17201D] text-center shadow-md"
                 >
                   {t.register}
                 </button>
               </div>
             ) : (
-              <div className="pt-2 border-t border-white/10">
+              <div className="pt-3 border-t border-white/10">
                 <button
                   onClick={handleLogout}
-                  className="w-full rounded-xl bg-white/10 py-2 text-xs font-bold text-[#C86B4A] text-center"
+                  className="w-full rounded-xl bg-white/10 py-3 text-xs font-bold text-[#C86B4A] text-center border border-white/10"
                 >
                   {t.logOut} ({user.first_name})
                 </button>
