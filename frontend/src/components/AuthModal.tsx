@@ -197,10 +197,16 @@ export function AuthModal({
 
         {/* Header & Mode Switch */}
         <div>
-          <div className="flex items-center gap-2 mb-2">
-            <span className="h-2 w-2 rounded-full bg-[#C99B43]" />
-            <span className="text-[11px] uppercase tracking-wider font-bold text-[#7D8A65]">
-              FarmLink Direct Access
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center bg-[#F7F5EF] p-1.5 rounded-xl border border-[#E9E7E1]">
+              <img
+                src="/logo.png"
+                alt="FarmLink Direct"
+                className="h-8 w-auto object-contain"
+              />
+            </div>
+            <span className="text-[10px] uppercase tracking-wider font-extrabold text-[#C99B43] bg-[#C99B43]/15 px-2.5 py-1 rounded-full border border-[#C99B43]/30">
+              Verified B2B Direct
             </span>
           </div>
 

@@ -115,24 +115,24 @@ export function Navbar({ lang, onLanguageChange }: NavbarProps) {
 
         {/* Main Navigation Bar */}
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6 lg:px-8">
-          {/* Left: Brand Identity */}
+          {/* Left: Brand Identity with Official FarmLink Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0f2720] text-[#F7F5EF] border border-[#C99B43]/40 shadow-sm transition-transform duration-200 group-hover:scale-105">
-              <span className="font-serif text-xl font-bold tracking-tight text-[#C99B43]">F</span>
-              <span className="font-serif text-xl font-bold tracking-tight -ml-1 text-white">L</span>
+            <div className="flex items-center bg-white px-2.5 py-1 rounded-xl border border-white/20 shadow-md transition-transform duration-200 group-hover:scale-105">
+              <img
+                src="/logo.png"
+                alt="FarmLink Direct"
+                className="h-8 sm:h-9 w-auto object-contain max-w-[160px] sm:max-w-[190px]"
+              />
             </div>
-            <div>
+            <div className="hidden lg:block">
               <div className="flex items-center gap-1.5">
-                <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-white">
-                  FarmLink
-                </span>
-                <span className="text-[10px] uppercase tracking-widest font-extrabold text-[#C99B43] bg-[#C99B43]/15 px-1.5 py-0.5 rounded border border-[#C99B43]/30">
-                  Direct
+                <span className="text-[10px] uppercase tracking-widest font-extrabold text-[#C99B43] bg-[#C99B43]/15 px-2 py-0.5 rounded-full border border-[#C99B43]/30">
+                  Direct B2B
                 </span>
               </div>
-              <p className="text-[10px] uppercase tracking-wider font-semibold text-[#DCE8DD]/80 flex items-center gap-1">
+              <p className="text-[10px] uppercase tracking-wider font-semibold text-[#DCE8DD]/80 flex items-center gap-1 mt-0.5">
                 <MapPin className="h-2.5 w-2.5 text-[#C99B43]" />
-                <span>Agricultural Supply Chain</span>
+                <span>Lucknow Regional Agri-Cluster</span>
               </p>
             </div>
           </Link>

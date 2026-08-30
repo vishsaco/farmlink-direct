@@ -300,12 +300,18 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-[#E9E7E1] bg-[#17201D] text-[#F7F5EF] py-12 text-xs">
+      <footer className="border-t border-[#E9E7E1] bg-[#17201D] text-[#F7F5EF] py-10 text-xs">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-serif text-base font-bold text-white">FarmLink Direct</span>
+          <div className="flex items-center gap-3">
+            <div className="bg-white p-1 rounded-lg">
+              <img
+                src="/logo.png"
+                alt="FarmLink Direct"
+                className="h-6 w-auto object-contain"
+              />
+            </div>
             <span className="text-[#7D8A65]">·</span>
-            <span className="text-[#DCE8DD]/70">Better markets for every harvest.</span>
+            <span className="text-[#DCE8DD]/70 font-medium">Better markets for every harvest.</span>
           </div>
           <div className="text-[#DCE8DD]/60">
             Smart India Hackathon (SIH) 26033 • Lucknow Agri-Cluster Production Platform
