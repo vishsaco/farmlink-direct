@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
 import { Order, RoutePlan } from "@/lib/types";
-import { translations, Language } from "@/lib/translations";
+import { useLanguage } from "@/lib/LanguageContext";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { Navbar } from "@/components/Navbar";
 import { LeafletMap } from "@/components/LeafletMap";
@@ -27,9 +27,8 @@ import {
 } from "lucide-react";
 
 export default function DriverDispatchPage() {
-  const [lang, setLang] = useState<Language>("en");
+  const { lang, t } = useLanguage();
   const { user } = useAuth();
-  const t = translations[lang];
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [routePlan, setRoutePlan] = useState<RoutePlan | null>(null);
@@ -102,7 +101,7 @@ export default function DriverDispatchPage() {
 
   return (
     <div className="min-h-screen bg-[#F7F5EF] text-[#17201D] flex flex-col">
-      <Navbar lang={lang} onLanguageChange={setLang} />
+      <Navbar />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 w-full space-y-8">
         {/* Header */}
@@ -115,17 +114,17 @@ export default function DriverDispatchPage() {
               </span>
             </div>
             <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-[#17201D]">
-              Pickup & Drop-Off Dispatch
+              {t.driverTitle}
             </h1>
             <p className="text-sm text-[#7D8A65] mt-1 font-light max-w-2xl">
-              Turn-by-turn farm gate pickups, live Google Maps driving navigation, and buyer receiving dock handoffs across Lucknow.
+              {t.driverDesc}
             </p>
           </div>
 
           <div className="flex items-center gap-3">
             <span className="rounded-full bg-[#DCE8DD] px-3.5 py-1.5 text-xs font-bold text-[#173D32] flex items-center gap-1.5">
               <Compass className="h-3.5 w-3.5" />
-              <span>Lucknow Regional Fleet Active</span>
+              <span>{t.lucknowCluster}</span>
             </span>
           </div>
         </div>

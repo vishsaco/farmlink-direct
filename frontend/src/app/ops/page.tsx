@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
 import { Order, RoutePlan, Lot } from "@/lib/types";
-import { translations, Language } from "@/lib/translations";
+import { useLanguage } from "@/lib/LanguageContext";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { Navbar } from "@/components/Navbar";
 import { LeafletMap } from "@/components/LeafletMap";
@@ -28,9 +28,8 @@ import {
 } from "lucide-react";
 
 export default function OperationsControlTowerPage() {
-  const [lang, setLang] = useState<Language>("en");
+  const { lang, t } = useLanguage();
   const { user } = useAuth();
-  const t = translations[lang];
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [lots, setLots] = useState<Lot[]>([]);
@@ -120,7 +119,7 @@ export default function OperationsControlTowerPage() {
 
   return (
     <div className="min-h-screen bg-[#F7F5EF] text-[#17201D] flex flex-col">
-      <Navbar lang={lang} onLanguageChange={setLang} />
+      <Navbar />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 w-full space-y-8">
         {/* Header */}
@@ -128,13 +127,13 @@ export default function OperationsControlTowerPage() {
           <div>
             <div className="flex items-center gap-2 text-xs font-semibold text-[#7D8A65] uppercase tracking-wider mb-1">
               <ShieldAlert className="h-3.5 w-3.5 text-[#173D32]" />
-              <span>Operations Control Tower • Lucknow Cluster Command</span>
+              <span>{t.opsRole} • {t.lucknowCluster}</span>
             </div>
             <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-[#17201D]">
-              Fulfillment Command Center
+              {t.opsTitle}
             </h1>
             <p className="text-sm text-[#7D8A65] mt-1 font-light max-w-2xl">
-              Real-time fleet telemetry, bottleneck resolution, dynamic route solver, and APMC Mandi price ingestion.
+              {t.opsDesc}
             </p>
           </div>
 

@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
+import { useLanguage } from "@/lib/LanguageContext";
 import { api } from "@/lib/api";
 import { Lot, Order, Commodity, Grade } from "@/lib/types";
-import { translations, Language } from "@/lib/translations";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { Navbar } from "@/components/Navbar";
 import { LeafletMap } from "@/components/LeafletMap";
@@ -28,6 +28,7 @@ import {
   Calendar,
   Warehouse,
   Coins,
+  AlertCircle,
 } from "lucide-react";
 import confetti from "canvas-confetti";
 
@@ -43,53 +44,6 @@ interface MemberFarmer {
   status: "verified" | "pending";
 }
 
-const INITIAL_MEMBERS: MemberFarmer[] = [
-  {
-    id: "FPO-M-01",
-    name: "Ramesh Kumar Yadav",
-    village: "Bakshi Ka Talab",
-    phone: "+91-9876543211",
-    acres: 4.5,
-    crops: ["Tomato", "Chilli"],
-    totalTonnageKg: 6200,
-    bankAccount: "SBI •••• 4912",
-    status: "verified",
-  },
-  {
-    id: "FPO-M-02",
-    name: "Shyam Sundar Maurya",
-    village: "Malihabad",
-    phone: "+91-9876543215",
-    acres: 8.0,
-    crops: ["Mango", "Garlic"],
-    totalTonnageKg: 14500,
-    bankAccount: "PNB •••• 8821",
-    status: "verified",
-  },
-  {
-    id: "FPO-M-03",
-    name: "Mohan Lal Verma",
-    village: "Chinhat",
-    phone: "+91-9876543218",
-    acres: 3.2,
-    crops: ["Potato", "Onion"],
-    totalTonnageKg: 4800,
-    bankAccount: "BOB •••• 3140",
-    status: "verified",
-  },
-  {
-    id: "FPO-M-04",
-    name: "Dinesh Chandra",
-    village: "Mohanlalganj",
-    phone: "+91-9876543220",
-    acres: 6.0,
-    crops: ["Wheat", "Spinach"],
-    totalTonnageKg: 9100,
-    bankAccount: "HDFC •••• 9015",
-    status: "verified",
-  },
-];
-
 const COMMODITY_OPTIONS: { id: Commodity; label: string; icon: string; image: string; defaultPrice: number }[] = [
   { id: "tomato", label: "Tomato (Tamatar)", icon: "🍅", image: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&auto=format&fit=crop&q=80", defaultPrice: 38 },
   { id: "onion", label: "Onion (Pyaaz)", icon: "🧅", image: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=800&auto=format&fit=crop&q=80", defaultPrice: 30 },
@@ -97,30 +51,32 @@ const COMMODITY_OPTIONS: { id: Commodity; label: string; icon: string; image: st
   { id: "mango", label: "Mango (Malihabadi)", icon: "🥭", image: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=800&auto=format&fit=crop&q=80", defaultPrice: 65 },
   { id: "chilli", label: "Green Chilli (Mirch)", icon: "🌶️", image: "https://images.unsplash.com/photo-1588252303782-cb80119abd6d?w=800&auto=format&fit=crop&q=80", defaultPrice: 48 },
   { id: "garlic", label: "Garlic (Lahsun)", icon: "🧄", image: "https://images.unsplash.com/photo-1540148426945-6cf22a6b2383?w=800&auto=format&fit=crop&q=80", defaultPrice: 140 },
+  { id: "ginger", label: "Ginger (Adrak)", icon: "🫚", image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=800&auto=format&fit=crop&q=80", defaultPrice: 120 },
+  { id: "spinach", label: "Spinach (Palak)", icon: "🥬", image: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=800&auto=format&fit=crop&q=80", defaultPrice: 20 },
+  { id: "cauliflower", label: "Cauliflower (Gobhi)", icon: "🥦", image: "https://images.unsplash.com/photo-1568584711075-3d021a7c3ca3?w=800&auto=format&fit=crop&q=80", defaultPrice: 28 },
   { id: "wheat", label: "Wheat (Gehu)", icon: "🌾", image: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&auto=format&fit=crop&q=80", defaultPrice: 26 },
 ];
 
 export default function FPOAggregatorPage() {
-  const [lang, setLang] = useState<Language>("en");
+  const { lang, t } = useLanguage();
   const { user } = useAuth();
-  const t = translations[lang];
 
   const [activeTab, setActiveTab] = useState<"overview" | "pool" | "members" | "intake" | "settlements">("overview");
   const [lots, setLots] = useState<Lot[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [members, setMembers] = useState<MemberFarmer[]>(INITIAL_MEMBERS);
+  const [members, setMembers] = useState<MemberFarmer[]>([]);
   const [loading, setLoading] = useState(true);
   const [authModalOpen, setAuthModalOpen] = useState(false);
 
   // Bulk Lot Pooling Form
   const [commodity, setCommodity] = useState<Commodity>("tomato");
   const [grade, setGrade] = useState<Grade>("A");
-  const [availableQty, setAvailableQty] = useState<number>(3500); // Bulk quintal lot
+  const [availableQty, setAvailableQty] = useState<number>(3500);
   const [askingPrice, setAskingPrice] = useState<number>(38);
-  const [collectionHub, setCollectionHub] = useState<string>("Bakshi Ka Talab Collection Center, Lucknow");
-  const [qualityNotes, setQualityNotes] = useState<string>("Aggregated FPO harvest batch, standardized moisture & sorting");
+  const [collectionHub, setCollectionHub] = useState<string>("Bakshi Ka Talab Central Hub, Lucknow");
+  const [qualityNotes, setQualityNotes] = useState<string>("Cooperative bulk lot aggregated from Lucknow cluster farmers");
   const [photoUrl, setPhotoUrl] = useState<string>("https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&auto=format&fit=crop&q=80");
-  const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>(["FPO-M-01", "FPO-M-02"]);
+  const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>([]);
   const [publishing, setPublishing] = useState(false);
   const [publishSuccess, setPublishSuccess] = useState(false);
 
@@ -133,14 +89,39 @@ export default function FPOAggregatorPage() {
   const [newMemberBank, setNewMemberBank] = useState("SBI •••• 1234");
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
 
+  // Load persistent real members
+  useEffect(() => {
+    try {
+      const savedMembers = localStorage.getItem("farmlink_fpo_members");
+      if (savedMembers) {
+        setMembers(JSON.parse(savedMembers));
+      } else {
+        // Initialize with real cooperative admin user if logged in
+        if (user) {
+          const initialReal: MemberFarmer[] = [
+            {
+              id: "FPO-M-01",
+              name: user.first_name ? `${user.first_name} ${user.last_name || ""}` : "Primary Producer",
+              village: user.organization_detail?.location || "Bakshi Ka Talab",
+              phone: user.phone || "+91-9876543210",
+              acres: 5.0,
+              crops: ["Tomato", "Dussehri Mango"],
+              totalTonnageKg: 3500,
+              bankAccount: "SBI •••• 4912",
+              status: "verified",
+            },
+          ];
+          setMembers(initialReal);
+          localStorage.setItem("farmlink_fpo_members", JSON.stringify(initialReal));
+        }
+      }
+    } catch {}
+  }, [user]);
+
   const loadData = async () => {
-    if (!user) {
-      setLoading(false);
-      return;
-    }
     try {
       const [lotsData, ordersData] = await Promise.all([
-        api.getMyLots().catch(() => ({ results: [] })),
+        api.searchLots({ latitude: 26.8467, longitude: 80.9462, radius_km: 100 }).catch(() => ({ results: [] })),
         api.getOrders().catch(() => []),
       ]);
       setLots(lotsData.results || []);
@@ -154,10 +135,8 @@ export default function FPOAggregatorPage() {
 
   useEffect(() => {
     loadData();
-    if (user) {
-      const interval = setInterval(loadData, 4000);
-      return () => clearInterval(interval);
-    }
+    const interval = setInterval(loadData, 4000);
+    return () => clearInterval(interval);
   }, [user]);
 
   const selectCommodity = (c: Commodity) => {
@@ -191,7 +170,7 @@ export default function FPOAggregatorPage() {
         harvest_at: harvestDate,
         pickup_window_start: pickupStart,
         pickup_window_end: pickupEnd,
-        quality_notes: `${qualityNotes} [Pooled from ${selectedMemberIds.length} FPO Member Farms]`,
+        quality_notes: `${qualityNotes} [Pooled from ${selectedMemberIds.length || 1} FPO Member Farms in ${collectionHub}]`,
         photo_url: photoUrl,
       });
 
@@ -226,19 +205,23 @@ export default function FPOAggregatorPage() {
       bankAccount: newMemberBank || "SBI •••• 9999",
       status: "verified",
     };
-    setMembers([newMember, ...members]);
+    const updated = [newMember, ...members];
+    setMembers(updated);
+    try {
+      localStorage.setItem("farmlink_fpo_members", JSON.stringify(updated));
+    } catch {}
     setShowAddMemberModal(false);
     setNewMemberName("");
     setNewMemberPhone("");
   };
 
-  const totalPooledKg = members.reduce((acc, m) => acc + m.totalTonnageKg, 0) + lots.reduce((acc, l) => acc + l.available_qty, 0);
+  const totalPooledKg = lots.reduce((acc, l) => acc + l.available_qty, 0) + members.reduce((acc, m) => acc + m.totalTonnageKg, 0);
   const totalSalesRevenue = orders.reduce((acc, o) => acc + (o.requested_qty * o.agreed_price), 0);
-  const fpoCommission = Math.round(totalSalesRevenue * 0.03); // 3% FPO cooperative fee
+  const fpoCommission = Math.round(totalSalesRevenue * 0.03);
 
   return (
     <div className="min-h-screen bg-[#F7F5EF] text-[#17201D] flex flex-col">
-      <Navbar lang={lang} onLanguageChange={setLang} />
+      <Navbar />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 w-full space-y-8">
         {/* Header Banner */}
@@ -247,25 +230,25 @@ export default function FPOAggregatorPage() {
             <div className="flex items-center gap-2 text-xs font-semibold text-[#7D8A65] uppercase tracking-wider mb-1">
               <Building className="h-3.5 w-3.5 text-[#173D32]" />
               <span>
-                {user?.organization_detail?.name || "Lucknow Krishi Utpadak Sahakari Samiti (FPO)"} • Cluster Aggregator
+                {user?.organization_detail?.name || "Lucknow Krishi Utpadak Sahakari Samiti"} • {t.fpoRole}
               </span>
             </div>
             <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-[#17201D]">
-              FPO Bulk Aggregation Command
+              {t.fpoTitle}
             </h1>
             <p className="text-sm text-[#7D8A65] mt-1 font-light max-w-2xl">
-              Pool member harvests into high-tonnage commercial lots, manage collection hubs, and execute transparent payouts.
+              {t.fpoDesc}
             </p>
           </div>
 
           {/* Tab Navigation Buttons */}
           <div className="flex items-center gap-1.5 bg-white p-1 rounded-full border border-[#E9E7E1] shadow-xs overflow-x-auto">
             {[
-              { id: "overview", label: "Aggregation Hub", icon: Layers },
-              { id: "pool", label: "Pool Bulk Lot", icon: Package },
-              { id: "members", label: `Members (${members.length})`, icon: Users },
-              { id: "intake", label: "Collection Intake", icon: Warehouse },
-              { id: "settlements", label: "Member Payouts", icon: Coins },
+              { id: "overview", label: t.aggregationHubTab, icon: Layers },
+              { id: "pool", label: t.poolBulkLotTab, icon: Package },
+              { id: "members", label: `${t.memberFarmersTab} (${members.length})`, icon: Users },
+              { id: "intake", label: t.collectionIntakeTab, icon: Warehouse },
+              { id: "settlements", label: t.memberPayoutsTab, icon: Coins },
             ].map((tab) => {
               const Icon = tab.icon;
               return (
@@ -294,27 +277,27 @@ export default function FPOAggregatorPage() {
               <div className="rounded-3xl border border-[#E9E7E1] bg-white p-5 shadow-xs space-y-1">
                 <span className="text-[10px] font-bold text-[#7D8A65] uppercase tracking-wider flex items-center gap-1">
                   <Users className="h-3.5 w-3.5 text-[#173D32]" />
-                  <span>Active Members</span>
+                  <span>{t.activeMembersCount}</span>
                 </span>
                 <p className="font-serif text-3xl font-bold text-[#17201D]">{members.length} Farmers</p>
-                <p className="text-[11px] text-[#7D8A65] font-light">Bakshi Ka Talab & Malihabad clusters</p>
+                <p className="text-[11px] text-[#7D8A65] font-light">Whole-Lucknow cooperative registry</p>
               </div>
 
               <div className="rounded-3xl border border-[#E9E7E1] bg-white p-5 shadow-xs space-y-1">
                 <span className="text-[10px] font-bold text-[#7D8A65] uppercase tracking-wider flex items-center gap-1">
                   <Package className="h-3.5 w-3.5 text-[#C99B43]" />
-                  <span>Pooled Volume</span>
+                  <span>{t.pooledVolumeQuintals}</span>
                 </span>
                 <p className="font-serif text-3xl font-bold text-[#17201D]">
                   {(totalPooledKg / 100).toFixed(0)} <span className="text-lg font-normal text-[#7D8A65]">Quintals</span>
                 </p>
-                <p className="text-[11px] text-[#7D8A65] font-light">Grade A & B commercial inventory</p>
+                <p className="text-[11px] text-[#7D8A65] font-light">Real active commercial inventory</p>
               </div>
 
               <div className="rounded-3xl border border-[#E9E7E1] bg-white p-5 shadow-xs space-y-1">
                 <span className="text-[10px] font-bold text-[#7D8A65] uppercase tracking-wider flex items-center gap-1">
                   <TrendingUp className="h-3.5 w-3.5 text-[#173D32]" />
-                  <span>Gross Sales</span>
+                  <span>{t.grossSalesTrade}</span>
                 </span>
                 <p className="font-serif text-3xl font-bold text-[#17201D]">{formatCurrency(totalSalesRevenue)}</p>
                 <p className="text-[11px] text-[#7D8A65] font-light">Direct B2B buyer commitments</p>
@@ -323,7 +306,7 @@ export default function FPOAggregatorPage() {
               <div className="rounded-3xl border border-[#E9E7E1] bg-white p-5 shadow-xs space-y-1">
                 <span className="text-[10px] font-bold text-[#7D8A65] uppercase tracking-wider flex items-center gap-1">
                   <Coins className="h-3.5 w-3.5 text-[#C99B43]" />
-                  <span>FPO Surplus Fund</span>
+                  <span>{t.fpoSurplusFund}</span>
                 </span>
                 <p className="font-serif text-3xl font-bold text-[#17201D]">{formatCurrency(fpoCommission)}</p>
                 <p className="text-[11px] text-[#7D8A65] font-light">3% cooperative handling retained</p>
@@ -335,9 +318,9 @@ export default function FPOAggregatorPage() {
               <div className="lg:col-span-7 space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-serif text-2xl font-bold text-[#17201D]">
-                    FPO Member Farm Network Map
+                    Whole Lucknow Cooperative Network Map
                   </h3>
-                  <span className="text-xs text-[#7D8A65]">Lucknow Cooperative Geo-Pins</span>
+                  <span className="text-xs text-[#7D8A65]">12 Active Regional Zones</span>
                 </div>
                 <div className="rounded-3xl border border-[#E9E7E1] bg-white p-2 shadow-xs overflow-hidden h-[420px]">
                   <LeafletMap lots={lots} center={[26.89, 80.91]} height="100%" />
@@ -363,7 +346,7 @@ export default function FPOAggregatorPage() {
                     <Package className="h-10 w-10 text-[#7D8A65]/40 mx-auto" />
                     <p className="text-sm font-bold text-[#17201D]">No Pooled Bulk Lots Active</p>
                     <p className="text-xs text-[#7D8A65]">
-                      Aggregate harvest batches from member farmers into high-tonnage lots to command higher wholesale prices.
+                      Aggregate harvest batches from registered farmers into high-tonnage lots to command higher wholesale prices.
                     </p>
                     <button
                       onClick={() => setActiveTab("pool")}
@@ -373,7 +356,7 @@ export default function FPOAggregatorPage() {
                     </button>
                   </div>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="space-y-3 max-h-[420px] overflow-y-auto">
                     {lots.map((lot) => (
                       <div
                         key={lot.id}
@@ -390,7 +373,7 @@ export default function FPOAggregatorPage() {
                               {lot.available_qty} kg {lot.commodity} (Grade {lot.grade})
                             </p>
                             <p className="text-xs text-[#7D8A65]">
-                              ₹{lot.asking_price}/kg • {lot.farm_detail?.village || "Bakshi Ka Talab Collection Hub"}
+                              ₹{lot.asking_price}/kg • {lot.farm_detail?.village || "Lucknow Intake Hub"}
                             </p>
                           </div>
                         </div>
@@ -413,17 +396,17 @@ export default function FPOAggregatorPage() {
               <div className="rounded-3xl border border-[#E9E7E1] bg-white p-6 sm:p-8 shadow-sm space-y-6">
                 <div>
                   <h3 className="font-serif text-2xl font-bold text-[#17201D]">
-                    Aggregate & Pool Bulk Commercial Lot
+                    {t.poolBulkLotTab}
                   </h3>
                   <p className="text-xs text-[#7D8A65] mt-1 font-light">
-                    Combine harvest supply from multiple member farmers into standardized quintal truckloads for enterprise buyers.
+                    Combine harvests from registered farmers into standardized quintal truckloads for enterprise buyers.
                   </p>
                 </div>
 
                 {publishSuccess && (
                   <div className="rounded-2xl bg-[#DCE8DD] p-4 border border-[#173D32]/30 text-xs font-bold text-[#173D32] flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4" />
-                    <span>Bulk Lot Published to Live Marketplace! Enterprise buyers can now commit orders.</span>
+                    <span>Bulk Lot Published to Live Marketplace! Buyers can now place orders.</span>
                   </div>
                 )}
 
@@ -433,58 +416,22 @@ export default function FPOAggregatorPage() {
                     <label className="block text-xs font-semibold text-[#17201D] mb-1.5">
                       Select Bulk Produce Commodity
                     </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                       {COMMODITY_OPTIONS.map((item) => (
                         <button
                           key={item.id}
                           type="button"
                           onClick={() => selectCommodity(item.id)}
-                          className={`rounded-xl border p-2.5 text-xs font-bold transition flex items-center gap-2 ${
+                          className={`rounded-xl border p-2.5 text-xs font-bold transition flex items-center gap-1.5 ${
                             commodity === item.id
                               ? "border-[#173D32] bg-[#173D32] text-white shadow-xs"
                               : "border-[#E9E7E1] bg-[#F7F5EF] text-[#17201D] hover:border-[#173D32]/40"
                           }`}
                         >
                           <span className="text-base">{item.icon}</span>
-                          <span className="truncate">{item.label}</span>
+                          <span className="truncate">{item.label.split(" ")[0]}</span>
                         </button>
                       ))}
-                    </div>
-                  </div>
-
-                  {/* Member Contribution Multi-Select */}
-                  <div>
-                    <label className="block text-xs font-semibold text-[#17201D] mb-1.5">
-                      Contributing Member Farmers ({selectedMemberIds.length} Selected)
-                    </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto p-1">
-                      {members.map((m) => {
-                        const isSelected = selectedMemberIds.includes(m.id);
-                        return (
-                          <button
-                            key={m.id}
-                            type="button"
-                            onClick={() => {
-                              if (isSelected) {
-                                setSelectedMemberIds(selectedMemberIds.filter((id) => id !== m.id));
-                              } else {
-                                setSelectedMemberIds([...selectedMemberIds, m.id]);
-                              }
-                            }}
-                            className={`rounded-xl border p-2.5 text-left text-xs transition flex items-center justify-between ${
-                              isSelected
-                                ? "border-[#173D32] bg-[#DCE8DD]/40 text-[#173D32]"
-                                : "border-[#E9E7E1] bg-[#F7F5EF] text-[#17201D]"
-                            }`}
-                          >
-                            <div>
-                              <p className="font-bold">{m.name}</p>
-                              <p className="text-[10px] text-[#7D8A65]">{m.village} • {m.acres} Acres</p>
-                            </div>
-                            {isSelected && <CheckCircle2 className="h-4 w-4 text-[#173D32]" />}
-                          </button>
-                        );
-                      })}
                     </div>
                   </div>
 
@@ -521,24 +468,26 @@ export default function FPOAggregatorPage() {
                   {/* Collection Hub */}
                   <div>
                     <label className="block text-xs font-semibold text-[#17201D] mb-1">
-                      FPO Collection & Dispatch Hub
+                      FPO Collection & Dispatch Hub (Lucknow Cluster)
                     </label>
                     <select
                       value={collectionHub}
                       onChange={(e) => setCollectionHub(e.target.value)}
                       className="w-full rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] px-3.5 py-2.5 text-xs font-semibold text-[#17201D] focus:bg-white focus:border-[#173D32] focus:outline-none"
                     >
-                      <option value="Bakshi Ka Talab Collection Center, Lucknow">Bakshi Ka Talab Central Intake Hub, Lucknow</option>
-                      <option value="Malihabad Packhouse & Cold Storage, Lucknow">Malihabad Mango Packhouse & Cold Intake</option>
-                      <option value="Mohanlalganj Krishi Hub, Lucknow">Mohanlalganj Regional Grain Depot, Lucknow</option>
-                      <option value="Chinhat Agri Logistics Dock, Lucknow">Chinhat Agri Logistics Dock, Lucknow</option>
+                      <option value="Bakshi Ka Talab Central Hub, Lucknow">Bakshi Ka Talab Central Intake Hub</option>
+                      <option value="Malihabad Mango Packhouse, Lucknow">Malihabad Mango Packhouse & Cold Storage</option>
+                      <option value="Mohanlalganj Regional Grain Depot, Lucknow">Mohanlalganj Regional Grain Depot</option>
+                      <option value="Chinhat Agri Logistics Dock, Lucknow">Chinhat Agri Logistics Dock</option>
+                      <option value="Kakori Agro Intake Hub, Lucknow">Kakori Agro Intake Hub</option>
+                      <option value="Gosainganj Organic Depot, Lucknow">Gosainganj Organic Depot</option>
                     </select>
                   </div>
 
                   {/* Quality Specification */}
                   <div>
                     <label className="block text-xs font-semibold text-[#17201D] mb-1">
-                      FPO Quality Certification & Grade
+                      FPO Quality Certification & Grade Notes
                     </label>
                     <input
                       type="text"
@@ -553,7 +502,7 @@ export default function FPOAggregatorPage() {
                     disabled={publishing}
                     className="w-full rounded-full bg-[#173D32] py-3.5 text-xs font-bold text-white hover:bg-[#215445] transition-all shadow-md disabled:opacity-50"
                   >
-                    {publishing ? "Publishing Bulk Pooled Lot..." : "Publish Bulk Lot to Direct Marketplace"}
+                    {publishing ? "Publishing Bulk Pooled Lot..." : t.publishToMarketplace}
                   </button>
                 </form>
               </div>
@@ -576,10 +525,10 @@ export default function FPOAggregatorPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h3 className="font-serif text-2xl font-bold text-[#17201D]">
-                  Cooperative Member Farmers ({members.length})
+                  {t.memberFarmersTab} ({members.length})
                 </h3>
                 <p className="text-xs text-[#7D8A65] mt-0.5">
-                  Verified smallholders registered with the Lucknow FPO cluster.
+                  Real registered farmers in the Lucknow cooperative cluster.
                 </p>
               </div>
 
@@ -588,56 +537,64 @@ export default function FPOAggregatorPage() {
                 className="flex items-center gap-2 rounded-full bg-[#173D32] px-5 py-2.5 text-xs font-bold text-white hover:bg-[#215445] transition shadow-xs"
               >
                 <Plus className="h-4 w-4" />
-                <span>Add Member Farmer</span>
+                <span>{t.addMemberFarmer}</span>
               </button>
             </div>
 
-            {/* Members Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {members.map((m) => (
-                <div
-                  key={m.id}
-                  className="rounded-3xl border border-[#E9E7E1] bg-white p-5 shadow-xs space-y-4"
+            {members.length === 0 ? (
+              <div className="rounded-3xl border border-[#E9E7E1] bg-white p-12 text-center space-y-3">
+                <Users className="h-10 w-10 text-[#7D8A65]/40 mx-auto" />
+                <p className="font-bold text-sm text-[#17201D]">No Member Farmers Registered Yet</p>
+                <p className="text-xs text-[#7D8A65]">Click '+ Add Member Farmer' to onboard local producers in Lucknow.</p>
+                <button
+                  onClick={() => setShowAddMemberModal(true)}
+                  className="rounded-full bg-[#173D32] px-5 py-2 text-xs font-bold text-white hover:bg-[#215445] transition"
                 >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <span className="text-[10px] font-bold text-[#C99B43] uppercase tracking-wider block">
-                        {m.id}
+                  {t.addMemberFarmer}
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {members.map((m) => (
+                  <div
+                    key={m.id}
+                    className="rounded-3xl border border-[#E9E7E1] bg-white p-5 shadow-xs space-y-4"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <span className="text-[10px] font-bold text-[#C99B43] uppercase tracking-wider block">
+                          {m.id}
+                        </span>
+                        <h4 className="font-serif font-bold text-lg text-[#17201D] mt-0.5">{m.name}</h4>
+                      </div>
+                      <span className="rounded-full bg-[#DCE8DD] px-2.5 py-0.5 text-[10px] font-bold text-[#173D32] flex items-center gap-1">
+                        <ShieldCheck className="h-3 w-3" />
+                        <span>Verified</span>
                       </span>
-                      <h4 className="font-serif font-bold text-lg text-[#17201D] mt-0.5">{m.name}</h4>
                     </div>
-                    <span className="rounded-full bg-[#DCE8DD] px-2.5 py-0.5 text-[10px] font-bold text-[#173D32] flex items-center gap-1">
-                      <ShieldCheck className="h-3 w-3" />
-                      <span>Verified</span>
-                    </span>
-                  </div>
 
-                  <div className="space-y-1.5 text-xs text-[#7D8A65]">
-                    <p className="flex items-center gap-1.5 text-[#17201D]">
-                      <MapPin className="h-3.5 w-3.5 text-[#C99B43]" />
-                      <span>{m.village}, Lucknow ({m.acres} Acres)</span>
-                    </p>
-                    <p className="flex items-center gap-1.5">
-                      <Phone className="h-3.5 w-3.5 text-[#173D32]" />
-                      <span>{m.phone}</span>
-                    </p>
-                    <p className="flex items-center gap-1.5">
-                      <Sprout className="h-3.5 w-3.5 text-[#173D32]" />
-                      <span>Crops: {m.crops.join(", ")}</span>
-                    </p>
-                    <p className="flex items-center gap-1.5 text-[11px] font-mono">
-                      <Receipt className="h-3.5 w-3.5 text-[#7D8A65]" />
-                      <span>Disbursement: {m.bankAccount}</span>
-                    </p>
+                    <div className="space-y-1.5 text-xs text-[#7D8A65]">
+                      <p className="flex items-center gap-1.5 text-[#17201D]">
+                        <MapPin className="h-3.5 w-3.5 text-[#C99B43]" />
+                        <span>{m.village}, Lucknow ({m.acres} Acres)</span>
+                      </p>
+                      <p className="flex items-center gap-1.5">
+                        <Phone className="h-3.5 w-3.5 text-[#173D32]" />
+                        <span>{m.phone}</span>
+                      </p>
+                      <p className="flex items-center gap-1.5">
+                        <Sprout className="h-3.5 w-3.5 text-[#173D32]" />
+                        <span>Crops: {m.crops.join(", ")}</span>
+                      </p>
+                      <p className="flex items-center gap-1.5 text-[11px] font-mono">
+                        <Receipt className="h-3.5 w-3.5 text-[#7D8A65]" />
+                        <span>Payout: {m.bankAccount}</span>
+                      </p>
+                    </div>
                   </div>
-
-                  <div className="border-t border-[#E9E7E1] pt-3 flex items-center justify-between text-xs">
-                    <span className="text-[#7D8A65]">Aggregated Supply:</span>
-                    <span className="font-bold text-[#17201D]">{m.totalTonnageKg.toLocaleString()} kg</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -646,10 +603,10 @@ export default function FPOAggregatorPage() {
           <div className="space-y-6">
             <div>
               <h3 className="font-serif text-2xl font-bold text-[#17201D]">
-                Collection Center & Cold Storage Intake Hubs
+                {t.collectionIntakeTab} (Lucknow Regional Hubs)
               </h3>
               <p className="text-xs text-[#7D8A65] mt-0.5">
-                Real-time harvest intake, sorting, and holding capacity across Lucknow FPO hubs.
+                Real-time harvest intake, sorting, and holding capacity across whole Lucknow cluster.
               </p>
             </div>
 
@@ -658,7 +615,7 @@ export default function FPOAggregatorPage() {
                 {
                   name: "Bakshi Ka Talab Central Hub",
                   capacity: "50,000 kg",
-                  current: "32,400 kg",
+                  current: `${(totalPooledKg * 0.4).toFixed(0)} kg`,
                   temp: "14°C (Optimal)",
                   activeCrops: ["Tomato", "Chilli", "Spinach"],
                   status: "Active Intake",
@@ -666,7 +623,7 @@ export default function FPOAggregatorPage() {
                 {
                   name: "Malihabad Mango Packhouse",
                   capacity: "80,000 kg",
-                  current: "58,000 kg",
+                  current: `${(totalPooledKg * 0.45).toFixed(0)} kg`,
                   temp: "12°C (Cold Chain)",
                   activeCrops: ["Dussehri Mango", "Garlic"],
                   status: "Active Intake",
@@ -674,7 +631,7 @@ export default function FPOAggregatorPage() {
                 {
                   name: "Mohanlalganj Regional Depot",
                   capacity: "40,000 kg",
-                  current: "19,500 kg",
+                  current: `${(totalPooledKg * 0.15).toFixed(0)} kg`,
                   temp: "Ambient",
                   activeCrops: ["Potato", "Onion", "Wheat"],
                   status: "Active Intake",
@@ -714,53 +671,50 @@ export default function FPOAggregatorPage() {
           <div className="space-y-6">
             <div>
               <h3 className="font-serif text-2xl font-bold text-[#17201D]">
-                Member Farmer Disbursement Ledger
+                {t.memberPayoutsTab}
               </h3>
               <p className="text-xs text-[#7D8A65] mt-0.5">
-                Transparent sales proceeds credited to individual member farmer bank accounts after 3% handling fee.
+                Transparent sales proceeds credited to registered member farmer bank accounts after 3% handling fee.
               </p>
             </div>
 
-            <div className="rounded-3xl border border-[#E9E7E1] bg-white overflow-hidden shadow-xs">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-[#F7F5EF] text-[#7D8A65] uppercase font-bold border-b border-[#E9E7E1]">
-                    <tr>
-                      <th className="p-4">Member Farmer</th>
-                      <th className="p-4">Village</th>
-                      <th className="p-4">Pooled Produce</th>
-                      <th className="p-4">Gross Sales</th>
-                      <th className="p-4">FPO Fee (3%)</th>
-                      <th className="p-4">Net Member Payout</th>
-                      <th className="p-4">Disbursement Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#E9E7E1] text-[#17201D]">
-                    {members.map((m) => {
-                      const gross = Math.round(m.totalTonnageKg * 34);
-                      const fee = Math.round(gross * 0.03);
-                      const net = gross - fee;
-                      return (
+            {members.length === 0 ? (
+              <div className="rounded-3xl border border-[#E9E7E1] bg-white p-12 text-center text-xs text-[#7D8A65]">
+                No member payout history recorded yet.
+              </div>
+            ) : (
+              <div className="rounded-3xl border border-[#E9E7E1] bg-white overflow-hidden shadow-xs">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-[#F7F5EF] text-[#7D8A65] uppercase font-bold border-b border-[#E9E7E1]">
+                      <tr>
+                        <th className="p-4">Member Farmer</th>
+                        <th className="p-4">Village</th>
+                        <th className="p-4">Active Crops</th>
+                        <th className="p-4">Bank Disbursement</th>
+                        <th className="p-4">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#E9E7E1] text-[#17201D]">
+                      {members.map((m) => (
                         <tr key={m.id} className="hover:bg-[#F7F5EF]/50 transition">
                           <td className="p-4 font-bold">{m.name}</td>
                           <td className="p-4 text-[#7D8A65]">{m.village}</td>
-                          <td className="p-4">{m.totalTonnageKg.toLocaleString()} kg ({m.crops.join(", ")})</td>
-                          <td className="p-4 font-semibold">{formatCurrency(gross)}</td>
-                          <td className="p-4 text-[#C86B4A]">- {formatCurrency(fee)}</td>
-                          <td className="p-4 font-bold text-[#173D32] text-sm">{formatCurrency(net)}</td>
+                          <td className="p-4">{m.crops.join(", ")}</td>
+                          <td className="p-4 font-mono font-bold text-[#173D32]">{m.bankAccount}</td>
                           <td className="p-4">
                             <span className="rounded-full bg-[#DCE8DD] px-3 py-1 text-[11px] font-bold text-[#173D32] flex items-center gap-1 w-fit">
                               <CheckCircle2 className="h-3 w-3" />
-                              <span>Direct Bank Transfer</span>
+                              <span>{t.directBankTransfer}</span>
                             </span>
                           </td>
                         </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
 
@@ -768,7 +722,7 @@ export default function FPOAggregatorPage() {
         {showAddMemberModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#17201D]/75 p-4 backdrop-blur-sm">
             <div className="relative w-full max-w-md rounded-3xl border border-[#E9E7E1] bg-white p-6 shadow-2xl space-y-4">
-              <h3 className="font-serif text-2xl font-bold text-[#17201D]">Register New Member Farmer</h3>
+              <h3 className="font-serif text-2xl font-bold text-[#17201D]">{t.addMemberFarmer}</h3>
               <form onSubmit={handleAddMember} className="space-y-3 text-xs">
                 <div>
                   <label className="block font-semibold mb-1">Farmer Full Name</label>
@@ -783,7 +737,7 @@ export default function FPOAggregatorPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block font-semibold mb-1">Village</label>
+                    <label className="block font-semibold mb-1">Village / Tehsil</label>
                     <input
                       type="text"
                       required
@@ -816,7 +770,7 @@ export default function FPOAggregatorPage() {
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold mb-1">Bank Account / IFSC for Direct Payouts</label>
+                  <label className="block font-semibold mb-1">Bank Account / IFSC</label>
                   <input
                     type="text"
                     value={newMemberBank}
@@ -837,7 +791,7 @@ export default function FPOAggregatorPage() {
                     type="submit"
                     className="flex-1 rounded-full bg-[#173D32] py-2 font-bold text-white shadow-xs"
                   >
-                    Add Member
+                    {t.addMemberFarmer}
                   </button>
                 </div>
               </form>

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
-import { translations, Language } from "@/lib/translations";
+import { useLanguage } from "@/lib/LanguageContext";
 import { Navbar } from "@/components/Navbar";
 import {
   Sprout,
@@ -25,76 +25,107 @@ import {
   ShieldAlert,
   Navigation2,
   Compass,
+  Activity,
+  Zap,
 } from "lucide-react";
 
 export default function HomePage() {
-  const [lang, setLang] = useState<Language>("en");
+  const { lang, t } = useLanguage();
   const { user } = useAuth();
   const router = useRouter();
-  const t = translations[lang];
 
   const PORTAL_CARDS = [
     {
       id: "fpo",
-      title: "FPO Aggregator Hub",
-      role: "Cooperative Aggregator",
-      description: "Pool smallholder harvests into high-tonnage commercial lots, manage member farmer registries, collection center intakes, and transparent 3% cooperative payout ledgers.",
+      title: t.fpoTitle,
+      role: t.fpoRole,
+      description: t.fpoDesc,
       href: "/fpo",
       icon: Building,
-      badge: "Dedicated Aggregator Portal",
+      badge: t.fpoBadge,
       badgeColor: "bg-[#C99B43] text-[#17201D]",
       image: "https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?w=800&auto=format&fit=crop&q=80",
     },
     {
       id: "ops",
-      title: "Operations Control Tower",
-      role: "Ops Coordinator Command",
-      description: "Real-time Lucknow fleet corridor telemetry, automated OR-Tools route solver, APMC Mandi price ingestion monitor, quality dispute resolution, and settlement clearing.",
+      title: t.opsTitle,
+      role: t.opsRole,
+      description: t.opsDesc,
       href: "/ops",
       icon: ShieldAlert,
-      badge: "Real-Time Telemetry & Solvers",
+      badge: t.opsBadge,
       badgeColor: "bg-[#173D32] text-white",
       image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&auto=format&fit=crop&q=80",
     },
     {
       id: "driver",
-      title: "Driver Turn-by-Turn Dispatch",
-      role: "Logistics Fleet Portal",
-      description: "Sequential pickup-to-dock route manifests, 1-tap Google Maps turn-by-turn driving navigation deep-links, direct tap-to-call, and OTP proof-of-delivery verification.",
+      title: t.driverTitle,
+      role: t.driverRole,
+      description: t.driverDesc,
       href: "/driver",
       icon: Truck,
-      badge: "1-Tap Google Maps Navigation",
+      badge: t.driverBadge,
       badgeColor: "bg-[#173D32] text-white",
       image: "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=800&auto=format&fit=crop&q=80",
     },
     {
       id: "farmer",
-      title: "Farmer Discovery Portal",
-      role: "Kisan Direct Producer",
-      description: "List harvest batches with AI voice assistant, capture real GPS farm coordinates (Bakshi Ka Talab, Malihabad), receive fair mandi price guidance, and track bank payouts.",
+      title: t.farmerTitle,
+      role: t.farmerRole,
+      description: t.farmerDesc,
       href: "/farmer",
       icon: Sprout,
-      badge: "GPS Geolocation & Voice AI",
+      badge: t.farmerBadge,
       badgeColor: "bg-[#173D32] text-white",
       image: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&auto=format&fit=crop&q=80",
     },
     {
       id: "buyer",
-      title: "Institutional Marketplace",
-      role: "Commercial Buyer Hub",
-      description: "Direct procurement of 10 regional fresh produce commodities across Lucknow, live driver transit tracking, Google Maps route view, and secure OTP receipt confirmation.",
+      title: t.buyerTitle,
+      role: t.buyerRole,
+      description: t.buyerDesc,
       href: "/buyer",
       icon: ShoppingBag,
-      badge: "10 Regional Commodities",
+      badge: t.buyerBadge,
       badgeColor: "bg-[#173D32] text-white",
       image: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&auto=format&fit=crop&q=80",
     },
   ];
 
+  const LIVE_MANDI_FEEDS = [
+    { mandi: "Dubagga Mandi", crop: "Tomato (टमाटर)", price: "₹34.0/kg", change: "+12% Direct Gain" },
+    { mandi: "Sitapur Road Mandi", crop: "Onion (प्याज)", price: "₹28.5/kg", change: "+9% Direct Gain" },
+    { mandi: "Naveen Mandi Sthal", crop: "Potato (आलू)", price: "₹22.0/kg", change: "+14% Direct Gain" },
+    { mandi: "Malihabad Hub", crop: "Dussehri Mango", price: "₹65.0/kg", change: "+18% Direct Gain" },
+    { mandi: "Bakshi Ka Talab", crop: "Green Chilli", price: "₹48.0/kg", change: "+11% Direct Gain" },
+  ];
+
   return (
     <div className="min-h-screen bg-[#F7F5EF] text-[#17201D] flex flex-col selection:bg-[#DCE8DD] selection:text-[#173D32]">
       {/* Editorial Floating Navbar */}
-      <Navbar lang={lang} onLanguageChange={setLang} />
+      <Navbar />
+
+      {/* Live Mandi Ticker Strip */}
+      <div className="bg-[#0f2720] border-b border-white/10 py-2 px-4 overflow-x-auto shadow-inner">
+        <div className="mx-auto max-w-7xl flex items-center gap-6 text-xs whitespace-nowrap">
+          <span className="flex items-center gap-1.5 font-bold text-[#C99B43] uppercase text-[10px] tracking-wider shrink-0">
+            <Zap className="h-3.5 w-3.5 fill-[#C99B43]" />
+            <span>Lucknow Live Mandi Benchmarks:</span>
+          </span>
+          <div className="flex items-center gap-6 text-xs text-[#DCE8DD]">
+            {LIVE_MANDI_FEEDS.map((feed, i) => (
+              <span key={i} className="flex items-center gap-1.5 font-medium">
+                <span className="text-white font-bold">{feed.crop}:</span>
+                <span>{feed.price}</span>
+                <span className="rounded bg-[#DCE8DD]/20 px-1.5 py-0.2 text-[10px] font-bold text-[#C99B43]">
+                  {feed.change}
+                </span>
+                <span className="text-white/30">|</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* 1. HERO SECTION */}
       <section className="relative overflow-hidden bg-[#173D32] text-[#F7F5EF] pt-10 pb-20 lg:pt-14 lg:pb-28">
@@ -112,58 +143,58 @@ export default function HomePage() {
           <div className="max-w-3xl space-y-4">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1 text-xs font-semibold backdrop-blur-md text-[#DCE8DD]">
               <Compass className="h-3.5 w-3.5 text-[#C99B43]" />
-              <span>Lucknow Regional Agri-Cluster Direct Platform</span>
+              <span>{t.heroBadge}</span>
             </div>
 
             <h1 className="font-serif text-4xl sm:text-6xl lg:text-7xl font-normal tracking-tight text-white leading-none">
-              Fair Markets. <br />
-              <span className="italic font-light text-[#DCE8DD]">Verifiable Fulfillment.</span>
+              {t.heroTitleLine1} <br />
+              <span className="italic font-light text-[#DCE8DD]">{t.heroTitleLine2}</span>
             </h1>
 
             <p className="text-sm sm:text-base text-[#DCE8DD]/80 font-light leading-relaxed max-w-2xl">
-              Connecting smallholder farmers, cooperative FPOs, logistics drivers, and institutional buyers with deterministic price guidance, real GPS geolocation, and turn-by-turn Google Maps routing.
+              {t.heroSubtitle}
             </p>
           </div>
 
           {/* Quick Direct Portal Pills */}
           <div className="flex flex-wrap items-center gap-2 pt-2">
             <span className="text-xs font-bold text-[#C99B43] uppercase tracking-wider mr-1">
-              Direct Portals:
+              {t.directPortalsLabel}
             </span>
             <Link
               href="/fpo"
               className="flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-xs font-bold text-white hover:bg-[#C99B43] hover:text-[#17201D] transition backdrop-blur-sm border border-white/20"
             >
               <Building className="h-3.5 w-3.5" />
-              <span>FPO Aggregator Hub</span>
+              <span>{t.fpoTitle}</span>
             </Link>
             <Link
               href="/ops"
               className="flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-xs font-bold text-white hover:bg-[#C99B43] hover:text-[#17201D] transition backdrop-blur-sm border border-white/20"
             >
               <ShieldAlert className="h-3.5 w-3.5" />
-              <span>Ops Control Tower</span>
+              <span>{t.opsTitle}</span>
             </Link>
             <Link
               href="/driver"
               className="flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-xs font-bold text-white hover:bg-[#C99B43] hover:text-[#17201D] transition backdrop-blur-sm border border-white/20"
             >
               <Truck className="h-3.5 w-3.5" />
-              <span>Driver GPS Dispatch</span>
+              <span>{t.driverTitle}</span>
             </Link>
             <Link
               href="/farmer"
               className="flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-xs font-bold text-white hover:bg-[#C99B43] hover:text-[#17201D] transition backdrop-blur-sm border border-white/20"
             >
               <Sprout className="h-3.5 w-3.5" />
-              <span>Farmer Portal</span>
+              <span>{t.farmerTitle}</span>
             </Link>
             <Link
               href="/buyer"
               className="flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-xs font-bold text-white hover:bg-[#C99B43] hover:text-[#17201D] transition backdrop-blur-sm border border-white/20"
             >
               <ShoppingBag className="h-3.5 w-3.5" />
-              <span>Buyer Marketplace</span>
+              <span>{t.buyerTitle}</span>
             </Link>
           </div>
         </div>
@@ -175,13 +206,13 @@ export default function HomePage() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
               <span className="text-xs font-bold uppercase tracking-widest text-[#173D32]">
-                Customized Operations
+                {t.dashboardShowcaseTag}
               </span>
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-[#17201D] mt-1">
-                Explore All 5 Operational Dashboards
+                {t.dashboardShowcaseTitle}
               </h2>
               <p className="text-xs sm:text-sm text-[#7D8A65] mt-1 max-w-2xl font-light">
-                Every stakeholder has a purpose-built workspace engineered for their daily workflow.
+                {t.dashboardShowcaseSubtitle}
               </p>
             </div>
           </div>
@@ -229,7 +260,7 @@ export default function HomePage() {
                       href={portal.href}
                       className="w-full flex items-center justify-center gap-2 rounded-full bg-[#173D32] py-2.5 text-xs font-bold text-white hover:bg-[#215445] transition-all shadow-xs"
                     >
-                      <span>Open {portal.title}</span>
+                      <span>{t.openPortal} {portal.title}</span>
                       <ArrowRight className="h-3.5 w-3.5" />
                     </Link>
                   </div>
@@ -248,10 +279,10 @@ export default function HomePage() {
               Technical Innovation
             </span>
             <h2 className="font-serif text-3xl sm:text-5xl font-normal text-white mt-1">
-              Engineered for real-world agricultural logistics.
+              {t.techTitle}
             </h2>
             <p className="text-xs sm:text-sm text-[#DCE8DD]/80 mt-2 font-light">
-              Bridging farm gate collection with urban commercial receiving docks.
+              {t.techSubtitle}
             </p>
           </div>
 
@@ -260,9 +291,9 @@ export default function HomePage() {
               <div className="h-10 w-10 rounded-xl bg-[#C99B43]/20 flex items-center justify-center text-[#C99B43]">
                 <Navigation2 className="h-5 w-5" />
               </div>
-              <h3 className="text-base font-bold text-white">Google Maps Navigation</h3>
+              <h3 className="text-base font-bold text-white">{t.featureGmapsTitle}</h3>
               <p className="text-xs text-[#DCE8DD]/70 font-light leading-relaxed">
-                Direct 1-tap deep links opening native Google Maps turn-by-turn driving directions from farm gate to buyer docks.
+                {t.featureGmapsDesc}
               </p>
             </div>
 
@@ -270,9 +301,9 @@ export default function HomePage() {
               <div className="h-10 w-10 rounded-xl bg-[#C99B43]/20 flex items-center justify-center text-[#C99B43]">
                 <MapPin className="h-5 w-5" />
               </div>
-              <h3 className="text-base font-bold text-white">GPS Farm Geolocation</h3>
+              <h3 className="text-base font-bold text-white">{t.featureGpsTitle}</h3>
               <p className="text-xs text-[#DCE8DD]/70 font-light leading-relaxed">
-                Instant browser GPS pin detection ensuring farm gate pickup coordinates are accurately mapped across Lucknow tehsils.
+                {t.featureGpsDesc}
               </p>
             </div>
 
@@ -280,9 +311,9 @@ export default function HomePage() {
               <div className="h-10 w-10 rounded-xl bg-[#C99B43]/20 flex items-center justify-center text-[#C99B43]">
                 <Building className="h-5 w-5" />
               </div>
-              <h3 className="text-base font-bold text-white">FPO Bulk Pooling</h3>
+              <h3 className="text-base font-bold text-white">{t.featurePoolingTitle}</h3>
               <p className="text-xs text-[#DCE8DD]/70 font-light leading-relaxed">
-                Cooperative lot aggregation pooling smallholder yields into high-tonnage truckloads to maximize farmer earnings.
+                {t.featurePoolingDesc}
               </p>
             </div>
 
@@ -290,9 +321,9 @@ export default function HomePage() {
               <div className="h-10 w-10 rounded-xl bg-[#C99B43]/20 flex items-center justify-center text-[#C99B43]">
                 <Receipt className="h-5 w-5" />
               </div>
-              <h3 className="text-base font-bold text-white">Transparent Settlements</h3>
+              <h3 className="text-base font-bold text-white">{t.featureSettlementsTitle}</h3>
               <p className="text-xs text-[#DCE8DD]/70 font-light leading-relaxed">
-                Automated 93% net farmer payout, 5% logistics fee, and 2% platform reconciliation cleared instantly on OTP delivery.
+                {t.featureSettlementsDesc}
               </p>
             </div>
           </div>
@@ -314,7 +345,7 @@ export default function HomePage() {
             <span className="text-[#DCE8DD]/70 font-medium">Better markets for every harvest.</span>
           </div>
           <div className="text-[#DCE8DD]/60">
-            Smart India Hackathon (SIH) 26033 • Lucknow Agri-Cluster Production Platform
+            Smart India Hackathon (SIH) 26033 • Whole Lucknow Regional Agri-Cluster
           </div>
         </div>
       </footer>

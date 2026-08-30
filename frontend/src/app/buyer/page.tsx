@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
 import { Lot, Order, Commodity, Grade } from "@/lib/types";
-import { translations, Language } from "@/lib/translations";
+import { useLanguage } from "@/lib/LanguageContext";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { Navbar } from "@/components/Navbar";
 import { LeafletMap } from "@/components/LeafletMap";
@@ -35,9 +35,8 @@ import {
 import confetti from "canvas-confetti";
 
 export default function BuyerMarketplacePage() {
-  const [lang, setLang] = useState<Language>("en");
+  const { lang, t } = useLanguage();
   const { user } = useAuth();
-  const t = translations[lang];
 
   const [lots, setLots] = useState<Lot[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -190,7 +189,7 @@ export default function BuyerMarketplacePage() {
 
   return (
     <div className="min-h-screen bg-[#F7F5EF] text-[#17201D] flex flex-col">
-      <Navbar lang={lang} onLanguageChange={setLang} />
+      <Navbar />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 w-full space-y-8">
         {/* HEADER SECTION */}
@@ -198,13 +197,13 @@ export default function BuyerMarketplacePage() {
           <div>
             <div className="flex items-center gap-2 text-xs font-semibold text-[#7D8A65] uppercase tracking-wider mb-1">
               <ShoppingBag className="h-3.5 w-3.5 text-[#173D32]" />
-              <span>Direct Farm-Gate Marketplace • Lucknow Regional Cluster</span>
+              <span>{t.buyerRole} • {t.lucknowCluster}</span>
             </div>
             <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-[#17201D]">
-              Fresh produce, ready for demand.
+              {t.buyerTitle}
             </h1>
             <p className="text-sm text-[#7D8A65] mt-1 font-light max-w-xl">
-              Source verified, graded produce directly from nearby farmers and FPOs with transparent pricing and 24-hour fulfillment.
+              {t.buyerDesc}
             </p>
           </div>
 

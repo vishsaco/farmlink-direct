@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
 import { Lot, Order, Commodity, Grade } from "@/lib/types";
-import { translations, Language } from "@/lib/translations";
+import { useLanguage } from "@/lib/LanguageContext";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { Navbar } from "@/components/Navbar";
 import { PriceGuidanceCard } from "@/components/PriceGuidanceCard";
@@ -50,9 +50,8 @@ const COMMODITY_OPTIONS: { id: Commodity; label: string; icon: string; image: st
 ];
 
 export default function FarmerDashboardPage() {
-  const [lang, setLang] = useState<Language>("en");
+  const { lang, t } = useLanguage();
   const { user } = useAuth();
-  const t = translations[lang];
 
   const [lots, setLots] = useState<Lot[]>([]);
   const [farms, setFarms] = useState<any[]>([]);
@@ -255,7 +254,7 @@ export default function FarmerDashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#F7F5EF] text-[#17201D] flex flex-col">
-      <Navbar lang={lang} onLanguageChange={setLang} />
+      <Navbar />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 w-full space-y-8">
         {/* TOP HERO SUMMARY PANEL (Deep Forest Green) */}
