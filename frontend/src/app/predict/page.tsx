@@ -33,13 +33,10 @@ import {
   ResponsiveContainer,
   AreaChart,
   Area,
-  BarChart,
-  Bar,
   XAxis,
   YAxis,
   Tooltip,
   CartesianGrid,
-  Legend,
 } from "recharts";
 import confetti from "canvas-confetti";
 
@@ -70,6 +67,9 @@ export default function MarketPredictorPage() {
   const [storageType, setStorageType] = useState<"ambient" | "cold">("ambient");
   const [simResult, setSimResult] = useState<RevenueSimulationResult | null>(null);
   const [simLoading, setSimLoading] = useState(false);
+
+  const selectedCropObj = COMMODITIES.find((c) => c.id === selectedCrop) || COMMODITIES[0];
+  const cropDisplayName = lang === "hi" ? selectedCropObj.hindi : selectedCropObj.label.split(" (")[0];
 
   // Fetch Forecast Guidance
   const loadForecast = async (crop: Commodity) => {
@@ -130,6 +130,44 @@ export default function MarketPredictorPage() {
       ? guidance.fourteen_day
       : guidance?.seven_day || [];
 
+  // Helper for Easy, Natural Hindi Recommendations
+  const getHindiRecommendation = (rec: any) => {
+    if (!rec) return { badge: "🟢 सही समय पर बेचें", advice: "बाज़ार का भाव अच्छा है।" };
+    if (rec.seller_action === "hold") {
+      return {
+        badge: `🟢 ${rec.optimal_harvest_date ? "कुछ दिन रुकें (ज़्यादा मुनाफ़ा)" : "रुक कर बेचें"}`,
+        advice: `फसल को ${rec.optimal_harvest_date || "आने वाले दिनों"} तक रोक कर बेचें। अनुमानित भाव ₹${rec.optimal_price}/किलो तक जा सकता है जिससे आपको प्रति किलो +₹${rec.expected_gain_rupees_per_kg} (+${rec.expected_gain_pct}%) का अधिक मुनाफ़ा होगा।`,
+      };
+    }
+    if (rec.seller_action === "sell_now") {
+      return {
+        badge: "⚡ आज ही फसल बेचें (दाम गिरने से पहले)",
+        advice: `मंडियों में आवक बहुत बढ़ रही है जिससे भाव गिरने का अनुमान है। आज ही ₹${guidance?.today.base}/किलो के अच्छे भाव पर अपनी फसल बेचकर पक्की कमाई करें।`,
+      };
+    }
+    return {
+      badge: "🟡 आधी फसल आज बेचें, आधी रोकें",
+      advice: `बाज़ार में भाव स्थिर चल रहे हैं। जोखिम कम करने के लिए आधी फसल आज बेचें और बची हुई आधी आने वाले दिनों की मांग के लिए रखें।`,
+    };
+  };
+
+  const getHindiBuyerRecommendation = (rec: any) => {
+    if (!rec) return { badge: "🛒 आज ही खरीदें", advice: "भाव अनुकूल है।" };
+    if (guidance?.trend === "rising") {
+      return {
+        badge: "🛒 आज ही खरीदें (सस्ता पड़ेगा)",
+        advice: `अगले कुछ दिनों में भाव बढ़ने की संभावना है। कीमतों में तेज़ी आने से पहले आज ही ₹${guidance?.today.base}/किलो पर माल बुक करें।`,
+      };
+    }
+    return {
+      badge: "⏳ 2-3 दिन इंतज़ार करें",
+      advice: `मंडियों में नई सप्लाई आ रही है। 2-3 दिन रुकने पर भाव में थोड़ी गिरावट आ सकती है।`,
+    };
+  };
+
+  const hindiSeller = getHindiRecommendation(guidance?.action_recommendation);
+  const hindiBuyer = getHindiBuyerRecommendation(guidance?.action_recommendation);
+
   return (
     <div className="min-h-screen bg-[#FAF9F5] text-[#17201D]">
       <Navbar />
@@ -141,14 +179,18 @@ export default function MarketPredictorPage() {
             <div className="space-y-2">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#173D32]/20 bg-[#DCE8DD] px-3.5 py-1 text-xs font-bold text-[#173D32]">
                 <Sparkles className="h-3.5 w-3.5 text-[#C99B43]" />
-                <span>AI Produce Predictive Intelligence • Lucknow Regional Cluster</span>
+                <span>
+                  {lang === "hi"
+                    ? "एआई फसल भाव पूर्वानुमान • पूरा लखनऊ कृषि क्षेत्र"
+                    : "AI Produce Predictive Intelligence • Lucknow Regional Cluster"}
+                </span>
               </div>
               <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#17201D]">
-                {lang === "hi" ? "कृषि उपज बाज़ार पूर्वानुमान एवं कार्य योजना" : "Produce Market Predictor & Action Advisory"}
+                {lang === "hi" ? "कृषि उपज बाज़ार और भाव का सही अनुमान" : "Produce Market Predictor & Action Advisory"}
               </h1>
               <p className="text-sm text-[#7D8A65] max-w-2xl">
                 {lang === "hi"
-                  ? "ऐतिहासिक एवं लाइव लखनऊ मंडी डेटा को उपयोगी पूर्वानुमान में बदलें — फसल बेचने का सही समय और अधिकतम लाभ जानें।"
+                  ? "लखनऊ मंडी के ताज़ा और पिछले भाव देखकर जानें कि फसल कब बेचना सबसे फायदेमंद रहेगा और कितना ज़्यादा मुनाफ़ा मिलेगा।"
                   : "Turn historical and real-time Agmarknet mandi data into actionable revenue-maximizing decisions for farmers and cost-minimizing timing for buyers."}
               </p>
             </div>
@@ -165,7 +207,7 @@ export default function MarketPredictorPage() {
                       : "text-[#7D8A65] hover:text-[#17201D]"
                   }`}
                 >
-                  🌾 Farmer / FPO View
+                  {lang === "hi" ? "🌾 किसान भाई (ज़्यादा कमाई)" : "🌾 Farmer / FPO View"}
                 </button>
                 <button
                   type="button"
@@ -176,7 +218,7 @@ export default function MarketPredictorPage() {
                       : "text-[#7D8A65] hover:text-[#17201D]"
                   }`}
                 >
-                  🛒 Buyer View
+                  {lang === "hi" ? "🛒 खरीदार (कम लागत)" : "🛒 Buyer View"}
                 </button>
               </div>
 
@@ -187,7 +229,7 @@ export default function MarketPredictorPage() {
                 className="flex items-center gap-1.5 rounded-full border border-[#173D32] bg-white px-4 py-2 text-xs font-bold text-[#173D32] hover:bg-[#DCE8DD]/40 transition shadow-xs disabled:opacity-50"
               >
                 <RotateCw className={`h-3.5 w-3.5 text-[#C99B43] ${syncing ? "animate-spin" : ""}`} />
-                <span>{syncing ? "Syncing Mandi..." : "Sync Agmarknet"}</span>
+                <span>{syncing ? (lang === "hi" ? "अपडेट हो रहा है..." : "Syncing...") : (lang === "hi" ? "मंडी भाव ताज़ा करें" : "Sync Agmarknet")}</span>
               </button>
             </div>
           </div>
@@ -220,7 +262,9 @@ export default function MarketPredictorPage() {
         {loading ? (
           <div className="rounded-3xl border border-[#E9E7E1] bg-white p-12 text-center space-y-3">
             <div className="mx-auto h-8 w-8 animate-spin rounded-full border-3 border-[#173D32] border-t-transparent" />
-            <p className="text-xs font-bold text-[#7D8A65]">Computing AI Price Predictions & Agmarknet Baseline...</p>
+            <p className="text-xs font-bold text-[#7D8A65]">
+              {lang === "hi" ? "मंडी भाव और सटीक अनुमान लोड हो रहा है..." : "Computing AI Price Predictions & Agmarknet Baseline..."}
+            </p>
           </div>
         ) : guidance ? (
           <>
@@ -232,23 +276,37 @@ export default function MarketPredictorPage() {
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="rounded-full bg-[#173D32] px-3.5 py-1 text-xs font-bold text-white uppercase tracking-wider">
-                      {perspective === "farmer"
+                      {lang === "hi"
+                        ? perspective === "farmer"
+                          ? hindiSeller.badge
+                          : hindiBuyer.badge
+                        : perspective === "farmer"
                         ? guidance.action_recommendation?.seller_badge || "🟢 HOLD (Recommended)"
                         : guidance.action_recommendation?.buyer_badge || "🛒 BUY TODAY"}
                     </span>
                     <span className="text-xs font-semibold text-[#7D8A65]">
-                      Cluster: {guidance.market_cluster} • Confidence:{" "}
-                      <strong className="text-[#17201D] capitalize">{guidance.today.confidence}</strong>
+                      {lang === "hi" ? "मंडी क्षेत्र:" : "Cluster:"} {guidance.market_cluster} • {lang === "hi" ? "अनुमान शुद्धता:" : "Confidence:"}{" "}
+                      <strong className="text-[#17201D] capitalize">
+                        {guidance.today.confidence === "high" ? (lang === "hi" ? "उच्च (विश्वसनीय)" : "High") : guidance.today.confidence}
+                      </strong>
                     </span>
                   </div>
 
                   <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#17201D] capitalize">
-                    {perspective === "farmer"
+                    {lang === "hi"
+                      ? perspective === "farmer"
+                        ? `${cropDisplayName}: फसल बेचने की सही सलाह और अधिकतम मुनाफ़ा`
+                        : `${cropDisplayName}: फसल खरीदारी की सलाह और बचत`
+                      : perspective === "farmer"
                       ? `${selectedCrop} Timing Advisory: Maximize Harvest Profit`
                       : `${selectedCrop} Procurement Advisory: Cost Minimizer`}
                   </h2>
                   <p className="text-sm font-medium text-[#17201D] max-w-3xl leading-relaxed">
-                    {perspective === "farmer"
+                    {lang === "hi"
+                      ? perspective === "farmer"
+                        ? hindiSeller.advice
+                        : hindiBuyer.advice
+                      : perspective === "farmer"
                       ? guidance.action_recommendation?.seller_advice || guidance.explanation
                       : guidance.action_recommendation?.buyer_advice || guidance.explanation}
                   </p>
@@ -257,10 +315,12 @@ export default function MarketPredictorPage() {
                 {/* Key Numbers Highlight */}
                 <div className="flex items-center gap-4 bg-[#F7F5EF] p-4 rounded-2xl border border-[#E9E7E1] shrink-0">
                   <div>
-                    <span className="text-[10px] font-bold uppercase text-[#7D8A65] block">Today's Benchmark</span>
+                    <span className="text-[10px] font-bold uppercase text-[#7D8A65] block">
+                      {lang === "hi" ? "आज का मंडी भाव" : "Today's Benchmark"}
+                    </span>
                     <span className="font-serif text-2xl sm:text-3xl font-bold text-[#17201D]">
                       {formatCurrency(guidance.today.base)}
-                      <span className="text-xs font-sans font-normal text-[#7D8A65]">/kg</span>
+                      <span className="text-xs font-sans font-normal text-[#7D8A65]">{lang === "hi" ? "/किलो" : "/kg"}</span>
                     </span>
                   </div>
 
@@ -268,11 +328,11 @@ export default function MarketPredictorPage() {
 
                   <div>
                     <span className="text-[10px] font-bold uppercase text-[#173D32] block">
-                      {perspective === "farmer" ? "Projected Peak" : "7-Day Range"}
+                      {lang === "hi" ? "अधिकतम अनुमानित भाव" : perspective === "farmer" ? "Projected Peak" : "7-Day Range"}
                     </span>
                     <span className="font-serif text-2xl sm:text-3xl font-bold text-[#173D32]">
                       {formatCurrency(guidance.action_recommendation?.optimal_price || guidance.today.high)}
-                      <span className="text-xs font-sans font-normal text-[#7D8A65]">/kg</span>
+                      <span className="text-xs font-sans font-normal text-[#7D8A65]">{lang === "hi" ? "/किलो" : "/kg"}</span>
                     </span>
                   </div>
                 </div>
@@ -283,49 +343,56 @@ export default function MarketPredictorPage() {
                 <div className="rounded-2xl border border-[#E9E7E1] bg-[#FAF9F5] p-4 space-y-1">
                   <span className="text-[11px] font-bold text-[#7D8A65] flex items-center gap-1">
                     <Calendar className="h-3.5 w-3.5 text-[#C99B43]" />
-                    <span>Optimal Action Window</span>
+                    <span>{lang === "hi" ? "बेचने का सबसे अच्छा दिन" : "Optimal Action Window"}</span>
                   </span>
                   <p className="font-bold text-sm text-[#17201D]">
                     {guidance.action_recommendation?.optimal_harvest_date || guidance.today.date}
                   </p>
-                  <p className="text-[10px] text-[#7D8A65]">Projected market price peak</p>
+                  <p className="text-[10px] text-[#7D8A65]">
+                    {lang === "hi" ? "इस दिन सबसे ऊंचा भाव मिलने की उम्मीद" : "Projected market price peak"}
+                  </p>
                 </div>
 
                 <div className="rounded-2xl border border-[#E9E7E1] bg-[#FAF9F5] p-4 space-y-1">
                   <span className="text-[11px] font-bold text-[#7D8A65] flex items-center gap-1">
                     <TrendingUp className="h-3.5 w-3.5 text-[#173D32]" />
-                    <span>Expected Gain</span>
+                    <span>{lang === "hi" ? "अतिरिक्त मुनाफ़ा" : "Expected Gain"}</span>
                   </span>
                   <p className="font-bold text-sm text-[#173D32]">
                     +{guidance.action_recommendation?.expected_gain_pct || 12.5}% (+₹
-                    {guidance.action_recommendation?.expected_gain_rupees_per_kg || 4.2}/kg)
+                    {guidance.action_recommendation?.expected_gain_rupees_per_kg || 4.2}/{lang === "hi" ? "किलो" : "kg"})
                   </p>
-                  <p className="text-[10px] text-[#7D8A65]">vs traditional distress liquidation</p>
+                  <p className="text-[10px] text-[#7D8A65]">
+                    {lang === "hi" ? "जल्दबाजी में बेचने की तुलना में" : "vs traditional distress liquidation"}
+                  </p>
                 </div>
 
                 <div className="rounded-2xl border border-[#E9E7E1] bg-[#FAF9F5] p-4 space-y-1">
                   <span className="text-[11px] font-bold text-[#7D8A65] flex items-center gap-1">
                     <ShieldCheck className="h-3.5 w-3.5 text-[#C99B43]" />
-                    <span>Spoilage Risk</span>
+                    <span>{lang === "hi" ? "खराब होने का खतरा" : "Spoilage Risk"}</span>
                   </span>
                   <p className="font-bold text-sm text-[#17201D] capitalize">
-                    {guidance.market_drivers?.spoilage_risk_gauge || "Low"} Risk
+                    {lang === "hi" ? "कम जोखिम (सुरक्षित)" : `${guidance.market_drivers?.spoilage_risk_gauge || "Low"} Risk`}
                   </p>
                   <p className="text-[10px] text-[#7D8A65]">
-                    Ambient: {guidance.market_drivers?.shelf_life_ambient_days || 5} days • Cold:{" "}
-                    {guidance.market_drivers?.shelf_life_cold_days || 21} days
+                    {lang === "hi"
+                      ? `साधारण शेड: ${guidance.market_drivers?.shelf_life_ambient_days || 5} दिन • कोल्ड स्टोरेज: ${guidance.market_drivers?.shelf_life_cold_days || 21} दिन`
+                      : `Ambient: ${guidance.market_drivers?.shelf_life_ambient_days || 5} days • Cold: ${guidance.market_drivers?.shelf_life_cold_days || 21} days`}
                   </p>
                 </div>
 
                 <div className="rounded-2xl border border-[#E9E7E1] bg-[#FAF9F5] p-4 space-y-1">
                   <span className="text-[11px] font-bold text-[#7D8A65] flex items-center gap-1">
                     <Scale className="h-3.5 w-3.5 text-[#173D32]" />
-                    <span>Farmer Margin Gain</span>
+                    <span>{lang === "hi" ? "सीधी बिक्री से बचत" : "Farmer Margin Gain"}</span>
                   </span>
                   <p className="font-bold text-sm text-[#173D32]">
-                    +₹{guidance.price_breakdown?.farmer_extra_margin_per_kg || 6.5}/kg
+                    +₹{guidance.price_breakdown?.farmer_extra_margin_per_kg || 6.5}/{lang === "hi" ? "किलो" : "kg"}
                   </p>
-                  <p className="text-[10px] text-[#7D8A65]">Zero middlemen APMC commission</p>
+                  <p className="text-[10px] text-[#7D8A65]">
+                    {lang === "hi" ? "बिचौलियों और आढ़तियों की 0% दलाली" : "Zero middlemen APMC commission"}
+                  </p>
                 </div>
               </div>
 
@@ -334,7 +401,8 @@ export default function MarketPredictorPage() {
                 <div className="text-xs text-[#7D8A65] flex items-center gap-1.5">
                   <CheckCircle2 className="h-4 w-4 text-[#173D32]" />
                   <span>
-                    Agmarknet Source: <strong>{guidance.source_meta?.source || "Lucknow APMC Benchmark"}</strong>
+                    {lang === "hi" ? "सरकारी मंडी डेटा सोर्स:" : "Agmarknet Source:"}{" "}
+                    <strong>{guidance.source_meta?.source || "Lucknow APMC Benchmark"}</strong>
                   </span>
                 </div>
 
@@ -344,7 +412,11 @@ export default function MarketPredictorPage() {
                       href="/farmer"
                       className="flex items-center gap-2 rounded-full bg-[#173D32] px-6 py-2.5 text-xs font-bold text-white hover:bg-[#215445] transition shadow-md"
                     >
-                      <span>🌾 List Lot at ₹{guidance.action_recommendation?.optimal_price || guidance.today.base}/kg</span>
+                      <span>
+                        {lang === "hi"
+                          ? `🌾 ₹${guidance.action_recommendation?.optimal_price || guidance.today.base}/किलो पर फसल लिस्ट करें`
+                          : `🌾 List Lot at ₹${guidance.action_recommendation?.optimal_price || guidance.today.base}/kg`}
+                      </span>
                       <ArrowRight className="h-3.5 w-3.5" />
                     </Link>
                   ) : (
@@ -352,7 +424,11 @@ export default function MarketPredictorPage() {
                       href="/buyer"
                       className="flex items-center gap-2 rounded-full bg-[#173D32] px-6 py-2.5 text-xs font-bold text-white hover:bg-[#215445] transition shadow-md"
                     >
-                      <span>🛒 Source {selectedCrop} on Marketplace</span>
+                      <span>
+                        {lang === "hi"
+                          ? `🛒 ${cropDisplayName} की खरीदारी करें`
+                          : `🛒 Source ${selectedCrop} on Marketplace`}
+                      </span>
                       <ArrowRight className="h-3.5 w-3.5" />
                     </Link>
                   )}
@@ -366,13 +442,17 @@ export default function MarketPredictorPage() {
                 <div className="space-y-1">
                   <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#173D32]">
                     <Calculator className="h-4 w-4 text-[#C99B43]" />
-                    <span>PRODUCE REVENUE & STORAGE SIMULATOR</span>
+                    <span>{lang === "hi" ? "उपज कमाई और मुनाफ़ा कैलकुलेटर" : "PRODUCE REVENUE & STORAGE SIMULATOR"}</span>
                   </div>
                   <h3 className="font-serif text-2xl font-bold text-[#17201D]">
-                    Simulate Your Net Harvest Payout ({selectedCrop.toUpperCase()})
+                    {lang === "hi"
+                      ? `अपनी ${cropDisplayName} की कुल कमाई का हिसाब लगाएं`
+                      : `Simulate Your Net Harvest Payout (${selectedCrop.toUpperCase()})`}
                   </h3>
                   <p className="text-xs text-[#7D8A65]">
-                    Enter your batch volume and storage conditions to calculate date-by-date revenue, spoilage risk, and optimal harvest day.
+                    {lang === "hi"
+                      ? "अपनी फसल का वज़न (किलो) और रखने का तरीका चुनें, और देखें कि सही दिन बेचने पर आपको कितने हज़ार रुपयों का अतिरिक्त फ़ायदा होगा।"
+                      : "Enter your batch volume and storage conditions to calculate date-by-date revenue, spoilage risk, and optimal harvest day."}
                   </p>
                 </div>
 
@@ -388,7 +468,7 @@ export default function MarketPredictorPage() {
                       storageType === "ambient" ? "bg-white text-[#173D32] shadow-xs" : "text-[#7D8A65]"
                     }`}
                   >
-                    Farm Shed (Ambient)
+                    {lang === "hi" ? "साधारण गोदाम / शेड" : "Farm Shed (Ambient)"}
                   </button>
                   <button
                     type="button"
@@ -400,7 +480,7 @@ export default function MarketPredictorPage() {
                       storageType === "cold" ? "bg-white text-[#173D32] shadow-xs" : "text-[#7D8A65]"
                     }`}
                   >
-                    Cold Storage / Solar
+                    {lang === "hi" ? "कोल्ड स्टोरेज / सोलर" : "Cold Storage / Solar"}
                   </button>
                 </div>
               </div>
@@ -409,8 +489,14 @@ export default function MarketPredictorPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
                 <div className="md:col-span-2 space-y-2">
                   <div className="flex items-center justify-between text-xs font-semibold">
-                    <label className="text-[#17201D]">Batch Quantity: <strong className="text-sm font-bold text-[#173D32]">{batchQty.toLocaleString()} kg</strong> ({ (batchQty / 100).toFixed(1) } Quintals)</label>
-                    <span className="text-[#7D8A65]">Quick Presets:</span>
+                    <label className="text-[#17201D]">
+                      {lang === "hi" ? "फसल की मात्रा:" : "Batch Quantity:"}{" "}
+                      <strong className="text-sm font-bold text-[#173D32]">
+                        {batchQty.toLocaleString()} {lang === "hi" ? "किलो" : "kg"}
+                      </strong>{" "}
+                      ({(batchQty / 100).toFixed(1)} {lang === "hi" ? "क्विंटल" : "Quintals"})
+                    </label>
+                    <span className="text-[#7D8A65]">{lang === "hi" ? "शॉर्टकट चुनें:" : "Quick Presets:"}</span>
                   </div>
 
                   <input
@@ -442,7 +528,7 @@ export default function MarketPredictorPage() {
                             : "border-[#E9E7E1] bg-[#F7F5EF] text-[#7D8A65] hover:bg-white"
                         }`}
                       >
-                        {preset >= 1000 ? `${preset / 1000}T` : `${preset}kg`}
+                        {preset >= 1000 ? `${preset / 1000}${lang === "hi" ? " टन" : "T"}` : `${preset}${lang === "hi" ? " किलो" : "kg"}`}
                       </button>
                     ))}
                   </div>
@@ -452,22 +538,26 @@ export default function MarketPredictorPage() {
                 {simResult && (
                   <div className="rounded-2xl border border-[#173D32]/20 bg-[#DCE8DD]/40 p-4 space-y-2">
                     <span className="text-[10px] font-bold uppercase text-[#173D32] tracking-wider block">
-                      Projected Gain on {batchQty} kg
+                      {lang === "hi"
+                        ? `कुल ${batchQty.toLocaleString()} किलो पर अनुमानित कमाई`
+                        : `Projected Gain on ${batchQty} kg`}
                     </span>
                     <div className="flex items-baseline justify-between">
-                      <span className="text-xs text-[#7D8A65]">Sell Today:</span>
+                      <span className="text-xs text-[#7D8A65]">{lang === "hi" ? "आज बेचने पर कुल रकम:" : "Sell Today:"}</span>
                       <span className="font-bold text-sm text-[#17201D]">
                         {formatCurrency(simResult.today_revenue)}
                       </span>
                     </div>
                     <div className="flex items-baseline justify-between">
-                      <span className="text-xs text-[#173D32] font-semibold">Sell on Optimal Day:</span>
+                      <span className="text-xs text-[#173D32] font-semibold">
+                        {lang === "hi" ? "सही दिन बेचने पर कुल रकम:" : "Sell on Optimal Day:"}
+                      </span>
                       <span className="font-serif text-xl font-bold text-[#173D32]">
                         {formatCurrency(simResult.best_day_revenue)}
                       </span>
                     </div>
                     <div className="pt-2 border-t border-[#173D32]/20 flex items-center justify-between text-xs font-bold text-[#173D32]">
-                      <span>📈 Extra Net Profit:</span>
+                      <span>{lang === "hi" ? "📈 कुल अतिरिक्त बचत/मुनाफ़ा:" : "📈 Extra Net Profit:"}</span>
                       <span className="bg-[#173D32] text-white px-2 py-0.5 rounded-md">
                         +{formatCurrency(simResult.extra_profit_rupees)} ({simResult.extra_profit_pct}%)
                       </span>
@@ -484,10 +574,16 @@ export default function MarketPredictorPage() {
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <span className="text-[10px] font-bold uppercase text-[#7D8A65] tracking-wider">
-                      Price Trajectory Curve
+                      {lang === "hi" ? "भाव का ग्राफ" : "Price Trajectory Curve"}
                     </span>
                     <h4 className="font-serif text-xl font-bold text-[#17201D]">
-                      {forecastHorizon === "7day" ? "7-Day Price Forecast" : "14-Day Price Forecast"} (₹/kg)
+                      {lang === "hi"
+                        ? forecastHorizon === "7day"
+                          ? `अगले 7 दिनों के अनुमानित भाव (₹/किलो)`
+                          : `अगले 14 दिनों के अनुमानित भाव (₹/किलो)`
+                        : forecastHorizon === "7day"
+                        ? "7-Day Price Forecast (₹/kg)"
+                        : "14-Day Price Forecast (₹/kg)"}
                     </h4>
                   </div>
 
@@ -499,7 +595,7 @@ export default function MarketPredictorPage() {
                         forecastHorizon === "7day" ? "bg-white text-[#173D32] shadow-xs" : "text-[#7D8A65]"
                       }`}
                     >
-                      7 Days
+                      {lang === "hi" ? "7 दिन" : "7 Days"}
                     </button>
                     <button
                       type="button"
@@ -508,7 +604,7 @@ export default function MarketPredictorPage() {
                         forecastHorizon === "14day" ? "bg-white text-[#173D32] shadow-xs" : "text-[#7D8A65]"
                       }`}
                     >
-                      14 Days
+                      {lang === "hi" ? "14 दिन" : "14 Days"}
                     </button>
                   </div>
                 </div>
@@ -531,7 +627,7 @@ export default function MarketPredictorPage() {
                         dataKey="date"
                         tickFormatter={(val) => {
                           const d = new Date(val);
-                          return d.toLocaleDateString(undefined, { weekday: "short", day: "numeric" });
+                          return d.toLocaleDateString(lang === "hi" ? "hi-IN" : "en-IN", { weekday: "short", day: "numeric" });
                         }}
                         tick={{ fontSize: 11, fill: "#7D8A65" }}
                         axisLine={false}
@@ -552,7 +648,7 @@ export default function MarketPredictorPage() {
                               <div className="rounded-xl border border-[#E9E7E1] bg-white p-3 shadow-xl space-y-1 text-xs">
                                 <p className="font-bold text-[#17201D]">
                                   {label
-                                    ? new Date(label).toLocaleDateString(undefined, {
+                                    ? new Date(label).toLocaleDateString(lang === "hi" ? "hi-IN" : "en-IN", {
                                         weekday: "long",
                                         month: "short",
                                         day: "numeric",
@@ -560,13 +656,13 @@ export default function MarketPredictorPage() {
                                     : "Forecast Date"}
                                 </p>
                                 <p className="text-[#173D32] font-bold text-sm">
-                                  Base Price: ₹{data.base}/kg
+                                  {lang === "hi" ? "अनुमानित भाव:" : "Base Price:"} ₹{data.base}/{lang === "hi" ? "किलो" : "kg"}
                                 </p>
                                 <p className="text-[#7D8A65]">
-                                  Range: ₹{data.low} - ₹{data.high}/kg
+                                  {lang === "hi" ? "संभावित दायरा:" : "Range:"} ₹{data.low} - ₹{data.high}
                                 </p>
                                 <span className="inline-block rounded bg-[#DCE8DD] px-1.5 py-0.5 text-[10px] font-bold text-[#173D32] uppercase">
-                                  {data.confidence} confidence
+                                  {lang === "hi" ? "विश्वसनीय अनुमान" : `${data.confidence} confidence`}
                                 </span>
                               </div>
                             );
@@ -581,7 +677,7 @@ export default function MarketPredictorPage() {
                         strokeDasharray="3 3"
                         fillOpacity={1}
                         fill="url(#highLowGrad)"
-                        name="Upper Bound"
+                        name={lang === "hi" ? "अधिकतम भाव" : "Upper Bound"}
                       />
                       <Area
                         type="monotone"
@@ -590,7 +686,7 @@ export default function MarketPredictorPage() {
                         strokeWidth={3}
                         fillOpacity={1}
                         fill="url(#priceGrad)"
-                        name="Expected Modal Price"
+                        name={lang === "hi" ? "अनुमानित मॉडल भाव" : "Expected Modal Price"}
                       />
                     </AreaChart>
                   </ResponsiveContainer>
@@ -601,13 +697,15 @@ export default function MarketPredictorPage() {
               <div className="lg:col-span-5 rounded-3xl border border-[#E9E7E1] bg-white p-6 sm:p-8 shadow-sm space-y-4">
                 <div className="space-y-0.5">
                   <span className="text-[10px] font-bold uppercase text-[#7D8A65] tracking-wider">
-                    Cross-Mandi Arbitrage
+                    {lang === "hi" ? "मंडियों के भाव की तुलना" : "Cross-Mandi Arbitrage"}
                   </span>
                   <h4 className="font-serif text-xl font-bold text-[#17201D]">
-                    Lucknow Mandi Rate Comparison
+                    {lang === "hi" ? "लखनऊ की मंडियों में आज का भाव" : "Lucknow Mandi Rate Comparison"}
                   </h4>
                   <p className="text-xs text-[#7D8A65]">
-                    Real-time modal price variations across Lucknow sub-mandis vs FarmLink Direct.
+                    {lang === "hi"
+                      ? "दुबग्गा, नवीन मंडी, मलिहाबाद और फार्मलिंक डायरेक्ट के भाव की तुलना।"
+                      : "Real-time modal price variations across Lucknow sub-mandis vs FarmLink Direct."}
                   </p>
                 </div>
 
@@ -622,17 +720,21 @@ export default function MarketPredictorPage() {
                       }`}
                     >
                       <div>
-                        <p className="font-bold text-[#17201D]">{mandi.market_name}</p>
+                        <p className="font-bold text-[#17201D]">
+                          {lang === "hi" && mandi.market_name.includes("FarmLink")
+                            ? "फार्मलिंक डायरेक्ट (सीधा किसान खाता)"
+                            : mandi.market_name}
+                        </p>
                         <p className="text-[10px] text-[#7D8A65]">
-                          {mandi.role} • {mandi.status}
+                          {mandi.role} • {lang === "hi" && mandi.status.includes("Highest") ? "किसान को सबसे ज़्यादा मुनाफा (+22%)" : mandi.status}
                         </p>
                       </div>
                       <div className="text-right">
                         <span className="font-serif text-base font-bold text-[#173D32]">
-                          ₹{mandi.price_per_kg}/kg
+                          ₹{mandi.price_per_kg}/{lang === "hi" ? "किलो" : "kg"}
                         </span>
                         <span className="text-[10px] text-[#7D8A65] block">
-                          {mandi.distance_km > 0 ? `${mandi.distance_km} km` : "Direct Escrow"}
+                          {mandi.distance_km > 0 ? `${mandi.distance_km} km` : (lang === "hi" ? "सीधा डिजिटल भुगतान" : "Direct Escrow")}
                         </span>
                       </div>
                     </div>
@@ -645,10 +747,10 @@ export default function MarketPredictorPage() {
             <div className="rounded-3xl border border-[#E9E7E1] bg-white p-6 sm:p-8 shadow-sm space-y-4">
               <div className="space-y-1">
                 <span className="text-[10px] font-bold uppercase text-[#173D32] tracking-wider">
-                  Forecast Drivers & Market Fundamentals
+                  {lang === "hi" ? "बाज़ार की स्थिति और कारण" : "Forecast Drivers & Market Fundamentals"}
                 </span>
                 <h4 className="font-serif text-xl font-bold text-[#17201D]">
-                  Why is the price moving? (Lucknow Cluster Analysis)
+                  {lang === "hi" ? "मंडी में भाव क्यों बदल रहे हैं? (लखनऊ क्षेत्र का विश्लेषण)" : "Why is the price moving? (Lucknow Cluster Analysis)"}
                 </h4>
               </div>
 
@@ -656,7 +758,7 @@ export default function MarketPredictorPage() {
                 <div className="rounded-2xl border border-[#E9E7E1] bg-[#FAF9F5] p-4 space-y-2">
                   <span className="text-xs font-bold text-[#17201D] flex items-center gap-1.5">
                     <Truck className="h-4 w-4 text-[#C99B43]" />
-                    <span>Mandi Arrival Supply Trends</span>
+                    <span>{lang === "hi" ? "मंडियों में माल की आवक (सप्लाई)" : "Mandi Arrival Supply Trends"}</span>
                   </span>
                   <p className="text-xs text-[#7D8A65]">
                     {guidance.market_drivers?.arrival_volume_trend}
@@ -666,20 +768,24 @@ export default function MarketPredictorPage() {
                 <div className="rounded-2xl border border-[#E9E7E1] bg-[#FAF9F5] p-4 space-y-2">
                   <span className="text-xs font-bold text-[#17201D] flex items-center gap-1.5">
                     <Layers className="h-4 w-4 text-[#173D32]" />
-                    <span>Weather & Agro-Climatic Factors</span>
+                    <span>{lang === "hi" ? "मौसम और परिवहन की स्थिति" : "Weather & Agro-Climatic Factors"}</span>
                   </span>
                   <p className="text-xs text-[#7D8A65]">
-                    {guidance.market_drivers?.weather_impact}
+                    {lang === "hi"
+                      ? "मलिहाबाद, काकोरी और बख्शी का तालाब क्षेत्र में मौसम साफ — माल की ढुलाई सुचारू रूप से जारी।"
+                      : guidance.market_drivers?.weather_impact}
                   </p>
                 </div>
 
                 <div className="rounded-2xl border border-[#E9E7E1] bg-[#FAF9F5] p-4 space-y-2">
                   <span className="text-xs font-bold text-[#17201D] flex items-center gap-1.5">
                     <Store className="h-4 w-4 text-[#C99B43]" />
-                    <span>Demand Surge & Festival Pressure</span>
+                    <span>{lang === "hi" ? "बाज़ार और दुकानों में मांग" : "Demand Surge & Festival Pressure"}</span>
                   </span>
                   <p className="text-xs text-[#7D8A65]">
-                    {guidance.market_drivers?.demand_index}
+                    {lang === "hi"
+                      ? "गोमती नगर और हजरतगंज के होटलों व रेस्टोरेंटों में ताज़ी सब्जियों की अच्छी मांग (+16%)।"
+                      : guidance.market_drivers?.demand_index}
                   </p>
                 </div>
               </div>
@@ -687,7 +793,7 @@ export default function MarketPredictorPage() {
           </>
         ) : (
           <div className="rounded-3xl border border-[#E9E7E1] bg-white p-12 text-center text-xs text-[#7D8A65]">
-            No forecast data available for {selectedCrop}.
+            {lang === "hi" ? `${cropDisplayName} का कोई डेटा उपलब्ध नहीं है।` : `No forecast data available for ${selectedCrop}.`}
           </div>
         )}
       </main>
