@@ -17,7 +17,10 @@ import {
   Building,
   MapPin,
   Sparkles,
+  Navigation,
+  ExternalLink,
 } from "lucide-react";
+import { LocationPickerModal, LocationData } from "@/components/LocationPickerModal";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -55,6 +58,9 @@ export function AuthModal({
   const [phone, setPhone] = useState("");
   const [orgName, setOrgName] = useState("");
   const [location, setLocation] = useState("Bakshi Ka Talab, Lucknow");
+  const [geoLat, setGeoLat] = useState<number>(26.9824);
+  const [geoLng, setGeoLng] = useState<number>(80.9247);
+  const [showLocationPicker, setShowLocationPicker] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -340,43 +346,72 @@ export function AuthModal({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-[#17201D] mb-1">
-                    Phone Number
+              <div>
+                <label className="block text-xs font-semibold text-[#17201D] mb-1">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  required
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="9876543210"
+                  className="w-full rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] px-3 py-2 text-xs font-medium focus:bg-white focus:border-[#173D32] focus:outline-none"
+                />
+              </div>
+
+              {/* Interactive Google Maps & GPS Location Picker */}
+              <div className="rounded-2xl border border-[#E9E7E1] bg-[#F7F5EF] p-3.5 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-bold text-[#17201D] flex items-center gap-1.5">
+                    <MapPin className="h-3.5 w-3.5 text-[#C99B43]" />
+                    <span>
+                      {role === "buyer" ? "Delivery Receiving Dock Location" : "Farm Gate Pickup Location"}
+                    </span>
                   </label>
-                  <input
-                    type="tel"
-                    required
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="9876543210"
-                    className="w-full rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] px-3 py-2 text-xs font-medium focus:bg-white focus:border-[#173D32] focus:outline-none"
-                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowLocationPicker(true)}
+                    className="text-[11px] font-bold text-[#173D32] hover:underline flex items-center gap-1 bg-white px-2.5 py-1 rounded-full border border-[#E9E7E1] shadow-xs"
+                  >
+                    <span>🗺️ Choose on Map</span>
+                  </button>
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold text-[#17201D] mb-1">
-                    Village / District
-                  </label>
-                  <input
-                    type="text"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="e.g. Bakshi Ka Talab, Lucknow"
-                    className="w-full rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] px-3 py-2 text-xs font-medium focus:bg-white focus:border-[#173D32] focus:outline-none"
-                  />
+
+                <input
+                  type="text"
+                  required
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  placeholder="e.g. Bakshi Ka Talab, Lucknow"
+                  className="w-full rounded-xl border border-[#E9E7E1] bg-white px-3 py-2 text-xs font-bold text-[#17201D] focus:border-[#173D32] focus:outline-none"
+                />
+
+                <div className="flex items-center justify-between text-[11px] text-[#7D8A65] pt-0.5">
+                  <span className="font-mono">
+                    📍 GPS: <strong className="text-[#17201D]">{geoLat}, {geoLng}</strong>
+                  </span>
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${geoLat},${geoLng}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-bold text-[#173D32] hover:underline inline-flex items-center gap-0.5"
+                  >
+                    <span>Check Google Maps</span>
+                    <ExternalLink className="h-2.5 w-2.5 text-[#C99B43]" />
+                  </a>
                 </div>
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-[#17201D] mb-1">
-                  Farm Name or Organization (Optional)
+                  {role === "buyer" ? "Business / Company Name (Optional)" : "Farm Name or Organization (Optional)"}
                 </label>
                 <input
                   type="text"
                   value={orgName}
                   onChange={(e) => setOrgName(e.target.value)}
-                  placeholder="e.g. Vikas Organic Produce Farm"
+                  placeholder={role === "buyer" ? "e.g. Lucknow Fresh Mart" : "e.g. Vikas Organic Produce Farm"}
                   className="w-full rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] px-3 py-2 text-xs font-medium focus:bg-white focus:border-[#173D32] focus:outline-none"
                 />
               </div>
@@ -424,6 +459,24 @@ export function AuthModal({
             </button>
           </div>
         </form>
+
+        {/* Real Location Confirmation Modal */}
+        <LocationPickerModal
+          isOpen={showLocationPicker}
+          onClose={() => setShowLocationPicker(false)}
+          onConfirmLocation={(loc: LocationData) => {
+            setLocation(loc.address);
+            setGeoLat(loc.lat);
+            setGeoLng(loc.lng);
+          }}
+          initialLocation={{
+            address: location,
+            lat: geoLat,
+            lng: geoLng,
+          }}
+          role={role}
+          title={role === "buyer" ? "Confirm Delivery Dock on Google Maps" : "Confirm Farm Gate on Google Maps"}
+        />
       </div>
     </div>
   );

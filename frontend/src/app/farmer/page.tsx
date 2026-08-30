@@ -33,8 +33,10 @@ import {
   Phone,
   User,
   ShoppingBag,
+  Navigation,
 } from "lucide-react";
 import confetti from "canvas-confetti";
+import { LocationPickerModal, LocationData } from "@/components/LocationPickerModal";
 
 const COMMODITY_OPTIONS: { id: Commodity; label: string; icon: string; image: string; defaultPrice: number }[] = [
   { id: "tomato", label: "Tomato (Tamatar)", icon: "🍅", image: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&auto=format&fit=crop&q=80", defaultPrice: 38 },
@@ -84,6 +86,7 @@ export default function FarmerDashboardPage() {
   const [capturingGps, setCapturingGps] = useState(false);
   const [creatingFarm, setCreatingFarm] = useState(false);
   const [farmCreatedMsg, setFarmCreatedMsg] = useState<string | null>(null);
+  const [showFarmLocationPicker, setShowFarmLocationPicker] = useState(false);
 
   const selectCommodity = (c: Commodity) => {
     setCommodity(c);
@@ -776,20 +779,29 @@ export default function FarmerDashboardPage() {
 
                 {/* GPS Capture & Village Presets */}
                 <div className="rounded-2xl bg-[#F7F5EF] p-3.5 border border-[#E9E7E1] space-y-2.5">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-[#17201D] flex items-center gap-1.5">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-xs font-semibold text-[#17201D] flex items-center gap-1">
                       <MapPin className="h-3.5 w-3.5 text-[#C99B43]" />
                       <span>Farm Geo-Coordinates</span>
                     </span>
-                    <button
-                      type="button"
-                      onClick={handleGetGpsLocation}
-                      disabled={capturingGps}
-                      className="rounded-full bg-[#173D32] px-3 py-1 text-[11px] font-bold text-white hover:bg-[#215445] transition flex items-center gap-1 shadow-2xs"
-                    >
-                      <MapPin className="h-3 w-3" />
-                      <span>{capturingGps ? "Acquiring GPS..." : "📍 Use Current GPS"}</span>
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setShowFarmLocationPicker(true)}
+                        className="rounded-full bg-white border border-[#E9E7E1] px-3 py-1 text-[11px] font-bold text-[#173D32] hover:bg-[#F7F5EF] transition flex items-center gap-1 shadow-2xs"
+                      >
+                        <span>🗺️ Pick on Map</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleGetGpsLocation}
+                        disabled={capturingGps}
+                        className="rounded-full bg-[#173D32] px-3 py-1 text-[11px] font-bold text-white hover:bg-[#215445] transition flex items-center gap-1 shadow-2xs"
+                      >
+                        <Navigation className="h-3 w-3 text-[#C99B43]" />
+                        <span>{capturingGps ? "Acquiring..." : "📍 GPS"}</span>
+                      </button>
+                    </div>
                   </div>
 
                   <div>
@@ -994,6 +1006,24 @@ export default function FarmerDashboardPage() {
         onClose={() => setAuthModalOpen(false)}
         defaultMode="register"
         defaultRole="farmer"
+      />
+
+      {/* Farm Location Confirmation Modal */}
+      <LocationPickerModal
+        isOpen={showFarmLocationPicker}
+        onClose={() => setShowFarmLocationPicker(false)}
+        onConfirmLocation={(loc: LocationData) => {
+          setFarmVillage(loc.address.split(",")[0]);
+          setFarmLat(loc.lat);
+          setFarmLng(loc.lng);
+        }}
+        initialLocation={{
+          address: farmVillage,
+          lat: farmLat,
+          lng: farmLng,
+        }}
+        role="farmer"
+        title="Confirm Farm Gate Location on Google Maps"
       />
     </div>
   );

@@ -31,8 +31,11 @@ import {
   ArrowUpRight,
   KeyRound,
   RotateCw,
+  ExternalLink,
+  Navigation,
 } from "lucide-react";
 import confetti from "canvas-confetti";
+import { LocationPickerModal, LocationData } from "@/components/LocationPickerModal";
 
 export default function BuyerMarketplacePage() {
   const { lang, t } = useLanguage();
@@ -54,8 +57,11 @@ export default function BuyerMarketplacePage() {
   const [selectedLot, setSelectedLot] = useState<Lot | null>(null);
   const [orderQty, setOrderQty] = useState<number>(300);
   const [deliveryAddress, setDeliveryAddress] = useState<string>(
-    "Fresh Mart Central Warehouse, Hazratganj, Lucknow"
+    "Hazratganj Central Receiving Station, Lucknow"
   );
+  const [deliveryLat, setDeliveryLat] = useState<number>(26.8467);
+  const [deliveryLng, setDeliveryLng] = useState<number>(80.9462);
+  const [showLocationPicker, setShowLocationPicker] = useState(false);
   const [reserving, setReserving] = useState(false);
   const [reserveError, setReserveError] = useState("");
   const [activeOrderTracking, setActiveOrderTracking] = useState<Order | null>(null);
@@ -146,8 +152,8 @@ export default function BuyerMarketplacePage() {
         requested_qty: orderQty,
         agreed_price: selectedLot.asking_price,
         delivery_address: deliveryAddress,
-        delivery_lat: 26.8467,
-        delivery_lng: 80.9462,
+        delivery_lat: deliveryLat,
+        delivery_lng: deliveryLng,
         notes: `Order created by ${user.first_name || user.username}. Quality confirmed.`,
       });
 
@@ -621,16 +627,44 @@ export default function BuyerMarketplacePage() {
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-[#17201D] mb-1">
-                  Delivery Destination Address (Lucknow)
-                </label>
+              {/* Interactive Delivery Location Selector */}
+              <div className="rounded-2xl border border-[#E9E7E1] bg-[#F7F5EF] p-3.5 space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-bold text-[#17201D] flex items-center gap-1.5">
+                    <MapPin className="h-3.5 w-3.5 text-[#C99B43]" />
+                    <span>Delivery Receiving Dock (Lucknow)</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowLocationPicker(true)}
+                    className="text-[11px] font-bold text-[#173D32] hover:underline flex items-center gap-1 bg-white px-2.5 py-1 rounded-full border border-[#E9E7E1] shadow-xs"
+                  >
+                    <span>🗺️ Choose on Map</span>
+                  </button>
+                </div>
+
                 <input
                   type="text"
+                  required
                   value={deliveryAddress}
                   onChange={(e) => setDeliveryAddress(e.target.value)}
-                  className="w-full rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] px-3.5 py-2.5 text-xs font-medium text-[#17201D] focus:bg-white focus:border-[#173D32] focus:outline-none"
+                  className="w-full rounded-xl border border-[#E9E7E1] bg-white px-3 py-2 text-xs font-bold text-[#17201D] focus:border-[#173D32] focus:outline-none"
                 />
+
+                <div className="flex items-center justify-between text-[11px] text-[#7D8A65] pt-0.5">
+                  <span className="font-mono">
+                    📍 Dock GPS: <strong className="text-[#17201D]">{deliveryLat}, {deliveryLng}</strong>
+                  </span>
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${deliveryLat},${deliveryLng}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-bold text-[#173D32] hover:underline inline-flex items-center gap-0.5"
+                  >
+                    <span>Check Google Maps</span>
+                    <ExternalLink className="h-2.5 w-2.5 text-[#C99B43]" />
+                  </a>
+                </div>
               </div>
 
               {/* Total Calculation */}
@@ -670,6 +704,24 @@ export default function BuyerMarketplacePage() {
           </div>
         </div>
       )}
+
+      {/* Delivery Dock Location Confirmation Modal */}
+      <LocationPickerModal
+        isOpen={showLocationPicker}
+        onClose={() => setShowLocationPicker(false)}
+        onConfirmLocation={(loc: LocationData) => {
+          setDeliveryAddress(loc.address);
+          setDeliveryLat(loc.lat);
+          setDeliveryLng(loc.lng);
+        }}
+        initialLocation={{
+          address: deliveryAddress,
+          lat: deliveryLat,
+          lng: deliveryLng,
+        }}
+        role="buyer"
+        title="Confirm Delivery Receiving Dock on Google Maps"
+      />
 
       {/* Auth Modal for Unregistered Buyers */}
       <AuthModal
