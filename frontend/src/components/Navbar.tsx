@@ -11,18 +11,11 @@ import {
   ChevronDown,
   LogOut,
   MapPin,
-  Sprout,
-  ShoppingBag,
-  Truck,
-  ShieldAlert,
+  Sparkles,
   Menu,
   X,
-  User,
   LogIn,
   UserPlus,
-  Building,
-  TrendingUp,
-  Sparkles,
 } from "lucide-react";
 
 interface NavbarProps {
@@ -53,14 +46,7 @@ export function Navbar(props: NavbarProps) {
     router.push("/");
   };
 
-  // 5 Role Nav Items
-  const NAV_ROLES = [
-    { label: lang === "hi" ? "बाज़ार पूर्वानुमान" : "Market Predictor", path: "/predict", icon: "🔮" },
-    { label: lang === "hi" ? "किसान पोर्टल" : "Farmer Portal", path: "/farmer", icon: "🌾" },
-    { label: lang === "hi" ? "खरीदार बाज़ार" : "Buyer Hub", path: "/buyer", icon: "🛒" },
-    { label: lang === "hi" ? "ड्राइवर प्रेषण" : "Driver Dispatch", path: "/driver", icon: "🚚" },
-    { label: lang === "hi" ? "कंट्रोल टॉवर" : "Ops Tower", path: "/ops", icon: "🛡️" },
-  ];
+  const isPredictActive = pathname === "/predict";
 
   return (
     <>
@@ -109,33 +95,27 @@ export function Navbar(props: NavbarProps) {
                 className="h-8 sm:h-9 w-auto object-contain max-w-[160px] sm:max-w-[185px]"
               />
             </div>
-            <div className="hidden xl:block border-l border-slate-200 pl-3">
-              <p className="text-[11px] font-semibold text-slate-700 flex items-center gap-1">
+            <div className="hidden sm:block border-l border-slate-200 pl-3">
+              <p className="text-[11px] font-semibold text-slate-600 flex items-center gap-1">
                 <MapPin className="h-3 w-3 text-emerald-600" />
                 <span>Lucknow Regional Agri-Cluster</span>
               </p>
             </div>
           </Link>
 
-          {/* Center: Clean 5-Role Navigation */}
-          <nav className="hidden lg:flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200">
-            {NAV_ROLES.map((role) => {
-              const isActive = pathname === role.path;
-              return (
-                <Link
-                  key={role.path}
-                  href={role.path}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-                    isActive
-                      ? "bg-emerald-50 text-emerald-700 font-bold shadow-xs border border-emerald-200/60"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-white"
-                  }`}
-                >
-                  <span className="text-sm">{role.icon}</span>
-                  <span>{role.label}</span>
-                </Link>
-              );
-            })}
+          {/* Center: ONLY Market Predictor Tab */}
+          <nav className="hidden md:flex items-center">
+            <Link
+              href="/predict"
+              className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition-all border ${
+                isPredictActive
+                  ? "bg-emerald-50 text-emerald-800 border-emerald-300 shadow-xs ring-1 ring-emerald-400/30"
+                  : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-emerald-50 hover:text-emerald-800 hover:border-emerald-200"
+              }`}
+            >
+              <Sparkles className="h-4 w-4 text-emerald-600" />
+              <span>{lang === "hi" ? "🔮 बाज़ार पूर्वानुमान (Market Predictor)" : "🔮 Market Predictor"}</span>
+            </Link>
           </nav>
 
           {/* Right Controls */}
@@ -143,7 +123,7 @@ export function Navbar(props: NavbarProps) {
             {/* Real Instant Language Switch Button */}
             <button
               onClick={toggleLang}
-              className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition shadow-xs active:scale-95"
+              className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition shadow-xs active:scale-95 cursor-pointer"
               title="Switch Language / भाषा बदलें"
             >
               <Globe className="h-3.5 w-3.5 text-emerald-600" />
@@ -155,25 +135,25 @@ export function Navbar(props: NavbarProps) {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => openAuth("login")}
-                  className="inline-flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition"
+                  className="inline-flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer"
                 >
                   <LogIn className="h-3.5 w-3.5 text-slate-500" />
                   <span>{t.signIn}</span>
                 </button>
                 <button
                   onClick={() => openAuth("register")}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700 transition shadow-xs"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700 transition shadow-xs cursor-pointer"
                 >
                   <UserPlus className="h-3.5 w-3.5" />
                   <span>{t.register}</span>
                 </button>
               </div>
             ) : (
-              /* Real User Profile Menu */
+              /* User Profile Menu */
               <div className="relative">
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-50 transition shadow-xs"
+                  className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-50 transition shadow-xs cursor-pointer"
                 >
                   <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600 text-white font-bold text-[10px]">
                     {user.first_name ? user.first_name.charAt(0).toUpperCase() : "U"}
@@ -208,24 +188,30 @@ export function Navbar(props: NavbarProps) {
                     </div>
 
                     <div className="space-y-1">
-                      {NAV_ROLES.map((role) => (
-                        <Link
-                          key={role.path}
-                          href={role.path}
-                          onClick={() => setUserDropdownOpen(false)}
-                          className="flex items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
-                        >
-                          <span className="flex items-center gap-2">
-                            <span>{role.icon}</span>
-                            <span>{role.label}</span>
-                          </span>
-                          <span className="text-slate-400 text-[10px]">&rarr;</span>
-                        </Link>
-                      ))}
+                      <Link
+                        href={`/${user.role === "ops" ? "ops" : user.role}`}
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+                      >
+                        <span>My Dashboard ({user.role.toUpperCase()})</span>
+                        <span className="text-slate-400 text-[10px]">&rarr;</span>
+                      </Link>
+
+                      <Link
+                        href="/predict"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-semibold text-emerald-700 hover:bg-emerald-50 transition"
+                      >
+                        <span className="flex items-center gap-1.5">
+                          <Sparkles className="h-3 w-3" />
+                          <span>Market Predictor</span>
+                        </span>
+                        <span className="text-emerald-700 text-[10px]">&rarr;</span>
+                      </Link>
 
                       <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 transition border-t border-slate-100 mt-1 pt-2"
+                        className="w-full flex items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 transition border-t border-slate-100 mt-1 pt-2 cursor-pointer"
                       >
                         <LogOut className="h-3.5 w-3.5" />
                         <span>{t.logOut}</span>
@@ -239,7 +225,7 @@ export function Navbar(props: NavbarProps) {
             {/* Mobile Menu Hamburger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden rounded-lg p-2 text-slate-700 hover:bg-slate-100 transition"
+              className="md:hidden rounded-lg p-2 text-slate-700 hover:bg-slate-100 transition cursor-pointer"
             >
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
@@ -248,37 +234,21 @@ export function Navbar(props: NavbarProps) {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-white border-t border-slate-200 px-4 py-4 space-y-3 shadow-lg animate-calm-reveal">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
-              {lang === "hi" ? "पोर्टल चुनें:" : "Choose Dashboard:"}
-            </span>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {NAV_ROLES.map((role) => {
-                const isActive = pathname === role.path;
-                return (
-                  <Link
-                    key={role.path}
-                    href={role.path}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-bold transition border ${
-                      isActive
-                        ? "bg-emerald-50 text-emerald-700 border-emerald-300 shadow-xs"
-                        : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
-                    }`}
-                  >
-                    <span className="flex items-center gap-2">
-                      <span className="text-base">{role.icon}</span>
-                      <span>{role.label}</span>
-                    </span>
-                    <span className="text-emerald-700 font-bold">&rarr;</span>
-                  </Link>
-                );
-              })}
-            </div>
+          <div className="md:hidden bg-white border-t border-slate-200 px-4 py-4 space-y-3 shadow-lg animate-calm-reveal">
+            <Link
+              href="/predict"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between rounded-xl bg-emerald-50 border border-emerald-300 px-4 py-3 text-xs font-bold text-emerald-800 shadow-xs"
+            >
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-emerald-600" />
+                <span>{lang === "hi" ? "बाज़ार पूर्वानुमान (Market Predictor)" : "Market Predictor"}</span>
+              </div>
+              <span className="text-emerald-700 font-bold">&rarr;</span>
+            </Link>
 
             {!user ? (
-              <div className="pt-3 border-t border-slate-200 flex gap-2">
+              <div className="pt-2 border-t border-slate-200 flex gap-2">
                 <button
                   onClick={() => openAuth("login")}
                   className="flex-1 rounded-lg bg-slate-100 py-2.5 text-xs font-bold text-slate-800 text-center border border-slate-200 hover:bg-slate-200"
