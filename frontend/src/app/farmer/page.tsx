@@ -80,6 +80,9 @@ export default function FarmerDashboardPage() {
   const [farmVillage, setFarmVillage] = useState("Bakshi Ka Talab");
   const [farmDistrict, setFarmDistrict] = useState("Lucknow");
   const [farmAcres, setFarmAcres] = useState(3.5);
+  const [farmLat, setFarmLat] = useState<number>(26.9124);
+  const [farmLng, setFarmLng] = useState<number>(80.8947);
+  const [capturingGps, setCapturingGps] = useState(false);
   const [creatingFarm, setCreatingFarm] = useState(false);
   const [farmCreatedMsg, setFarmCreatedMsg] = useState<string | null>(null);
 
@@ -90,6 +93,36 @@ export default function FarmerDashboardPage() {
       setPhotoUrl(found.image);
       setAskingPrice(found.defaultPrice);
     }
+  };
+
+  const handleGetGpsLocation = () => {
+    if (typeof window !== "undefined" && navigator.geolocation) {
+      setCapturingGps(true);
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setCapturingGps(false);
+          const lat = Number(pos.coords.latitude.toFixed(4));
+          const lng = Number(pos.coords.longitude.toFixed(4));
+          setFarmLat(lat);
+          setFarmLng(lng);
+          setFarmCreatedMsg(`Captured Real GPS: ${lat}° N, ${lng}° E`);
+          setTimeout(() => setFarmCreatedMsg(null), 4000);
+        },
+        (err) => {
+          setCapturingGps(false);
+          alert("GPS permission was denied. Using Lucknow regional cluster coordinates.");
+        },
+        { enableHighAccuracy: true, timeout: 8000 }
+      );
+    } else {
+      alert("Geolocation is not supported by your browser.");
+    }
+  };
+
+  const handleSelectVillagePreset = (villageName: string, lat: number, lng: number) => {
+    setFarmVillage(villageName);
+    setFarmLat(lat);
+    setFarmLng(lng);
   };
 
   const loadData = async () => {
@@ -198,14 +231,14 @@ export default function FarmerDashboardPage() {
         name: farmName || `${user.first_name || "Kisan"}'s Farm`,
         village: farmVillage,
         district: farmDistrict,
-        latitude: 26.9124,
-        longitude: 80.8947,
+        latitude: farmLat,
+        longitude: farmLng,
         total_area_acres: farmAcres,
       });
-      setFarmCreatedMsg("Farm registered successfully in Lucknow cluster!");
+      setFarmCreatedMsg(`Farm '${farmName || "New Farm"}' registered at [${farmLat}, ${farmLng}]!`);
       setFarmName("");
       loadData();
-      setTimeout(() => setFarmCreatedMsg(null), 3000);
+      setTimeout(() => setFarmCreatedMsg(null), 3500);
     } catch (err: any) {
       alert(err.message || "Failed to create farm");
     } finally {
@@ -727,7 +760,7 @@ export default function FarmerDashboardPage() {
                 </div>
               )}
 
-              <form onSubmit={handleCreateFarm} className="space-y-3 text-xs">
+              <form onSubmit={handleCreateFarm} className="space-y-4 text-xs">
                 <div>
                   <label className="block font-semibold text-[#17201D] mb-1">
                     Farm / Land Name
@@ -742,6 +775,88 @@ export default function FarmerDashboardPage() {
                   />
                 </div>
 
+                {/* GPS Capture & Village Presets */}
+                <div className="rounded-2xl bg-[#F7F5EF] p-3.5 border border-[#E9E7E1] space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-[#17201D] flex items-center gap-1.5">
+                      <MapPin className="h-3.5 w-3.5 text-[#C99B43]" />
+                      <span>Farm Geo-Coordinates</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleGetGpsLocation}
+                      disabled={capturingGps}
+                      className="rounded-full bg-[#173D32] px-3 py-1 text-[11px] font-bold text-white hover:bg-[#215445] transition flex items-center gap-1 shadow-2xs"
+                    >
+                      <MapPin className="h-3 w-3" />
+                      <span>{capturingGps ? "Acquiring GPS..." : "📍 Use Current GPS"}</span>
+                    </button>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-[#7D8A65] mb-1">
+                      Quick Select Lucknow Agricultural Hub / गाँव चुनें:
+                    </label>
+                    <div className="grid grid-cols-3 gap-1.5">
+                      {[
+                        { name: "Bakshi Ka Talab", lat: 26.9124, lng: 80.8947 },
+                        { name: "Malihabad", lat: 26.9200, lng: 80.7100 },
+                        { name: "Chinhat", lat: 26.8700, lng: 81.0200 },
+                        { name: "Mohanlalganj", lat: 26.6800, lng: 80.9800 },
+                        { name: "Kakori", lat: 26.8800, lng: 80.7900 },
+                        { name: "Gosainganj", lat: 26.7700, lng: 81.1200 },
+                      ].map((preset) => (
+                        <button
+                          key={preset.name}
+                          type="button"
+                          onClick={() => handleSelectVillagePreset(preset.name, preset.lat, preset.lng)}
+                          className={`rounded-lg p-1.5 text-[11px] font-semibold border transition text-center truncate ${
+                            farmVillage === preset.name
+                              ? "border-[#173D32] bg-[#173D32] text-white"
+                              : "border-[#E9E7E1] bg-white text-[#17201D] hover:border-[#173D32]/40"
+                          }`}
+                        >
+                          {preset.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-[11px]">
+                    <div>
+                      <span className="text-[#7D8A65]">Latitude:</span>
+                      <input
+                        type="number"
+                        step="0.0001"
+                        value={farmLat}
+                        onChange={(e) => setFarmLat(Number(e.target.value))}
+                        className="w-full rounded-lg border border-[#E9E7E1] bg-white px-2.5 py-1.5 font-mono font-bold text-[#17201D]"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[#7D8A65]">Longitude:</span>
+                      <input
+                        type="number"
+                        step="0.0001"
+                        value={farmLng}
+                        onChange={(e) => setFarmLng(Number(e.target.value))}
+                        className="w-full rounded-lg border border-[#E9E7E1] bg-white px-2.5 py-1.5 font-mono font-bold text-[#17201D]"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="text-right">
+                    <a
+                      href={`https://www.google.com/maps/search/?api=1&query=${farmLat},${farmLng}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[10px] text-[#173D32] font-bold hover:underline inline-flex items-center gap-0.5"
+                    >
+                      <span>Verify on Google Maps &rarr;</span>
+                    </a>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block font-semibold text-[#17201D] mb-1">
@@ -752,43 +867,31 @@ export default function FarmerDashboardPage() {
                       required
                       value={farmVillage}
                       onChange={(e) => setFarmVillage(e.target.value)}
-                      placeholder="e.g. Chinhat"
+                      placeholder="e.g. Bakshi Ka Talab"
                       className="w-full rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] px-3 py-2 text-xs font-medium focus:bg-white focus:border-[#173D32] focus:outline-none"
                     />
                   </div>
                   <div>
                     <label className="block font-semibold text-[#17201D] mb-1">
-                      District
+                      Farm Area (Acres)
                     </label>
                     <input
-                      type="text"
-                      value={farmDistrict}
-                      onChange={(e) => setFarmDistrict(e.target.value)}
+                      type="number"
+                      step="0.1"
+                      value={farmAcres}
+                      onChange={(e) => setFarmAcres(Number(e.target.value))}
                       className="w-full rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] px-3 py-2 text-xs font-medium focus:bg-white focus:border-[#173D32] focus:outline-none"
                     />
                   </div>
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-[#17201D] mb-1">
-                    Farm Area (Acres)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    value={farmAcres}
-                    onChange={(e) => setFarmAcres(Number(e.target.value))}
-                    className="w-full rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] px-3 py-2 text-xs font-medium focus:bg-white focus:border-[#173D32] focus:outline-none"
-                  />
                 </div>
 
                 <div className="pt-2">
                   <button
                     type="submit"
                     disabled={creatingFarm}
-                    className="w-full rounded-full bg-[#173D32] py-2.5 text-xs font-bold text-white hover:bg-[#215445] transition"
+                    className="w-full rounded-full bg-[#173D32] py-3 text-xs font-bold text-white hover:bg-[#215445] transition shadow-md"
                   >
-                    {creatingFarm ? "Saving Farm..." : "+ Save Farm Location"}
+                    {creatingFarm ? "Registering Farm..." : "+ Save Farm Gate Location"}
                   </button>
                 </div>
               </form>

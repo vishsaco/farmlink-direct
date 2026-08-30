@@ -56,15 +56,22 @@ export function Navbar({ lang, onLanguageChange }: NavbarProps) {
       return [
         { label: "Marketplace", path: "/buyer" },
         { label: "Farmer Portal", path: "/farmer" },
+        { label: "FPO Hub", path: "/fpo" },
+        { label: "Fleet Dispatch", path: "/driver" },
+        { label: "Control Tower", path: "/ops" },
       ];
     }
 
     switch (user.role) {
       case "farmer":
+        return [
+          { label: "Farmer Portal", path: "/farmer" },
+          { label: "Browse Market", path: "/buyer" },
+        ];
       case "fpo":
         return [
-          { label: "My Produce Lots", path: "/farmer" },
-          { label: "Browse Market Demand", path: "/buyer" },
+          { label: "FPO Aggregator Hub", path: "/fpo" },
+          { label: "Bulk Market Demand", path: "/buyer" },
         ];
       case "buyer":
         return [
@@ -76,7 +83,7 @@ export function Navbar({ lang, onLanguageChange }: NavbarProps) {
         ];
       case "ops":
         return [
-          { label: "Control Tower", path: "/ops" },
+          { label: "Operations Control Tower", path: "/ops" },
           { label: "Live Marketplace", path: "/buyer" },
         ];
       default:

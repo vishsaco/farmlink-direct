@@ -497,13 +497,22 @@ export default function BuyerMarketplacePage() {
                       </span>
                     </div>
 
-                    {/* Show delivery OTP for buyer */}
+                    {/* Show dynamic delivery OTP and Google Maps tracking for buyer */}
                     <div className="mt-2.5 pt-2 border-t border-[#E9E7E1] flex items-center justify-between text-[11px]">
-                      <span className="flex items-center gap-1 font-mono font-bold text-[#173D32] bg-[#DCE8DD] px-2 py-0.5 rounded">
+                      <span className="flex items-center gap-1 font-mono font-bold text-[#173D32] bg-[#DCE8DD] px-2.5 py-1 rounded-full">
                         <KeyRound className="h-3 w-3" />
-                        <span>Delivery OTP: 8842</span>
+                        <span>Delivery OTP: {ord.delivery_otp || "8842"}</span>
                       </span>
-                      <span className="font-semibold text-[#173D32]">Track Delivery &rarr;</span>
+                      <a
+                        href={`https://www.google.com/maps/dir/?api=1&origin=${ord.lot_detail?.farm_detail?.latitude || 26.9124},${ord.lot_detail?.farm_detail?.longitude || 80.8947}&destination=${ord.delivery_lat || 26.8467},${ord.delivery_lng || 80.9462}&travelmode=driving`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="font-bold text-[#173D32] hover:underline flex items-center gap-1"
+                      >
+                        <MapPin className="h-3 w-3 text-[#C99B43]" />
+                        <span>Google Maps &rarr;</span>
+                      </a>
                     </div>
                   </div>
                 ))

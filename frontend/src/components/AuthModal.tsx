@@ -75,7 +75,8 @@ export function AuthModal({
 
       onClose();
 
-      if (role === "farmer" || role === "fpo") router.push("/farmer");
+      if (role === "farmer") router.push("/farmer");
+      else if (role === "fpo") router.push("/fpo");
       else if (role === "buyer") router.push("/buyer");
       else if (role === "driver") router.push("/driver");
       else if (role === "ops") router.push("/ops");
@@ -162,7 +163,8 @@ export function AuthModal({
       onClose();
 
       // Navigate to corresponding persona portal
-      if (role === "farmer" || role === "fpo") router.push("/farmer");
+      if (role === "farmer") router.push("/farmer");
+      else if (role === "fpo") router.push("/fpo");
       else if (role === "buyer") router.push("/buyer");
       else if (role === "driver") router.push("/driver");
       else if (role === "ops") router.push("/ops");

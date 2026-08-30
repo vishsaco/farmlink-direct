@@ -7,26 +7,26 @@ import { Order, RoutePlan } from "@/lib/types";
 import { translations, Language } from "@/lib/translations";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { Navbar } from "@/components/Navbar";
+import { LeafletMap } from "@/components/LeafletMap";
 import { DriverProofModal } from "@/components/DriverProofModal";
-import { AuthModal } from "@/components/AuthModal";
 import {
   Truck,
   MapPin,
+  Phone,
   CheckCircle2,
-  Camera,
   Navigation,
-  ArrowRight,
-  ShieldCheck,
   Clock,
   Package,
-  Phone,
-  User,
-  ShoppingBag,
+  ShieldCheck,
+  Building,
   Sprout,
-  ArrowDown,
+  ShoppingBag,
+  ExternalLink,
+  Navigation2,
+  Compass,
 } from "lucide-react";
 
-export default function DriverLogisticsPage() {
+export default function DriverDispatchPage() {
   const [lang, setLang] = useState<Language>("en");
   const { user } = useAuth();
   const t = translations[lang];
@@ -34,26 +34,30 @@ export default function DriverLogisticsPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [routePlan, setRoutePlan] = useState<RoutePlan | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
-  const [proofModalOpen, setProofModalOpen] = useState(false);
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
+
+  // Proof of Delivery Modal State
+  const [proofModalOpen, setProofModalOpen] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
 
   const loadData = async () => {
-    setLoading(true);
     try {
       const ordersData = await api.getOrders();
       setOrders(ordersData || []);
 
       if (ordersData && ordersData.length > 0) {
-        const orderIds = ordersData.slice(0, 4).map((o) => o.id);
-        try {
-          const plan = await api.planRoute(orderIds);
-          setRoutePlan(plan);
-        } catch {}
+        const activeIds = ordersData
+          .filter((o) => ["confirmed", "pickup_scheduled", "picked_up"].includes(o.status))
+          .map((o) => o.id);
+        if (activeIds.length > 0) {
+          try {
+            const plan = await api.planRoute(activeIds);
+            setRoutePlan(plan);
+          } catch {}
+        }
       }
     } catch (err) {
-      console.error("Failed to load driver data", err);
+      console.error("Driver data load error", err);
     } finally {
       setLoading(false);
     }
@@ -84,6 +88,18 @@ export default function DriverLogisticsPage() {
     setProofModalOpen(true);
   };
 
+  const openGoogleMapsDirections = (
+    originLat: number = 26.9124,
+    originLng: number = 80.8947,
+    destLat: number = 26.8467,
+    destLng: number = 80.9462
+  ) => {
+    const url = `https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLng}&destination=${destLat},${destLng}&travelmode=driving`;
+    window.open(url, "_blank");
+  };
+
+  const activeOrders = orders.filter((o) => o.status !== "settled" && o.status !== "cancelled");
+
   return (
     <div className="min-h-screen bg-[#F7F5EF] text-[#17201D] flex flex-col">
       <Navbar lang={lang} onLanguageChange={setLang} />
@@ -98,85 +114,115 @@ export default function DriverLogisticsPage() {
                 Assigned Vehicle: Tata Ace Gold • Driver: {user?.first_name ? `${user.first_name} ${user.last_name || ""}` : "Logistics Fleet Member"}
               </span>
             </div>
-            <h1 className="font-serif text-3xl sm:text-4xl font-normal text-[#17201D]">
+            <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-[#17201D]">
               Pickup & Drop-Off Dispatch
             </h1>
-            <p className="text-xs text-[#7D8A65] mt-1 font-light">
-              Turn-by-turn farm gate pickups and buyer receiving dock drop-offs across Lucknow.
+            <p className="text-sm text-[#7D8A65] mt-1 font-light max-w-2xl">
+              Turn-by-turn farm gate pickups, live Google Maps driving navigation, and buyer receiving dock handoffs across Lucknow.
             </p>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="rounded-full bg-[#DCE8DD] px-3.5 py-1 text-xs font-bold text-[#173D32]">
-              Lucknow Agri Logistics Fleet
+            <span className="rounded-full bg-[#DCE8DD] px-3.5 py-1.5 text-xs font-bold text-[#173D32] flex items-center gap-1.5">
+              <Compass className="h-3.5 w-3.5" />
+              <span>Lucknow Regional Fleet Active</span>
             </span>
           </div>
         </div>
 
         {actionSuccess && (
-          <div className="rounded-xl bg-[#DCE8DD] p-3.5 border border-[#173D32]/20 text-xs font-bold text-[#173D32] flex items-center gap-2">
+          <div className="rounded-2xl bg-[#DCE8DD] p-4 border border-[#173D32]/20 text-xs font-bold text-[#173D32] flex items-center gap-2 animate-in fade-in duration-200">
             <CheckCircle2 className="h-4 w-4" />
             <span>{actionSuccess}</span>
           </div>
         )}
 
-        {/* Route Optimization Summary Card */}
-        {routePlan && (
-          <div className="forest-panel p-6 sm:p-8 shadow-lg">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-              <div>
-                <span className="text-xs font-bold text-[#C99B43] uppercase tracking-wider flex items-center gap-1.5">
-                  <Navigation className="h-4 w-4" />
-                  <span>Optimized Route Sequence</span>
-                </span>
-                <h3 className="font-serif text-2xl font-normal text-white mt-1">
-                  {routePlan.summary.stop_count} Planned Stops across Lucknow Cluster
-                </h3>
-                <p className="text-xs text-[#DCE8DD]/80 font-light mt-0.5">
-                  Total distance: {routePlan.summary.total_distance_km} km • Estimated trip duration: ~{routePlan.summary.estimated_duration_mins} mins
-                </p>
-              </div>
+        {/* Route Summary & Interactive Map */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-8 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-serif text-2xl font-bold text-[#17201D]">
+                Turn-by-Turn Route Map
+              </h3>
+              <span className="text-xs text-[#7D8A65]">Farm Gates &rarr; Buyer Docks</span>
+            </div>
 
-              <div className="flex items-center gap-4 text-xs">
-                <div className="rounded-2xl bg-white/10 p-3.5 border border-white/15">
-                  <span className="text-[#DCE8DD] text-[10px] uppercase font-semibold block">Vehicle Load</span>
-                  <p className="font-bold text-white text-base mt-0.5">
-                    {routePlan.summary.total_load_kg} / {routePlan.vehicle.max_capacity_kg} kg ({routePlan.summary.load_utilization}%)
-                  </p>
-                </div>
-              </div>
+            <div className="rounded-3xl border border-[#E9E7E1] bg-white p-2 shadow-xs overflow-hidden h-[400px]">
+              <LeafletMap center={[26.88, 80.92]} height="100%" />
             </div>
           </div>
-        )}
 
-        {/* Dispatch Orders: Detailed Pickup -> Drop-Off Cards */}
-        <div className="space-y-4">
-          <h3 className="font-serif text-2xl font-bold text-[#17201D]">
-            Fulfillment Manifest & Stops ({orders.length} Batches)
-          </h3>
-
-          {loading ? (
-            <div className="space-y-3">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="h-40 rounded-2xl bg-white border border-[#E9E7E1] animate-pulse" />
-              ))}
+          <div className="lg:col-span-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-serif text-2xl font-bold text-[#17201D]">
+                Fleet Run Summary
+              </h3>
             </div>
-          ) : orders.length === 0 ? (
-            <div className="rounded-2xl border border-[#E9E7E1] bg-white p-12 text-center text-xs text-[#7D8A65]">
-              <Truck className="h-8 w-8 text-[#173D32] mx-auto mb-2 opacity-50" />
-              <p className="font-semibold text-sm text-[#17201D]">No active dispatch orders today</p>
-              <p className="mt-1">When buyers confirm produce orders, pickup and drop-off instructions will be dispatched here.</p>
+
+            <div className="rounded-3xl border border-[#E9E7E1] bg-white p-6 shadow-xs space-y-4">
+              <div className="flex items-center gap-3">
+                <Navigation className="h-6 w-6 text-[#C99B43]" />
+                <div>
+                  <h4 className="font-bold text-sm text-[#17201D]">Optimized Milk Run</h4>
+                  <p className="text-xs text-[#7D8A65]">24-Hour Farm-to-Dock Schedule</p>
+                </div>
+              </div>
+
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between border-b border-[#E9E7E1] pb-2">
+                  <span className="text-[#7D8A65]">Active Waypoints:</span>
+                  <span className="font-bold text-[#17201D]">{activeOrders.length * 2} Stops</span>
+                </div>
+                <div className="flex justify-between border-b border-[#E9E7E1] pb-2">
+                  <span className="text-[#7D8A65]">Vehicle Capacity:</span>
+                  <span className="font-bold text-[#17201D]">2,000 kg (Tata Ace Gold)</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[#7D8A65]">Fulfillment Corridor:</span>
+                  <span className="font-bold text-[#173D32]">Bakshi Ka Talab &rarr; Hazratganj</span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => openGoogleMapsDirections(26.9124, 80.8947, 26.8467, 80.9462)}
+                className="w-full flex items-center justify-center gap-2 rounded-full bg-[#173D32] py-3 text-xs font-bold text-white hover:bg-[#215445] transition shadow-md"
+              >
+                <Navigation2 className="h-4 w-4" />
+                <span>Navigate Full Route in Google Maps</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Turn-by-Turn Manifest List */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="font-serif text-2xl font-bold text-[#17201D]">
+              Fulfillment Manifest ({activeOrders.length} Orders)
+            </h3>
+            <span className="text-xs text-[#7D8A65]">Execute in sequential order</span>
+          </div>
+
+          {activeOrders.length === 0 ? (
+            <div className="rounded-3xl border border-[#E9E7E1] bg-white p-12 text-center space-y-3">
+              <Package className="h-10 w-10 text-[#7D8A65]/40 mx-auto" />
+              <p className="font-bold text-sm text-[#17201D]">All Dispatches Completed!</p>
+              <p className="text-xs text-[#7D8A65]">New buyer orders will appear here automatically.</p>
             </div>
           ) : (
             <div className="space-y-6">
-              {orders.map((ord, idx) => {
-                const isPickedUp = ["picked_up", "delivered", "settlement_ready", "settled"].includes(ord.status);
-                const isDelivered = ["delivered", "settlement_ready", "settled"].includes(ord.status);
+              {activeOrders.map((ord, idx) => {
+                const isPickedUp = ord.status === "picked_up" || ord.status === "delivered";
+                const isDelivered = ord.status === "delivered" || ord.status === "settled";
+                const originLat = ord.lot_detail?.farm_detail?.latitude || 26.9124;
+                const originLng = ord.lot_detail?.farm_detail?.longitude || 80.8947;
+                const destLat = ord.delivery_lat || 26.8467;
+                const destLng = ord.delivery_lng || 80.9462;
 
                 return (
                   <div
                     key={ord.id}
-                    className="agri-card p-6 space-y-4 border border-[#E9E7E1]"
+                    className="rounded-3xl border border-[#E9E7E1] bg-white p-6 shadow-sm space-y-5"
                   >
                     {/* Header */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E9E7E1] pb-3">
@@ -189,26 +235,35 @@ export default function DriverLogisticsPage() {
                         </span>
                       </div>
 
-                      <span className="rounded-full bg-[#DCE8DD] px-3 py-1 text-xs font-bold text-[#173D32] uppercase w-fit">
-                        Status: {ord.status_display}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="rounded-full bg-[#DCE8DD] px-3 py-1 text-xs font-bold text-[#173D32] uppercase">
+                          Status: {ord.status_display}
+                        </span>
+                        <button
+                          onClick={() => openGoogleMapsDirections(originLat, originLng, destLat, destLng)}
+                          className="flex items-center gap-1 rounded-full border border-[#E9E7E1] bg-[#F7F5EF] px-3 py-1 text-xs font-semibold text-[#17201D] hover:bg-[#DCE8DD] transition"
+                        >
+                          <ExternalLink className="h-3 w-3 text-[#173D32]" />
+                          <span>Google Maps</span>
+                        </button>
+                      </div>
                     </div>
 
-                    {/* Step 1: PICKUP ORIGIN */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Step 1: PICKUP ORIGIN & Step 2: DROP-OFF DESTINATION */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {/* Left: Where to Pick Up */}
-                      <div className="rounded-2xl bg-[#F7F5EF] p-4 border border-[#E9E7E1] space-y-2">
+                      <div className="rounded-2xl bg-[#F7F5EF] p-5 border border-[#E9E7E1] space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-[11px] font-bold uppercase tracking-wider text-[#173D32] flex items-center gap-1.5">
-                            <Sprout className="h-3.5 w-3.5" />
+                          <span className="text-xs font-bold uppercase tracking-wider text-[#173D32] flex items-center gap-1.5">
+                            <Sprout className="h-4 w-4" />
                             <span>1. Farm Gate Pickup Location</span>
                           </span>
                           <span className="text-[10px] text-[#7D8A65]">Time: 7:00 – 10:00 AM</span>
                         </div>
 
-                        <div className="text-xs space-y-1 text-[#17201D]">
-                          <p className="font-bold text-sm">
-                            {ord.farmer_name || ord.lot_detail?.created_by_name || "Ramesh Kumar (Kisan)"}
+                        <div className="text-xs space-y-1.5 text-[#17201D]">
+                          <p className="font-bold text-base">
+                            {ord.farmer_name || ord.lot_detail?.created_by_name || "Verified Farmer (Kisan)"}
                           </p>
                           <p className="flex items-center gap-1 text-[#7D8A65]">
                             <MapPin className="h-3.5 w-3.5 text-[#C99B43]" />
@@ -216,41 +271,51 @@ export default function DriverLogisticsPage() {
                           </p>
                           <p className="flex items-center gap-1 text-[#7D8A65]">
                             <Phone className="h-3.5 w-3.5 text-[#173D32]" />
-                            <span>{ord.farmer_phone || "+91-9876543211"}</span>
+                            <a href={`tel:${ord.farmer_phone || "+919876543211"}`} className="font-bold text-[#173D32] hover:underline">
+                              {ord.farmer_phone || "+91-9876543211"} (Tap to Call)
+                            </a>
                           </p>
                         </div>
 
-                        <div className="pt-2">
+                        <div className="pt-2 flex gap-2">
+                          <button
+                            onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${originLat},${originLng}`, "_blank")}
+                            className="flex-1 flex items-center justify-center gap-1 rounded-xl border border-[#E9E7E1] bg-white py-2 text-xs font-bold text-[#17201D] hover:bg-[#F7F5EF]"
+                          >
+                            <MapPin className="h-3.5 w-3.5 text-[#C99B43]" />
+                            <span>Navigate to Farm</span>
+                          </button>
+
                           {!isPickedUp ? (
                             <button
                               onClick={() => handleMarkPickup(ord.id)}
-                              className="w-full flex items-center justify-center gap-1.5 rounded-full bg-[#C99B43] py-2 text-xs font-bold text-[#17201D] hover:bg-[#d8a94d] transition shadow-sm"
+                              className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-[#C99B43] py-2 text-xs font-bold text-[#17201D] hover:bg-[#d8a94d] transition shadow-xs"
                             >
                               <CheckCircle2 className="h-4 w-4" />
-                              <span>Confirm Produce Picked Up</span>
+                              <span>Confirm Picked Up</span>
                             </button>
                           ) : (
-                            <span className="flex items-center justify-center gap-1 text-xs font-bold text-[#173D32] bg-[#DCE8DD] py-1.5 rounded-full">
+                            <span className="flex-1 flex items-center justify-center gap-1 text-xs font-bold text-[#173D32] bg-[#DCE8DD] py-2 rounded-xl">
                               <CheckCircle2 className="h-3.5 w-3.5" />
-                              <span>Picked Up & Loaded on Vehicle</span>
+                              <span>Loaded on Tata Ace</span>
                             </span>
                           )}
                         </div>
                       </div>
 
                       {/* Right: Where to Drop Off */}
-                      <div className="rounded-2xl bg-[#F7F5EF] p-4 border border-[#E9E7E1] space-y-2">
+                      <div className="rounded-2xl bg-[#F7F5EF] p-5 border border-[#E9E7E1] space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-[11px] font-bold uppercase tracking-wider text-[#173D32] flex items-center gap-1.5">
-                            <ShoppingBag className="h-3.5 w-3.5" />
+                          <span className="text-xs font-bold uppercase tracking-wider text-[#173D32] flex items-center gap-1.5">
+                            <ShoppingBag className="h-4 w-4" />
                             <span>2. Buyer Drop-Off Destination</span>
                           </span>
                           <span className="text-[10px] text-[#7D8A65]">ETA: ~4:30 PM</span>
                         </div>
 
-                        <div className="text-xs space-y-1 text-[#17201D]">
-                          <p className="font-bold text-sm">
-                            {ord.buyer_org || "Fresh Mart Procurement Hub"} ({ord.buyer_name || "Ankit Sharma"})
+                        <div className="text-xs space-y-1.5 text-[#17201D]">
+                          <p className="font-bold text-base">
+                            {ord.buyer_org || "Commercial Procurement Kitchen"} ({ord.buyer_name || "Buyer"})
                           </p>
                           <p className="flex items-center gap-1 text-[#7D8A65]">
                             <MapPin className="h-3.5 w-3.5 text-[#C99B43]" />
@@ -258,31 +323,34 @@ export default function DriverLogisticsPage() {
                           </p>
                           <p className="flex items-center gap-1 text-[#7D8A65]">
                             <Phone className="h-3.5 w-3.5 text-[#173D32]" />
-                            <span>{ord.buyer_phone || "+91-9876543210"}</span>
+                            <a href={`tel:${ord.buyer_phone || "+919876543210"}`} className="font-bold text-[#173D32] hover:underline">
+                              {ord.buyer_phone || "+91-9876543210"} (Tap to Call)
+                            </a>
                           </p>
                         </div>
 
-                        <div className="pt-2">
-                          {isPickedUp && !isDelivered && (
+                        <div className="pt-2 flex gap-2">
+                          <button
+                            onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${destLat},${destLng}`, "_blank")}
+                            className="flex-1 flex items-center justify-center gap-1 rounded-xl border border-[#E9E7E1] bg-white py-2 text-xs font-bold text-[#17201D] hover:bg-[#F7F5EF]"
+                          >
+                            <MapPin className="h-3.5 w-3.5 text-[#C99B43]" />
+                            <span>Navigate to Dock</span>
+                          </button>
+
+                          {!isDelivered ? (
                             <button
                               onClick={() => handleOpenProof(ord.id)}
-                              className="w-full flex items-center justify-center gap-1.5 rounded-full bg-[#173D32] py-2 text-xs font-bold text-white hover:bg-[#215445] transition shadow-md"
+                              disabled={!isPickedUp}
+                              className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-[#173D32] py-2 text-xs font-bold text-white hover:bg-[#215445] transition shadow-xs disabled:opacity-50"
                             >
-                              <Camera className="h-4 w-4 text-[#C99B43]" />
-                              <span>Verify Buyer OTP & Submit POD</span>
+                              <ShieldCheck className="h-4 w-4" />
+                              <span>Verify Delivery OTP</span>
                             </button>
-                          )}
-
-                          {isDelivered && (
-                            <span className="flex items-center justify-center gap-1 text-xs font-bold text-[#173D32] bg-[#DCE8DD] py-1.5 rounded-full">
+                          ) : (
+                            <span className="flex-1 flex items-center justify-center gap-1 text-xs font-bold text-[#173D32] bg-[#DCE8DD] py-2 rounded-xl">
                               <CheckCircle2 className="h-3.5 w-3.5" />
-                              <span>Delivery Complete & Settlement Ready</span>
-                            </span>
-                          )}
-
-                          {!isPickedUp && (
-                            <span className="flex items-center justify-center text-[11px] text-[#7D8A65] py-1.5">
-                              Pending farm gate pickup first
+                              <span>Delivered & Verified</span>
                             </span>
                           )}
                         </div>
@@ -294,27 +362,24 @@ export default function DriverLogisticsPage() {
             </div>
           )}
         </div>
+
+        {/* Proof of Delivery / OTP Verification Modal */}
+        {selectedOrderId && (
+          <DriverProofModal
+            isOpen={proofModalOpen}
+            onClose={() => {
+              setProofModalOpen(false);
+              setSelectedOrderId(null);
+            }}
+            orderId={selectedOrderId}
+            onSuccess={() => {
+              setActionSuccess(`Order #${selectedOrderId} successfully delivered & verified!`);
+              setTimeout(() => setActionSuccess(null), 3500);
+              loadData();
+            }}
+          />
+        )}
       </main>
-
-      {/* Driver Proof of Delivery Modal */}
-      {selectedOrderId && (
-        <DriverProofModal
-          orderId={selectedOrderId}
-          isOpen={proofModalOpen}
-          onClose={() => setProofModalOpen(false)}
-          onSuccess={() => {
-            setActionSuccess("Delivery verified! Funds transitioned to Settlement Ready.");
-            loadData();
-          }}
-        />
-      )}
-
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-        defaultMode="login"
-        defaultRole="driver"
-      />
     </div>
   );
 }
