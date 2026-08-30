@@ -43,55 +43,55 @@ export function SettlementCard({ orderId }: SettlementCardProps) {
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-[#E9E7E1] bg-white p-6 animate-pulse space-y-3">
-        <div className="h-4 w-36 bg-[#E9E7E1] rounded" />
-        <div className="h-8 w-24 bg-[#E9E7E1] rounded" />
+      <div className="editorial-card p-5 animate-pulse space-y-3 bg-white">
+        <div className="h-4 w-36 bg-slate-200 rounded" />
+        <div className="h-7 w-24 bg-slate-200 rounded" />
       </div>
     );
   }
 
   if (!settlement) {
     return (
-      <div className="rounded-2xl border border-[#E9E7E1] bg-[#FFFFFF] p-6 text-center text-xs text-[#7D8A65]">
+      <div className="editorial-card p-5 text-center text-xs text-slate-500 bg-white">
         Settlement statement will generate upon delivery confirmation.
       </div>
     );
   }
 
   return (
-    <div className="rounded-2xl border border-[#DCE8DD] bg-[#FFFFFF] p-6 shadow-xs space-y-4">
+    <div className="editorial-card p-5 space-y-3.5 bg-white">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-[#E9E7E1] pb-3">
+      <div className="flex items-center justify-between border-b border-slate-100 pb-3">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#DCE8DD] text-[#173D32]">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
             <Receipt className="h-4 w-4" />
           </div>
           <div>
-            <h4 className="font-serif text-lg font-bold text-[#17201D]">
+            <h4 className="text-base font-bold tracking-tight text-slate-900">
               Settlement Statement
             </h4>
-            <p className="text-[11px] text-[#7D8A65]">
+            <p className="text-[11px] text-slate-500">
               Ref: {settlement.reference} • Order #{orderId}
             </p>
           </div>
         </div>
 
-        <span className="flex items-center gap-1 rounded-full bg-[#DCE8DD] px-3 py-1 text-xs font-bold text-[#173D32]">
+        <span className="flex items-center gap-1 rounded-md bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-xs font-bold text-emerald-800">
           <CheckCircle2 className="h-3.5 w-3.5" />
           <span>{settlement.status_display}</span>
         </span>
       </div>
 
       {/* Itemized Financial Breakdown */}
-      <div className="space-y-2 text-xs">
-        <div className="flex items-center justify-between py-1 text-[#17201D]">
+      <div className="space-y-1.5 text-xs">
+        <div className="flex items-center justify-between py-1 text-slate-800">
           <span>Gross Produce Value</span>
-          <span className="font-semibold text-base">
+          <span className="font-bold text-sm text-slate-900">
             {formatCurrency(settlement.gross_amount)}
           </span>
         </div>
 
-        <div className="flex items-center justify-between py-1 text-[#C86B4A]">
+        <div className="flex items-center justify-between py-1 text-rose-600">
           <span className="flex items-center gap-1">
             <ArrowDownRight className="h-3.5 w-3.5" />
             <span>Logistics & Vehicle Fulfillment (5%)</span>
@@ -101,7 +101,7 @@ export function SettlementCard({ orderId }: SettlementCardProps) {
           </span>
         </div>
 
-        <div className="flex items-center justify-between py-1 text-[#C86B4A]">
+        <div className="flex items-center justify-between py-1 text-rose-600">
           <span className="flex items-center gap-1">
             <ArrowDownRight className="h-3.5 w-3.5" />
             <span>Platform Facilitation Fee (2%)</span>
@@ -112,26 +112,26 @@ export function SettlementCard({ orderId }: SettlementCardProps) {
         </div>
 
         {/* Net Farmer Amount Highlight */}
-        <div className="mt-3 flex items-center justify-between rounded-xl bg-[#DCE8DD]/40 p-4 border border-[#173D32]/20">
+        <div className="mt-2.5 flex items-center justify-between rounded-xl bg-emerald-50/70 p-3.5 border border-emerald-200">
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#173D32] block">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 block">
               Net Farmer Realization
             </span>
-            <p className="text-[11px] text-[#7D8A65]">
-              Ready for automated UPI / Bank transfer
+            <p className="text-[11px] text-slate-500">
+              Automated UPI / Bank disbursal within 24h
             </p>
           </div>
-          <span className="font-serif text-2xl font-bold text-[#173D32]">
+          <span className="text-xl font-bold text-emerald-800">
             {formatCurrency(settlement.net_farmer_amount)}
           </span>
         </div>
       </div>
 
       {/* Audit Disclosure */}
-      <div className="flex items-start gap-2 rounded-xl bg-[#F7F5EF] p-3 border border-[#E9E7E1] text-[11px] text-[#17201D]/80">
-        <Info className="h-3.5 w-3.5 text-[#173D32] shrink-0 mt-0.5" />
-        <p className="font-light">
-          <span className="font-semibold">Audit Record:</span> {settlement.note}. Transaction record registered immutably in the Lucknow cluster ledger.
+      <div className="flex items-start gap-2 rounded-lg bg-slate-50 p-2.5 border border-slate-200 text-[11px] text-slate-600">
+        <Info className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5" />
+        <p className="font-normal">
+          <span className="font-bold text-slate-800">Audit Record:</span> {settlement.note}. Transaction record registered immutably in the Lucknow cluster ledger.
         </p>
       </div>
     </div>

@@ -130,7 +130,7 @@ export default function MarketPredictorPage() {
       ? guidance.fourteen_day
       : guidance?.seven_day || [];
 
-  // Helper for Easy, Natural Hindi Recommendations
+  // Helper for Natural Hindi Recommendations
   const getHindiRecommendation = (rec: any) => {
     if (!rec) return { badge: "🟢 सही समय पर बेचें", advice: "बाज़ार का भाव अच्छा है।" };
     if (rec.seller_action === "hold") {
@@ -169,26 +169,26 @@ export default function MarketPredictorPage() {
   const hindiBuyer = getHindiBuyerRecommendation(guidance?.action_recommendation);
 
   return (
-    <div className="min-h-screen bg-[#FAF9F5] text-[#17201D]">
+    <div className="min-h-screen bg-[#FAFAF9] text-slate-800 flex flex-col selection:bg-emerald-100 selection:text-emerald-900">
       <Navbar />
 
-      {/* HERO BANNER */}
-      <section className="border-b border-[#E9E7E1] bg-gradient-to-b from-[#DCE8DD]/50 via-[#FAF9F5] to-[#FAF9F5] pt-10 pb-8 px-4 sm:px-6 lg:px-8">
+      {/* TOP HEADER SECTION */}
+      <section className="border-b border-slate-200 bg-white pt-8 pb-7 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-            <div className="space-y-2">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#173D32]/20 bg-[#DCE8DD] px-3.5 py-1 text-xs font-bold text-[#173D32]">
-                <Sparkles className="h-3.5 w-3.5 text-[#C99B43]" />
+            <div className="space-y-1.5">
+              <div className="inline-flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
+                <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
                 <span>
                   {lang === "hi"
                     ? "एआई फसल भाव पूर्वानुमान • पूरा लखनऊ कृषि क्षेत्र"
                     : "AI Produce Predictive Intelligence • Lucknow Regional Cluster"}
                 </span>
               </div>
-              <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#17201D]">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900">
                 {lang === "hi" ? "कृषि उपज बाज़ार और भाव का सही अनुमान" : "Produce Market Predictor & Action Advisory"}
               </h1>
-              <p className="text-sm text-[#7D8A65] max-w-2xl">
+              <p className="text-xs sm:text-sm text-slate-600 max-w-2xl font-normal">
                 {lang === "hi"
                   ? "लखनऊ मंडी के ताज़ा और पिछले भाव देखकर जानें कि फसल कब बेचना सबसे फायदेमंद रहेगा और कितना ज़्यादा मुनाफ़ा मिलेगा।"
                   : "Turn historical and real-time Agmarknet mandi data into actionable revenue-maximizing decisions for farmers and cost-minimizing timing for buyers."}
@@ -197,14 +197,14 @@ export default function MarketPredictorPage() {
 
             {/* Persona Switcher & Live Sync Button */}
             <div className="flex flex-wrap items-center gap-3">
-              <div className="flex rounded-full border border-[#E9E7E1] bg-white p-1 shadow-xs">
+              <div className="flex rounded-lg border border-slate-200 bg-slate-50 p-1 shadow-xs">
                 <button
                   type="button"
                   onClick={() => setPerspective("farmer")}
-                  className={`rounded-full px-4 py-2 text-xs font-bold transition ${
+                  className={`rounded-md px-3.5 py-1.5 text-xs font-bold transition ${
                     perspective === "farmer"
-                      ? "bg-[#173D32] text-white shadow-xs"
-                      : "text-[#7D8A65] hover:text-[#17201D]"
+                      ? "bg-emerald-600 text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900"
                   }`}
                 >
                   {lang === "hi" ? "🌾 किसान भाई (ज़्यादा कमाई)" : "🌾 Farmer / FPO View"}
@@ -212,10 +212,10 @@ export default function MarketPredictorPage() {
                 <button
                   type="button"
                   onClick={() => setPerspective("buyer")}
-                  className={`rounded-full px-4 py-2 text-xs font-bold transition ${
+                  className={`rounded-md px-3.5 py-1.5 text-xs font-bold transition ${
                     perspective === "buyer"
-                      ? "bg-[#173D32] text-white shadow-xs"
-                      : "text-[#7D8A65] hover:text-[#17201D]"
+                      ? "bg-emerald-600 text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900"
                   }`}
                 >
                   {lang === "hi" ? "🛒 खरीदार (कम लागत)" : "🛒 Buyer View"}
@@ -226,26 +226,26 @@ export default function MarketPredictorPage() {
                 type="button"
                 onClick={handleSyncAgmarknet}
                 disabled={syncing}
-                className="flex items-center gap-1.5 rounded-full border border-[#173D32] bg-white px-4 py-2 text-xs font-bold text-[#173D32] hover:bg-[#DCE8DD]/40 transition shadow-xs disabled:opacity-50"
+                className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition shadow-xs disabled:opacity-50"
               >
-                <RotateCw className={`h-3.5 w-3.5 text-[#C99B43] ${syncing ? "animate-spin" : ""}`} />
+                <RotateCw className={`h-3.5 w-3.5 text-emerald-600 ${syncing ? "animate-spin" : ""}`} />
                 <span>{syncing ? (lang === "hi" ? "अपडेट हो रहा है..." : "Syncing...") : (lang === "hi" ? "मंडी भाव ताज़ा करें" : "Sync Agmarknet")}</span>
               </button>
             </div>
           </div>
 
           {/* CROP SELECTOR RIBBON */}
-          <div className="mt-8 flex gap-2.5 overflow-x-auto pb-2 scrollbar-none">
+          <div className="mt-6 flex gap-2 overflow-x-auto pb-2 scrollbar-none">
             {COMMODITIES.map((c) => {
               const isSelected = selectedCrop === c.id;
               return (
                 <button
                   key={c.id}
                   onClick={() => handleCropChange(c.id)}
-                  className={`flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-bold transition shrink-0 border ${
+                  className={`flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold transition shrink-0 border ${
                     isSelected
-                      ? "border-[#173D32] bg-[#173D32] text-white shadow-md scale-102"
-                      : "border-[#E9E7E1] bg-white text-[#17201D] hover:border-[#173D32]/40"
+                      ? "border-emerald-600 bg-emerald-600 text-white shadow-xs"
+                      : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
                   }`}
                 >
                   <span className="text-base">{c.icon}</span>
@@ -258,24 +258,22 @@ export default function MarketPredictorPage() {
       </section>
 
       {/* MAIN ADVISORY CONTENT */}
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-6 flex-1 w-full">
         {loading ? (
-          <div className="rounded-3xl border border-[#E9E7E1] bg-white p-12 text-center space-y-3">
-            <div className="mx-auto h-8 w-8 animate-spin rounded-full border-3 border-[#173D32] border-t-transparent" />
-            <p className="text-xs font-bold text-[#7D8A65]">
+          <div className="editorial-card p-12 text-center space-y-3 bg-white">
+            <div className="mx-auto h-7 w-7 animate-spin rounded-full border-2 border-emerald-600 border-t-transparent" />
+            <p className="text-xs font-semibold text-slate-600">
               {lang === "hi" ? "मंडी भाव और सटीक अनुमान लोड हो रहा है..." : "Computing AI Price Predictions & Agmarknet Baseline..."}
             </p>
           </div>
         ) : guidance ? (
           <>
             {/* 1. PRIMARY ACTIONABLE DECISION CARD */}
-            <div className="rounded-3xl border border-[#173D32]/30 bg-white p-6 sm:p-8 shadow-xl space-y-6 relative overflow-hidden">
-              <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[#DCE8DD]/40 blur-2xl pointer-events-none" />
-
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 border-b border-[#E9E7E1] pb-6">
-                <div className="space-y-1.5">
+            <div className="editorial-card p-6 sm:p-7 space-y-6 bg-white">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 border-b border-slate-100 pb-5">
+                <div className="space-y-2">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="rounded-full bg-[#173D32] px-3.5 py-1 text-xs font-bold text-white uppercase tracking-wider">
+                    <span className="rounded-md bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs font-bold text-emerald-800">
                       {lang === "hi"
                         ? perspective === "farmer"
                           ? hindiSeller.badge
@@ -284,15 +282,15 @@ export default function MarketPredictorPage() {
                         ? guidance.action_recommendation?.seller_badge || "🟢 HOLD (Recommended)"
                         : guidance.action_recommendation?.buyer_badge || "🛒 BUY TODAY"}
                     </span>
-                    <span className="text-xs font-semibold text-[#7D8A65]">
+                    <span className="text-xs font-medium text-slate-500">
                       {lang === "hi" ? "मंडी क्षेत्र:" : "Cluster:"} {guidance.market_cluster} • {lang === "hi" ? "अनुमान शुद्धता:" : "Confidence:"}{" "}
-                      <strong className="text-[#17201D] capitalize">
+                      <strong className="text-slate-800 capitalize">
                         {guidance.today.confidence === "high" ? (lang === "hi" ? "उच्च (विश्वसनीय)" : "High") : guidance.today.confidence}
                       </strong>
                     </span>
                   </div>
 
-                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#17201D] capitalize">
+                  <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 capitalize">
                     {lang === "hi"
                       ? perspective === "farmer"
                         ? `${cropDisplayName}: फसल बेचने की सही सलाह और अधिकतम मुनाफ़ा`
@@ -301,7 +299,7 @@ export default function MarketPredictorPage() {
                       ? `${selectedCrop} Timing Advisory: Maximize Harvest Profit`
                       : `${selectedCrop} Procurement Advisory: Cost Minimizer`}
                   </h2>
-                  <p className="text-sm font-medium text-[#17201D] max-w-3xl leading-relaxed">
+                  <p className="text-sm font-normal text-slate-700 max-w-3xl leading-relaxed">
                     {lang === "hi"
                       ? perspective === "farmer"
                         ? hindiSeller.advice
@@ -313,96 +311,96 @@ export default function MarketPredictorPage() {
                 </div>
 
                 {/* Key Numbers Highlight */}
-                <div className="flex items-center gap-4 bg-[#F7F5EF] p-4 rounded-2xl border border-[#E9E7E1] shrink-0">
+                <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200 shrink-0">
                   <div>
-                    <span className="text-[10px] font-bold uppercase text-[#7D8A65] block">
+                    <span className="text-[10px] font-bold uppercase text-slate-500 block">
                       {lang === "hi" ? "आज का मंडी भाव" : "Today's Benchmark"}
                     </span>
-                    <span className="font-serif text-2xl sm:text-3xl font-bold text-[#17201D]">
+                    <span className="text-2xl font-bold text-slate-900">
                       {formatCurrency(guidance.today.base)}
-                      <span className="text-xs font-sans font-normal text-[#7D8A65]">{lang === "hi" ? "/किलो" : "/kg"}</span>
+                      <span className="text-xs font-normal text-slate-500">{lang === "hi" ? "/किलो" : "/kg"}</span>
                     </span>
                   </div>
 
-                  <div className="h-10 w-[1px] bg-[#E9E7E1]" />
+                  <div className="h-9 w-[1px] bg-slate-200" />
 
                   <div>
-                    <span className="text-[10px] font-bold uppercase text-[#173D32] block">
+                    <span className="text-[10px] font-bold uppercase text-emerald-700 block">
                       {lang === "hi" ? "अधिकतम अनुमानित भाव" : perspective === "farmer" ? "Projected Peak" : "7-Day Range"}
                     </span>
-                    <span className="font-serif text-2xl sm:text-3xl font-bold text-[#173D32]">
+                    <span className="text-2xl font-bold text-emerald-700">
                       {formatCurrency(guidance.action_recommendation?.optimal_price || guidance.today.high)}
-                      <span className="text-xs font-sans font-normal text-[#7D8A65]">{lang === "hi" ? "/किलो" : "/kg"}</span>
+                      <span className="text-xs font-normal text-slate-500">{lang === "hi" ? "/किलो" : "/kg"}</span>
                     </span>
                   </div>
                 </div>
               </div>
 
               {/* 4 Actionable Metric Pillars */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div className="rounded-2xl border border-[#E9E7E1] bg-[#FAF9F5] p-4 space-y-1">
-                  <span className="text-[11px] font-bold text-[#7D8A65] flex items-center gap-1">
-                    <Calendar className="h-3.5 w-3.5 text-[#C99B43]" />
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+                <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 space-y-1">
+                  <span className="text-[11px] font-semibold text-slate-600 flex items-center gap-1">
+                    <Calendar className="h-3.5 w-3.5 text-emerald-600" />
                     <span>{lang === "hi" ? "बेचने का सबसे अच्छा दिन" : "Optimal Action Window"}</span>
                   </span>
-                  <p className="font-bold text-sm text-[#17201D]">
+                  <p className="font-bold text-sm text-slate-900">
                     {guidance.action_recommendation?.optimal_harvest_date || guidance.today.date}
                   </p>
-                  <p className="text-[10px] text-[#7D8A65]">
+                  <p className="text-[10px] text-slate-500">
                     {lang === "hi" ? "इस दिन सबसे ऊंचा भाव मिलने की उम्मीद" : "Projected market price peak"}
                   </p>
                 </div>
 
-                <div className="rounded-2xl border border-[#E9E7E1] bg-[#FAF9F5] p-4 space-y-1">
-                  <span className="text-[11px] font-bold text-[#7D8A65] flex items-center gap-1">
-                    <TrendingUp className="h-3.5 w-3.5 text-[#173D32]" />
+                <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 space-y-1">
+                  <span className="text-[11px] font-semibold text-slate-600 flex items-center gap-1">
+                    <TrendingUp className="h-3.5 w-3.5 text-emerald-600" />
                     <span>{lang === "hi" ? "अतिरिक्त मुनाफ़ा" : "Expected Gain"}</span>
                   </span>
-                  <p className="font-bold text-sm text-[#173D32]">
+                  <p className="font-bold text-sm text-emerald-700">
                     +{guidance.action_recommendation?.expected_gain_pct || 12.5}% (+₹
                     {guidance.action_recommendation?.expected_gain_rupees_per_kg || 4.2}/{lang === "hi" ? "किलो" : "kg"})
                   </p>
-                  <p className="text-[10px] text-[#7D8A65]">
+                  <p className="text-[10px] text-slate-500">
                     {lang === "hi" ? "जल्दबाजी में बेचने की तुलना में" : "vs traditional distress liquidation"}
                   </p>
                 </div>
 
-                <div className="rounded-2xl border border-[#E9E7E1] bg-[#FAF9F5] p-4 space-y-1">
-                  <span className="text-[11px] font-bold text-[#7D8A65] flex items-center gap-1">
-                    <ShieldCheck className="h-3.5 w-3.5 text-[#C99B43]" />
+                <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 space-y-1">
+                  <span className="text-[11px] font-semibold text-slate-600 flex items-center gap-1">
+                    <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
                     <span>{lang === "hi" ? "खराब होने का खतरा" : "Spoilage Risk"}</span>
                   </span>
-                  <p className="font-bold text-sm text-[#17201D] capitalize">
+                  <p className="font-bold text-sm text-slate-900 capitalize">
                     {lang === "hi" ? "कम जोखिम (सुरक्षित)" : `${guidance.market_drivers?.spoilage_risk_gauge || "Low"} Risk`}
                   </p>
-                  <p className="text-[10px] text-[#7D8A65]">
+                  <p className="text-[10px] text-slate-500">
                     {lang === "hi"
-                      ? `साधारण शेड: ${guidance.market_drivers?.shelf_life_ambient_days || 5} दिन • कोल्ड स्टोरेज: ${guidance.market_drivers?.shelf_life_cold_days || 21} दिन`
-                      : `Ambient: ${guidance.market_drivers?.shelf_life_ambient_days || 5} days • Cold: ${guidance.market_drivers?.shelf_life_cold_days || 21} days`}
+                      ? `साधारण शेड: ${guidance.market_drivers?.shelf_life_ambient_days || 5} दिन • कोल्ड: ${guidance.market_drivers?.shelf_life_cold_days || 21} दिन`
+                      : `Ambient: ${guidance.market_drivers?.shelf_life_ambient_days || 5}d • Cold: ${guidance.market_drivers?.shelf_life_cold_days || 21}d`}
                   </p>
                 </div>
 
-                <div className="rounded-2xl border border-[#E9E7E1] bg-[#FAF9F5] p-4 space-y-1">
-                  <span className="text-[11px] font-bold text-[#7D8A65] flex items-center gap-1">
-                    <Scale className="h-3.5 w-3.5 text-[#173D32]" />
+                <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 space-y-1">
+                  <span className="text-[11px] font-semibold text-slate-600 flex items-center gap-1">
+                    <Scale className="h-3.5 w-3.5 text-emerald-600" />
                     <span>{lang === "hi" ? "सीधी बिक्री से बचत" : "Farmer Margin Gain"}</span>
                   </span>
-                  <p className="font-bold text-sm text-[#173D32]">
+                  <p className="font-bold text-sm text-emerald-700">
                     +₹{guidance.price_breakdown?.farmer_extra_margin_per_kg || 6.5}/{lang === "hi" ? "किलो" : "kg"}
                   </p>
-                  <p className="text-[10px] text-[#7D8A65]">
-                    {lang === "hi" ? "बिचौलियों और आढ़तियों की 0% दलाली" : "Zero middlemen APMC commission"}
+                  <p className="text-[10px] text-slate-500">
+                    {lang === "hi" ? "बिचौलियों की 0% दलाली" : "Zero middlemen commission"}
                   </p>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-[#E9E7E1]">
-                <div className="text-xs text-[#7D8A65] flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-[#173D32]" />
+              <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-slate-100">
+                <div className="text-xs text-slate-500 flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                   <span>
                     {lang === "hi" ? "सरकारी मंडी डेटा सोर्स:" : "Agmarknet Source:"}{" "}
-                    <strong>{guidance.source_meta?.source || "Lucknow APMC Benchmark"}</strong>
+                    <strong className="text-slate-700">{guidance.source_meta?.source || "Lucknow APMC Benchmark"}</strong>
                   </span>
                 </div>
 
@@ -410,7 +408,7 @@ export default function MarketPredictorPage() {
                   {perspective === "farmer" ? (
                     <Link
                       href="/farmer"
-                      className="flex items-center gap-2 rounded-full bg-[#173D32] px-6 py-2.5 text-xs font-bold text-white hover:bg-[#215445] transition shadow-md"
+                      className="flex items-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-emerald-700 transition shadow-xs"
                     >
                       <span>
                         {lang === "hi"
@@ -422,7 +420,7 @@ export default function MarketPredictorPage() {
                   ) : (
                     <Link
                       href="/buyer"
-                      className="flex items-center gap-2 rounded-full bg-[#173D32] px-6 py-2.5 text-xs font-bold text-white hover:bg-[#215445] transition shadow-md"
+                      className="flex items-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-emerald-700 transition shadow-xs"
                     >
                       <span>
                         {lang === "hi"
@@ -437,38 +435,38 @@ export default function MarketPredictorPage() {
             </div>
 
             {/* 2. REVENUE & SPOILAGE HARVEST SIMULATOR */}
-            <div className="rounded-3xl border border-[#E9E7E1] bg-white p-6 sm:p-8 shadow-sm space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#E9E7E1] pb-4">
-                <div className="space-y-1">
-                  <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#173D32]">
-                    <Calculator className="h-4 w-4 text-[#C99B43]" />
+            <div className="editorial-card p-6 sm:p-7 space-y-5 bg-white">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-100 pb-4">
+                <div className="space-y-0.5">
+                  <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700">
+                    <Calculator className="h-3.5 w-3.5 text-emerald-600" />
                     <span>{lang === "hi" ? "उपज कमाई और मुनाफ़ा कैलकुलेटर" : "PRODUCE REVENUE & STORAGE SIMULATOR"}</span>
                   </div>
-                  <h3 className="font-serif text-2xl font-bold text-[#17201D]">
+                  <h3 className="text-xl font-bold tracking-tight text-slate-900">
                     {lang === "hi"
                       ? `अपनी ${cropDisplayName} की कुल कमाई का हिसाब लगाएं`
                       : `Simulate Your Net Harvest Payout (${selectedCrop.toUpperCase()})`}
                   </h3>
-                  <p className="text-xs text-[#7D8A65]">
+                  <p className="text-xs text-slate-500">
                     {lang === "hi"
-                      ? "अपनी फसल का वज़न (किलो) और रखने का तरीका चुनें, और देखें कि सही दिन बेचने पर आपको कितने हज़ार रुपयों का अतिरिक्त फ़ायदा होगा।"
+                      ? "अपनी फसल का वज़न (किलो) और रखने का तरीका चुनें, और देखें कि सही दिन बेचने पर कितने रुपयों का अतिरिक्त फ़ायदा होगा।"
                       : "Enter your batch volume and storage conditions to calculate date-by-date revenue, spoilage risk, and optimal harvest day."}
                   </p>
                 </div>
 
                 {/* Storage Toggle */}
-                <div className="flex rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] p-1">
+                <div className="flex rounded-lg border border-slate-200 bg-slate-50 p-1">
                   <button
                     type="button"
                     onClick={() => {
                       setStorageType("ambient");
                       runSimulation(selectedCrop, batchQty, "ambient");
                     }}
-                    className={`rounded-lg px-3 py-1.5 text-xs font-bold transition ${
-                      storageType === "ambient" ? "bg-white text-[#173D32] shadow-xs" : "text-[#7D8A65]"
+                    className={`rounded-md px-3 py-1 text-xs font-bold transition ${
+                      storageType === "ambient" ? "bg-white text-slate-900 shadow-xs" : "text-slate-600"
                     }`}
                   >
-                    {lang === "hi" ? "साधारण गोदाम / शेड" : "Farm Shed (Ambient)"}
+                    {lang === "hi" ? "साधारण गोदाम" : "Ambient Storage"}
                   </button>
                   <button
                     type="button"
@@ -476,27 +474,27 @@ export default function MarketPredictorPage() {
                       setStorageType("cold");
                       runSimulation(selectedCrop, batchQty, "cold");
                     }}
-                    className={`rounded-lg px-3 py-1.5 text-xs font-bold transition ${
-                      storageType === "cold" ? "bg-white text-[#173D32] shadow-xs" : "text-[#7D8A65]"
+                    className={`rounded-md px-3 py-1 text-xs font-bold transition ${
+                      storageType === "cold" ? "bg-white text-slate-900 shadow-xs" : "text-slate-600"
                     }`}
                   >
-                    {lang === "hi" ? "कोल्ड स्टोरेज / सोलर" : "Cold Storage / Solar"}
+                    {lang === "hi" ? "कोल्ड स्टोरेज" : "Cold Storage"}
                   </button>
                 </div>
               </div>
 
               {/* Slider & Quantity Controls */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-                <div className="md:col-span-2 space-y-2">
+                <div className="md:col-span-2 space-y-2.5">
                   <div className="flex items-center justify-between text-xs font-semibold">
-                    <label className="text-[#17201D]">
+                    <label className="text-slate-800">
                       {lang === "hi" ? "फसल की मात्रा:" : "Batch Quantity:"}{" "}
-                      <strong className="text-sm font-bold text-[#173D32]">
+                      <strong className="text-sm font-bold text-emerald-700">
                         {batchQty.toLocaleString()} {lang === "hi" ? "किलो" : "kg"}
                       </strong>{" "}
                       ({(batchQty / 100).toFixed(1)} {lang === "hi" ? "क्विंटल" : "Quintals"})
                     </label>
-                    <span className="text-[#7D8A65]">{lang === "hi" ? "शॉर्टकट चुनें:" : "Quick Presets:"}</span>
+                    <span className="text-slate-500">{lang === "hi" ? "शॉर्टकट:" : "Presets:"}</span>
                   </div>
 
                   <input
@@ -510,7 +508,7 @@ export default function MarketPredictorPage() {
                       setBatchQty(val);
                       runSimulation(selectedCrop, val, storageType);
                     }}
-                    className="w-full h-2 bg-[#E9E7E1] rounded-lg appearance-none cursor-pointer accent-[#173D32]"
+                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
                   />
 
                   <div className="flex gap-2 pt-1">
@@ -522,10 +520,10 @@ export default function MarketPredictorPage() {
                           setBatchQty(preset);
                           runSimulation(selectedCrop, preset, storageType);
                         }}
-                        className={`rounded-lg px-2.5 py-1 text-[11px] font-semibold border transition ${
+                        className={`rounded-md px-2.5 py-1 text-[11px] font-semibold border transition ${
                           batchQty === preset
-                            ? "border-[#173D32] bg-[#173D32] text-white"
-                            : "border-[#E9E7E1] bg-[#F7F5EF] text-[#7D8A65] hover:bg-white"
+                            ? "border-emerald-600 bg-emerald-50 text-emerald-800 font-bold"
+                            : "border-slate-200 bg-slate-50 text-slate-600 hover:bg-white"
                         }`}
                       >
                         {preset >= 1000 ? `${preset / 1000}${lang === "hi" ? " टन" : "T"}` : `${preset}${lang === "hi" ? " किलो" : "kg"}`}
@@ -536,29 +534,29 @@ export default function MarketPredictorPage() {
 
                 {/* Simulation Result Box */}
                 {simResult && (
-                  <div className="rounded-2xl border border-[#173D32]/20 bg-[#DCE8DD]/40 p-4 space-y-2">
-                    <span className="text-[10px] font-bold uppercase text-[#173D32] tracking-wider block">
+                  <div className="rounded-xl border border-emerald-200 bg-emerald-50/60 p-4 space-y-2">
+                    <span className="text-[10px] font-bold uppercase text-emerald-800 tracking-wider block">
                       {lang === "hi"
                         ? `कुल ${batchQty.toLocaleString()} किलो पर अनुमानित कमाई`
                         : `Projected Gain on ${batchQty} kg`}
                     </span>
                     <div className="flex items-baseline justify-between">
-                      <span className="text-xs text-[#7D8A65]">{lang === "hi" ? "आज बेचने पर कुल रकम:" : "Sell Today:"}</span>
-                      <span className="font-bold text-sm text-[#17201D]">
+                      <span className="text-xs text-slate-600">{lang === "hi" ? "आज बेचने पर रकम:" : "Sell Today:"}</span>
+                      <span className="font-bold text-sm text-slate-900">
                         {formatCurrency(simResult.today_revenue)}
                       </span>
                     </div>
                     <div className="flex items-baseline justify-between">
-                      <span className="text-xs text-[#173D32] font-semibold">
-                        {lang === "hi" ? "सही दिन बेचने पर कुल रकम:" : "Sell on Optimal Day:"}
+                      <span className="text-xs text-emerald-800 font-semibold">
+                        {lang === "hi" ? "सही दिन बेचने पर रकम:" : "Optimal Day Revenue:"}
                       </span>
-                      <span className="font-serif text-xl font-bold text-[#173D32]">
+                      <span className="text-lg font-bold text-emerald-800">
                         {formatCurrency(simResult.best_day_revenue)}
                       </span>
                     </div>
-                    <div className="pt-2 border-t border-[#173D32]/20 flex items-center justify-between text-xs font-bold text-[#173D32]">
-                      <span>{lang === "hi" ? "📈 कुल अतिरिक्त बचत/मुनाफ़ा:" : "📈 Extra Net Profit:"}</span>
-                      <span className="bg-[#173D32] text-white px-2 py-0.5 rounded-md">
+                    <div className="pt-2 border-t border-emerald-200/80 flex items-center justify-between text-xs font-bold text-emerald-800">
+                      <span>{lang === "hi" ? "📈 कुल अतिरिक्त मुनाफ़ा:" : "📈 Extra Net Profit:"}</span>
+                      <span className="bg-emerald-700 text-white px-2 py-0.5 rounded-md font-mono">
                         +{formatCurrency(simResult.extra_profit_rupees)} ({simResult.extra_profit_pct}%)
                       </span>
                     </div>
@@ -568,15 +566,15 @@ export default function MarketPredictorPage() {
             </div>
 
             {/* 3. PREDICTIVE CHARTS & MANDI ARBITRAGE GRID */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               {/* Left 7/14 Day Price Trend Chart */}
-              <div className="lg:col-span-7 rounded-3xl border border-[#E9E7E1] bg-white p-6 sm:p-8 shadow-sm space-y-4">
+              <div className="lg:col-span-7 editorial-card p-6 sm:p-7 space-y-4 bg-white">
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
-                    <span className="text-[10px] font-bold uppercase text-[#7D8A65] tracking-wider">
+                    <span className="text-[10px] font-bold uppercase text-slate-500 tracking-wider">
                       {lang === "hi" ? "भाव का ग्राफ" : "Price Trajectory Curve"}
                     </span>
-                    <h4 className="font-serif text-xl font-bold text-[#17201D]">
+                    <h4 className="text-lg font-bold tracking-tight text-slate-900">
                       {lang === "hi"
                         ? forecastHorizon === "7day"
                           ? `अगले 7 दिनों के अनुमानित भाव (₹/किलो)`
@@ -587,12 +585,12 @@ export default function MarketPredictorPage() {
                     </h4>
                   </div>
 
-                  <div className="flex rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] p-1">
+                  <div className="flex rounded-lg border border-slate-200 bg-slate-50 p-1">
                     <button
                       type="button"
                       onClick={() => setForecastHorizon("7day")}
-                      className={`rounded-lg px-3 py-1 text-xs font-bold transition ${
-                        forecastHorizon === "7day" ? "bg-white text-[#173D32] shadow-xs" : "text-[#7D8A65]"
+                      className={`rounded-md px-2.5 py-1 text-xs font-bold transition ${
+                        forecastHorizon === "7day" ? "bg-white text-slate-900 shadow-xs" : "text-slate-600"
                       }`}
                     >
                       {lang === "hi" ? "7 दिन" : "7 Days"}
@@ -600,8 +598,8 @@ export default function MarketPredictorPage() {
                     <button
                       type="button"
                       onClick={() => setForecastHorizon("14day")}
-                      className={`rounded-lg px-3 py-1 text-xs font-bold transition ${
-                        forecastHorizon === "14day" ? "bg-white text-[#173D32] shadow-xs" : "text-[#7D8A65]"
+                      className={`rounded-md px-2.5 py-1 text-xs font-bold transition ${
+                        forecastHorizon === "14day" ? "bg-white text-slate-900 shadow-xs" : "text-slate-600"
                       }`}
                     >
                       {lang === "hi" ? "14 दिन" : "14 Days"}
@@ -614,29 +612,25 @@ export default function MarketPredictorPage() {
                     <AreaChart data={activeChartData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
                       <defs>
                         <linearGradient id="priceGrad" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#173D32" stopOpacity={0.4} />
-                          <stop offset="95%" stopColor="#173D32" stopOpacity={0.0} />
-                        </linearGradient>
-                        <linearGradient id="highLowGrad" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#C99B43" stopOpacity={0.2} />
-                          <stop offset="95%" stopColor="#C99B43" stopOpacity={0.0} />
+                          <stop offset="5%" stopColor="#10B981" stopOpacity={0.35} />
+                          <stop offset="95%" stopColor="#10B981" stopOpacity={0.0} />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#F0EFEA" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" />
                       <XAxis
                         dataKey="date"
                         tickFormatter={(val) => {
                           const d = new Date(val);
                           return d.toLocaleDateString(lang === "hi" ? "hi-IN" : "en-IN", { weekday: "short", day: "numeric" });
                         }}
-                        tick={{ fontSize: 11, fill: "#7D8A65" }}
+                        tick={{ fontSize: 11, fill: "#64748B" }}
                         axisLine={false}
                         tickLine={false}
                       />
                       <YAxis
                         domain={["auto", "auto"]}
                         tickFormatter={(val) => `₹${val}`}
-                        tick={{ fontSize: 11, fill: "#7D8A65" }}
+                        tick={{ fontSize: 11, fill: "#64748B" }}
                         axisLine={false}
                         tickLine={false}
                       />
@@ -645,8 +639,8 @@ export default function MarketPredictorPage() {
                           if (active && payload && payload.length) {
                             const data = payload[0].payload;
                             return (
-                              <div className="rounded-xl border border-[#E9E7E1] bg-white p-3 shadow-xl space-y-1 text-xs">
-                                <p className="font-bold text-[#17201D]">
+                              <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-md space-y-1 text-xs">
+                                <p className="font-bold text-slate-900">
                                   {label
                                     ? new Date(label).toLocaleDateString(lang === "hi" ? "hi-IN" : "en-IN", {
                                         weekday: "long",
@@ -655,15 +649,12 @@ export default function MarketPredictorPage() {
                                       })
                                     : "Forecast Date"}
                                 </p>
-                                <p className="text-[#173D32] font-bold text-sm">
+                                <p className="text-emerald-700 font-bold text-sm">
                                   {lang === "hi" ? "अनुमानित भाव:" : "Base Price:"} ₹{data.base}/{lang === "hi" ? "किलो" : "kg"}
                                 </p>
-                                <p className="text-[#7D8A65]">
+                                <p className="text-slate-500">
                                   {lang === "hi" ? "संभावित दायरा:" : "Range:"} ₹{data.low} - ₹{data.high}
                                 </p>
-                                <span className="inline-block rounded bg-[#DCE8DD] px-1.5 py-0.5 text-[10px] font-bold text-[#173D32] uppercase">
-                                  {lang === "hi" ? "विश्वसनीय अनुमान" : `${data.confidence} confidence`}
-                                </span>
                               </div>
                             );
                           }
@@ -672,18 +663,9 @@ export default function MarketPredictorPage() {
                       />
                       <Area
                         type="monotone"
-                        dataKey="high"
-                        stroke="#C99B43"
-                        strokeDasharray="3 3"
-                        fillOpacity={1}
-                        fill="url(#highLowGrad)"
-                        name={lang === "hi" ? "अधिकतम भाव" : "Upper Bound"}
-                      />
-                      <Area
-                        type="monotone"
                         dataKey="base"
-                        stroke="#173D32"
-                        strokeWidth={3}
+                        stroke="#059669"
+                        strokeWidth={2.5}
                         fillOpacity={1}
                         fill="url(#priceGrad)"
                         name={lang === "hi" ? "अनुमानित मॉडल भाव" : "Expected Modal Price"}
@@ -694,46 +676,46 @@ export default function MarketPredictorPage() {
               </div>
 
               {/* Right: Lucknow 5-Mandi Price Arbitrage */}
-              <div className="lg:col-span-5 rounded-3xl border border-[#E9E7E1] bg-white p-6 sm:p-8 shadow-sm space-y-4">
+              <div className="lg:col-span-5 editorial-card p-6 sm:p-7 space-y-4 bg-white">
                 <div className="space-y-0.5">
-                  <span className="text-[10px] font-bold uppercase text-[#7D8A65] tracking-wider">
+                  <span className="text-[10px] font-bold uppercase text-slate-500 tracking-wider">
                     {lang === "hi" ? "मंडियों के भाव की तुलना" : "Cross-Mandi Arbitrage"}
                   </span>
-                  <h4 className="font-serif text-xl font-bold text-[#17201D]">
+                  <h4 className="text-lg font-bold tracking-tight text-slate-900">
                     {lang === "hi" ? "लखनऊ की मंडियों में आज का भाव" : "Lucknow Mandi Rate Comparison"}
                   </h4>
-                  <p className="text-xs text-[#7D8A65]">
+                  <p className="text-xs text-slate-500">
                     {lang === "hi"
                       ? "दुबग्गा, नवीन मंडी, मलिहाबाद और फार्मलिंक डायरेक्ट के भाव की तुलना।"
                       : "Real-time modal price variations across Lucknow sub-mandis vs FarmLink Direct."}
                   </p>
                 </div>
 
-                <div className="space-y-2.5 pt-2">
+                <div className="space-y-2.5 pt-1">
                   {guidance.mandi_comparison?.map((mandi, idx) => (
                     <div
                       key={idx}
-                      className={`p-3 rounded-2xl border flex items-center justify-between text-xs transition ${
+                      className={`p-3 rounded-xl border flex items-center justify-between text-xs transition ${
                         mandi.market_name.includes("FarmLink")
-                          ? "border-[#173D32] bg-[#DCE8DD]/40 font-bold"
-                          : "border-[#E9E7E1] bg-[#FAF9F5]"
+                          ? "border-emerald-300 bg-emerald-50/70 font-semibold"
+                          : "border-slate-200 bg-slate-50"
                       }`}
                     >
                       <div>
-                        <p className="font-bold text-[#17201D]">
+                        <p className="font-bold text-slate-900">
                           {lang === "hi" && mandi.market_name.includes("FarmLink")
                             ? "फार्मलिंक डायरेक्ट (सीधा किसान खाता)"
                             : mandi.market_name}
                         </p>
-                        <p className="text-[10px] text-[#7D8A65]">
+                        <p className="text-[10px] text-slate-500">
                           {mandi.role} • {lang === "hi" && mandi.status.includes("Highest") ? "किसान को सबसे ज़्यादा मुनाफा (+22%)" : mandi.status}
                         </p>
                       </div>
                       <div className="text-right">
-                        <span className="font-serif text-base font-bold text-[#173D32]">
+                        <span className="text-base font-bold text-emerald-700">
                           ₹{mandi.price_per_kg}/{lang === "hi" ? "किलो" : "kg"}
                         </span>
-                        <span className="text-[10px] text-[#7D8A65] block">
+                        <span className="text-[10px] text-slate-500 block">
                           {mandi.distance_km > 0 ? `${mandi.distance_km} km` : (lang === "hi" ? "सीधा डिजिटल भुगतान" : "Direct Escrow")}
                         </span>
                       </div>
@@ -744,45 +726,45 @@ export default function MarketPredictorPage() {
             </div>
 
             {/* 4. MARKET DRIVERS & INTEGRITY */}
-            <div className="rounded-3xl border border-[#E9E7E1] bg-white p-6 sm:p-8 shadow-sm space-y-4">
-              <div className="space-y-1">
-                <span className="text-[10px] font-bold uppercase text-[#173D32] tracking-wider">
+            <div className="editorial-card p-6 sm:p-7 space-y-4 bg-white">
+              <div className="space-y-0.5">
+                <span className="text-[10px] font-bold uppercase text-emerald-700 tracking-wider">
                   {lang === "hi" ? "बाज़ार की स्थिति और कारण" : "Forecast Drivers & Market Fundamentals"}
                 </span>
-                <h4 className="font-serif text-xl font-bold text-[#17201D]">
+                <h4 className="text-lg font-bold tracking-tight text-slate-900">
                   {lang === "hi" ? "मंडी में भाव क्यों बदल रहे हैं? (लखनऊ क्षेत्र का विश्लेषण)" : "Why is the price moving? (Lucknow Cluster Analysis)"}
                 </h4>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-                <div className="rounded-2xl border border-[#E9E7E1] bg-[#FAF9F5] p-4 space-y-2">
-                  <span className="text-xs font-bold text-[#17201D] flex items-center gap-1.5">
-                    <Truck className="h-4 w-4 text-[#C99B43]" />
-                    <span>{lang === "hi" ? "मंडियों में माल की आवक (सप्लाई)" : "Mandi Arrival Supply Trends"}</span>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-1.5">
+                  <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                    <Truck className="h-4 w-4 text-emerald-600" />
+                    <span>{lang === "hi" ? "मंडियों में माल की आवक" : "Mandi Arrival Supply Trends"}</span>
                   </span>
-                  <p className="text-xs text-[#7D8A65]">
+                  <p className="text-xs text-slate-600 leading-relaxed">
                     {guidance.market_drivers?.arrival_volume_trend}
                   </p>
                 </div>
 
-                <div className="rounded-2xl border border-[#E9E7E1] bg-[#FAF9F5] p-4 space-y-2">
-                  <span className="text-xs font-bold text-[#17201D] flex items-center gap-1.5">
-                    <Layers className="h-4 w-4 text-[#173D32]" />
-                    <span>{lang === "hi" ? "मौसम और परिवहन की स्थिति" : "Weather & Agro-Climatic Factors"}</span>
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-1.5">
+                  <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                    <Layers className="h-4 w-4 text-emerald-600" />
+                    <span>{lang === "hi" ? "मौसम और परिवहन" : "Weather & Agro-Climatic Factors"}</span>
                   </span>
-                  <p className="text-xs text-[#7D8A65]">
+                  <p className="text-xs text-slate-600 leading-relaxed">
                     {lang === "hi"
                       ? "मलिहाबाद, काकोरी और बख्शी का तालाब क्षेत्र में मौसम साफ — माल की ढुलाई सुचारू रूप से जारी।"
                       : guidance.market_drivers?.weather_impact}
                   </p>
                 </div>
 
-                <div className="rounded-2xl border border-[#E9E7E1] bg-[#FAF9F5] p-4 space-y-2">
-                  <span className="text-xs font-bold text-[#17201D] flex items-center gap-1.5">
-                    <Store className="h-4 w-4 text-[#C99B43]" />
-                    <span>{lang === "hi" ? "बाज़ार और दुकानों में मांग" : "Demand Surge & Festival Pressure"}</span>
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-1.5">
+                  <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                    <Store className="h-4 w-4 text-emerald-600" />
+                    <span>{lang === "hi" ? "बाज़ार में मांग" : "Demand Surge & Festival Pressure"}</span>
                   </span>
-                  <p className="text-xs text-[#7D8A65]">
+                  <p className="text-xs text-slate-600 leading-relaxed">
                     {lang === "hi"
                       ? "गोमती नगर और हजरतगंज के होटलों व रेस्टोरेंटों में ताज़ी सब्जियों की अच्छी मांग (+16%)।"
                       : guidance.market_drivers?.demand_index}
@@ -792,7 +774,7 @@ export default function MarketPredictorPage() {
             </div>
           </>
         ) : (
-          <div className="rounded-3xl border border-[#E9E7E1] bg-white p-12 text-center text-xs text-[#7D8A65]">
+          <div className="editorial-card p-12 text-center text-xs text-slate-500 bg-white">
             {lang === "hi" ? `${cropDisplayName} का कोई डेटा उपलब्ध नहीं है।` : `No forecast data available for ${selectedCrop}.`}
           </div>
         )}

@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
 import { Order, RoutePlan, Lot } from "@/lib/types";
 import { useLanguage } from "@/lib/LanguageContext";
-import { formatCurrency, formatDateTime } from "@/lib/utils";
+import { formatCurrency, formatDateTime, formatDate } from "@/lib/utils";
 import { Navbar } from "@/components/Navbar";
 import { LeafletMap } from "@/components/LeafletMap";
 import {
@@ -38,7 +38,7 @@ export default function OperationsControlTowerPage() {
   const [loading, setLoading] = useState(true);
   const [planningRoute, setPlanningRoute] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"fleet" | "orders" | "exceptions" | "mandi" | "settlements">("fleet");
+  const [activeTab, setActiveTab] = useState<"orders" | "fleet" | "exceptions" | "mandi" | "settlements">("orders");
 
   const loadData = async () => {
     try {
@@ -113,48 +113,70 @@ export default function OperationsControlTowerPage() {
     }
   };
 
+  const getStatusPill = (status: string) => {
+    switch (status) {
+      case "draft":
+      case "pending":
+      case "created":
+        return "bg-amber-100 text-amber-800 border border-amber-200";
+      case "confirmed":
+      case "pickup_scheduled":
+      case "picked_up":
+      case "in_transit":
+        return "bg-blue-100 text-blue-800 border border-blue-200";
+      case "delivered":
+      case "settlement_ready":
+      case "settled":
+        return "bg-emerald-100 text-emerald-800 border border-emerald-200";
+      case "cancelled":
+        return "bg-rose-100 text-rose-800 border border-rose-200";
+      default:
+        return "bg-slate-100 text-slate-700 border border-slate-200";
+    }
+  };
+
   const totalGmv = orders.reduce((acc, o) => acc + (o.requested_qty * o.agreed_price), 0);
   const activeOrdersCount = orders.filter((o) => !["delivered", "settled", "cancelled"].includes(o.status)).length;
   const totalVolumeTonnage = (orders.reduce((acc, o) => acc + o.requested_qty, 0) / 1000).toFixed(1);
 
   return (
-    <div className="min-h-screen bg-[#F7F5EF] text-[#17201D] flex flex-col">
+    <div className="min-h-screen bg-[#FAFAF9] text-slate-800 flex flex-col selection:bg-emerald-100 selection:text-emerald-900">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 w-full space-y-8">
+      <main className="flex-1 max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 w-full space-y-6">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#E9E7E1] pb-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 pb-5">
           <div>
-            <div className="flex items-center gap-2 text-xs font-semibold text-[#7D8A65] uppercase tracking-wider mb-1">
-              <ShieldAlert className="h-3.5 w-3.5 text-[#173D32]" />
+            <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1">
+              <ShieldAlert className="h-4 w-4 text-emerald-600" />
               <span>{t.opsRole} • {t.lucknowCluster}</span>
             </div>
-            <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-[#17201D]">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900">
               {t.opsTitle}
             </h1>
-            <p className="text-sm text-[#7D8A65] mt-1 font-light max-w-2xl">
+            <p className="text-xs sm:text-sm text-slate-600 mt-0.5 max-w-2xl">
               {t.opsDesc}
             </p>
           </div>
 
-          {/* Navigation Tab Pills */}
-          <div className="flex items-center gap-1.5 bg-white p-1 rounded-full border border-[#E9E7E1] shadow-xs overflow-x-auto">
+          {/* Navigation Tab Buttons */}
+          <div className="flex items-center gap-1.5 bg-white p-1 rounded-lg border border-slate-200 shadow-xs overflow-x-auto">
             {[
+              { id: "orders", label: `Orders Table (${orders.length})`, icon: Package },
               { id: "fleet", label: "Fleet & Dispatch", icon: Truck },
-              { id: "orders", label: `Live Orders (${orders.length})`, icon: Package },
               { id: "exceptions", label: `Quality Holds (${exceptions.length})`, icon: AlertTriangle },
-              { id: "mandi", label: "Mandi Ingestion", icon: Store },
-              { id: "settlements", label: "Settlement Approvals", icon: Coins },
+              { id: "mandi", label: "Mandi Feed", icon: Store },
+              { id: "settlements", label: "Settlements", icon: Coins },
             ].map((tab) => {
               const Icon = tab.icon;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold whitespace-nowrap transition ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold whitespace-nowrap transition ${
                     activeTab === tab.id
-                      ? "bg-[#173D32] text-white shadow-xs"
-                      : "text-[#7D8A65] hover:text-[#17201D]"
+                      ? "bg-emerald-600 text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900"
                   }`}
                 >
                   <Icon className="h-3.5 w-3.5" />
@@ -166,108 +188,206 @@ export default function OperationsControlTowerPage() {
         </div>
 
         {statusMessage && (
-          <div className="rounded-2xl bg-[#DCE8DD] p-4 border border-[#173D32]/20 text-xs font-bold text-[#173D32] flex items-center gap-2 animate-in fade-in duration-200">
-            <CheckCircle2 className="h-4 w-4" />
+          <div className="rounded-xl bg-emerald-50 p-3.5 border border-emerald-200 text-xs font-bold text-emerald-900 flex items-center gap-2 animate-calm-reveal">
+            <CheckCircle2 className="h-4 w-4 text-emerald-600" />
             <span>{statusMessage}</span>
           </div>
         )}
 
         {/* Global Ops Metric KPI Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="rounded-3xl border border-[#E9E7E1] bg-white p-5 shadow-xs space-y-1">
-            <span className="text-[10px] font-bold text-[#7D8A65] uppercase tracking-wider flex items-center gap-1">
-              <Activity className="h-3.5 w-3.5 text-[#173D32]" />
+          <div className="editorial-card p-4 space-y-1 bg-white">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+              <Activity className="h-3.5 w-3.5 text-emerald-600" />
               <span>Active Dispatches</span>
             </span>
-            <p className="font-serif text-3xl font-bold text-[#17201D]">{activeOrdersCount} In Transit</p>
-            <p className="text-[11px] text-[#7D8A65] font-light">Tata Ace vehicle fulfillment</p>
+            <p className="text-2xl font-bold text-slate-900">{activeOrdersCount} In Transit</p>
+            <p className="text-[11px] text-slate-500 font-normal">Tata Ace vehicle fulfillment</p>
           </div>
 
-          <div className="rounded-3xl border border-[#E9E7E1] bg-white p-5 shadow-xs space-y-1">
-            <span className="text-[10px] font-bold text-[#7D8A65] uppercase tracking-wider flex items-center gap-1">
-              <Package className="h-3.5 w-3.5 text-[#C99B43]" />
+          <div className="editorial-card p-4 space-y-1 bg-white">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+              <Package className="h-3.5 w-3.5 text-emerald-600" />
               <span>Moving Volume</span>
             </span>
-            <p className="font-serif text-3xl font-bold text-[#17201D]">{totalVolumeTonnage} <span className="text-lg font-normal text-[#7D8A65]">Tons</span></p>
-            <p className="text-[11px] text-[#7D8A65] font-light">Direct from Lucknow farm gates</p>
+            <p className="text-2xl font-bold text-slate-900">{totalVolumeTonnage} <span className="text-sm font-normal text-slate-500">Tons</span></p>
+            <p className="text-[11px] text-slate-500 font-normal">Direct from Lucknow farm gates</p>
           </div>
 
-          <div className="rounded-3xl border border-[#E9E7E1] bg-white p-5 shadow-xs space-y-1">
-            <span className="text-[10px] font-bold text-[#7D8A65] uppercase tracking-wider flex items-center gap-1">
-              <TrendingUp className="h-3.5 w-3.5 text-[#173D32]" />
+          <div className="editorial-card p-4 space-y-1 bg-white">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+              <TrendingUp className="h-3.5 w-3.5 text-emerald-600" />
               <span>Network GMV</span>
             </span>
-            <p className="font-serif text-3xl font-bold text-[#17201D]">{formatCurrency(totalGmv)}</p>
-            <p className="text-[11px] text-[#7D8A65] font-light">Total settled & active trade</p>
+            <p className="text-2xl font-bold text-slate-900">{formatCurrency(totalGmv)}</p>
+            <p className="text-[11px] text-slate-500 font-normal">Total settled & active trade</p>
           </div>
 
-          <div className="rounded-3xl border border-[#E9E7E1] bg-white p-5 shadow-xs space-y-1">
-            <span className="text-[10px] font-bold text-[#7D8A65] uppercase tracking-wider flex items-center gap-1">
-              <ShieldCheck className="h-3.5 w-3.5 text-[#173D32]" />
+          <div className="editorial-card p-4 space-y-1 bg-white">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+              <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
               <span>Fulfillment SLA</span>
             </span>
-            <p className="font-serif text-3xl font-bold text-[#173D32]">99.4%</p>
-            <p className="text-[11px] text-[#7D8A65] font-light">&lt; 24 hr farm-to-dock transit</p>
+            <p className="text-2xl font-bold text-emerald-700">99.4%</p>
+            <p className="text-[11px] text-slate-500 font-normal">&lt; 24 hr farm-to-dock transit</p>
           </div>
         </div>
 
-        {/* TAB 1: FLEET & DISPATCH MAP */}
+        {/* TAB 1: ENTERPRISE-GRADE ORDERS DATA TABLE */}
+        {activeTab === "orders" && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xl font-bold tracking-tight text-slate-900">
+                  Database Orders & Fulfillment Registry ({orders.length})
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Live state machine coordinator across Farmer, Driver, and Institutional Buyer milestones.
+                </p>
+              </div>
+            </div>
+
+            {orders.length === 0 ? (
+              <div className="editorial-card p-12 text-center space-y-2 bg-white">
+                <Package className="h-10 w-10 text-slate-300 mx-auto" />
+                <p className="font-bold text-sm text-slate-900">No Active Orders in System</p>
+                <p className="text-xs text-slate-500">Orders placed by buyers will appear here in real time.</p>
+              </div>
+            ) : (
+              <div className="editorial-card overflow-hidden bg-white">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead className="bg-slate-50 text-slate-600 uppercase font-bold text-[10px] tracking-wider border-b border-slate-200">
+                      <tr>
+                        <th className="py-3.5 px-4">Order ID</th>
+                        <th className="py-3.5 px-4">Commodity & Grade</th>
+                        <th className="py-3.5 px-4">Quantity & Rate</th>
+                        <th className="py-3.5 px-4">Origin Farmer</th>
+                        <th className="py-3.5 px-4">Destination Buyer</th>
+                        <th className="py-3.5 px-4">Assigned Driver</th>
+                        <th className="py-3.5 px-4">Status</th>
+                        <th className="py-3.5 px-4 text-right">Ops Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 text-slate-800">
+                      {orders.map((ord) => (
+                        <tr key={ord.id} className="hover:bg-slate-50/70 transition">
+                          <td className="py-3 px-4 font-mono font-bold text-slate-900">
+                            #{ord.id}
+                          </td>
+                          <td className="py-3 px-4">
+                            <span className="font-bold capitalize text-slate-900">{ord.lot_detail?.commodity}</span>{" "}
+                            <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-700">
+                              Grade {ord.lot_detail?.grade}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4">
+                            <span className="font-bold text-slate-900">{ord.requested_qty} kg</span>
+                            <span className="text-slate-500 block text-[11px]">@ ₹{ord.agreed_price}/kg ({formatCurrency(ord.requested_qty * ord.agreed_price)})</span>
+                          </td>
+                          <td className="py-3 px-4">
+                            <p className="font-medium text-slate-900">{ord.farmer_name || "Kisan"}</p>
+                            <p className="text-[11px] text-slate-500 truncate max-w-[120px]">{ord.farmer_village || "Bakshi Ka Talab"}</p>
+                          </td>
+                          <td className="py-3 px-4">
+                            <p className="font-medium text-slate-900">{ord.buyer_org || "Direct Buyer"}</p>
+                            <p className="text-[11px] text-slate-500 font-mono">OTP: {ord.delivery_otp || "8842"}</p>
+                          </td>
+                          <td className="py-3 px-4">
+                            <p className="font-medium text-slate-900">{ord.driver_name || "Assigned Driver"}</p>
+                            <p className="text-[11px] text-slate-500">{ord.vehicle_info || "Tata Ace"}</p>
+                          </td>
+                          <td className="py-3 px-4">
+                            <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase ${getStatusPill(ord.status)}`}>
+                              {ord.status_display}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-right">
+                            {ord.valid_transitions && ord.valid_transitions.length > 0 ? (
+                              <div className="flex items-center justify-end gap-1">
+                                {ord.valid_transitions.slice(0, 2).map((st) => (
+                                  <button
+                                    key={st}
+                                    onClick={() => handleAdvanceOrderStatus(ord.id, st)}
+                                    className="rounded-md bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2 py-1 text-[10px] font-bold text-emerald-800 transition capitalize whitespace-nowrap"
+                                  >
+                                    &rarr; {st.replace("_", " ")}
+                                  </button>
+                                ))}
+                              </div>
+                            ) : (
+                              <span className="text-[11px] text-slate-400 font-medium">Complete</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* TAB 2: FLEET & DISPATCH MAP */}
         {activeTab === "fleet" && (
-          <div className="space-y-8">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-              <div className="lg:col-span-8 space-y-4">
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <div className="lg:col-span-8 space-y-3">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-serif text-2xl font-bold text-[#17201D]">
+                  <h3 className="text-xl font-bold tracking-tight text-slate-900">
                     Real-Time Cluster Corridor Map
                   </h3>
-                  <span className="text-xs text-[#7D8A65]">Live Lucknow Vehicle Telemetry</span>
+                  <span className="text-xs text-slate-500">Live Lucknow Vehicle Telemetry</span>
                 </div>
-                <div className="rounded-3xl border border-[#E9E7E1] bg-white p-2 shadow-xs overflow-hidden h-[460px]">
+                <div className="editorial-card p-1.5 bg-white overflow-hidden h-[460px]">
                   <LeafletMap lots={lots} center={[26.86, 80.93]} height="100%" />
                 </div>
               </div>
 
-              <div className="lg:col-span-4 space-y-4">
+              <div className="lg:col-span-4 space-y-3">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-serif text-2xl font-bold text-[#17201D]">
-                    Route Optimization Engine
+                  <h3 className="text-xl font-bold tracking-tight text-slate-900">
+                    Route Optimizer
                   </h3>
                 </div>
 
-                <div className="rounded-3xl border border-[#E9E7E1] bg-white p-6 shadow-xs space-y-4">
+                <div className="editorial-card p-5 space-y-3.5 bg-white">
                   <div className="flex items-center gap-3">
-                    <Truck className="h-6 w-6 text-[#173D32]" />
+                    <div className="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-700">
+                      <Truck className="h-4.5 w-4.5" />
+                    </div>
                     <div>
-                      <h4 className="font-bold text-sm text-[#17201D]">Tata Ace Fleet Solver</h4>
-                      <p className="text-xs text-[#7D8A65]">OR-Tools Capacity & Time-Window VRP</p>
+                      <h4 className="font-bold text-sm text-slate-900">Tata Ace Fleet Solver</h4>
+                      <p className="text-xs text-slate-500">Capacity & Time-Window VRP</p>
                     </div>
                   </div>
 
-                  <p className="text-xs text-[#7D8A65] leading-relaxed">
-                    Optimizes multi-stop milk runs combining Bakshi Ka Talab, Malihabad, and Chinhat farm gates with Hazratganj and Gomti Nagar buyer receiving docks.
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Optimizes multi-stop milk runs combining Bakshi Ka Talab, Malihabad, and Chinhat farm gates with Hazratganj and Gomti Nagar receiving docks.
                   </p>
 
                   <button
                     onClick={handleGenerateRoute}
                     disabled={planningRoute}
-                    className="w-full rounded-full bg-[#173D32] py-3 text-xs font-bold text-white hover:bg-[#215445] transition shadow-xs disabled:opacity-50"
+                    className="w-full rounded-xl bg-emerald-600 py-2.5 text-xs font-bold text-white hover:bg-emerald-700 transition shadow-xs disabled:opacity-50 cursor-pointer"
                   >
                     {planningRoute ? "Running OR-Tools Solver..." : "Re-Calculate Optimized Routes"}
                   </button>
 
                   {routePlan && (
-                    <div className="border-t border-[#E9E7E1] pt-4 space-y-2 text-xs">
+                    <div className="border-t border-slate-100 pt-3 space-y-1.5 text-xs">
                       <div className="flex justify-between">
-                        <span className="text-[#7D8A65]">Planned Stops:</span>
-                        <span className="font-bold text-[#17201D]">{routePlan.summary.stop_count} Stops</span>
+                        <span className="text-slate-500">Planned Stops:</span>
+                        <span className="font-bold text-slate-900">{routePlan.summary.stop_count} Stops</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-[#7D8A65]">Total Trip Distance:</span>
-                        <span className="font-bold text-[#17201D]">{routePlan.summary.total_distance_km} km</span>
+                        <span className="text-slate-500">Total Trip Distance:</span>
+                        <span className="font-bold text-slate-900">{routePlan.summary.total_distance_km} km</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-[#7D8A65]">Vehicle Load:</span>
-                        <span className="font-bold text-[#173D32]">{routePlan.summary.total_load_kg} kg ({routePlan.summary.load_utilization}%)</span>
+                        <span className="text-slate-500">Vehicle Load:</span>
+                        <span className="font-bold text-emerald-700">{routePlan.summary.total_load_kg} kg ({routePlan.summary.load_utilization}%)</span>
                       </div>
                     </div>
                   )}
@@ -277,129 +397,39 @@ export default function OperationsControlTowerPage() {
           </div>
         )}
 
-        {/* TAB 2: LIVE ORDERS MANAGEMENT */}
-        {activeTab === "orders" && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-serif text-2xl font-bold text-[#17201D]">
-                  Live Multi-Party Orders ({orders.length})
-                </h3>
-                <p className="text-xs text-[#7D8A65] mt-0.5">
-                  Monitor status transitions across Farmer, Driver, and Buyer fulfillment milestones.
-                </p>
-              </div>
-            </div>
-
-            {orders.length === 0 ? (
-              <div className="rounded-3xl border border-[#E9E7E1] bg-white p-12 text-center space-y-3">
-                <Package className="h-10 w-10 text-[#7D8A65]/40 mx-auto" />
-                <p className="font-bold text-sm text-[#17201D]">No Active Orders in System</p>
-                <p className="text-xs text-[#7D8A65]">Orders placed by buyers will appear here in real time.</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {orders.map((ord) => (
-                  <div
-                    key={ord.id}
-                    className="rounded-3xl border border-[#E9E7E1] bg-white p-6 shadow-xs space-y-4"
-                  >
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E9E7E1] pb-3">
-                      <div>
-                        <span className="text-[10px] font-bold text-[#C99B43] uppercase tracking-wider block">
-                          Order #{ord.id}
-                        </span>
-                        <h4 className="font-serif font-bold text-lg text-[#17201D] capitalize mt-0.5">
-                          {ord.requested_qty} kg {ord.lot_detail?.commodity} (Grade {ord.lot_detail?.grade}) • {formatCurrency(ord.requested_qty * ord.agreed_price)}
-                        </h4>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <span className="rounded-full bg-[#DCE8DD] px-3 py-1 text-xs font-bold text-[#173D32] capitalize">
-                          Status: {ord.status_display}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                      {/* Farmer info */}
-                      <div className="rounded-2xl bg-[#F7F5EF] p-3.5 space-y-1">
-                        <span className="text-[10px] uppercase font-bold text-[#173D32]">1. Origin Farm</span>
-                        <p className="font-bold text-[#17201D]">{ord.farmer_name || "Verified Farmer"}</p>
-                        <p className="text-[#7D8A65]">{ord.farmer_village || "Bakshi Ka Talab, Lucknow"}</p>
-                        <p className="text-[#7D8A65]">{ord.farmer_phone || "+91-9876543211"}</p>
-                      </div>
-
-                      {/* Driver info */}
-                      <div className="rounded-2xl bg-[#F7F5EF] p-3.5 space-y-1">
-                        <span className="text-[10px] uppercase font-bold text-[#173D32]">2. Assigned Fleet Driver</span>
-                        <p className="font-bold text-[#17201D]">{ord.driver_name || "Logistics Driver"}</p>
-                        <p className="text-[#7D8A65]">{ord.vehicle_info || "Tata Ace Gold"}</p>
-                        <p className="text-[#7D8A65]">{ord.driver_phone || "+91-9876500000"}</p>
-                      </div>
-
-                      {/* Buyer info */}
-                      <div className="rounded-2xl bg-[#F7F5EF] p-3.5 space-y-1">
-                        <span className="text-[10px] uppercase font-bold text-[#173D32]">3. Buyer Receiving Dock</span>
-                        <p className="font-bold text-[#17201D]">{ord.buyer_org || "Direct Buyer"}</p>
-                        <p className="text-[#7D8A65]">{ord.delivery_address || "Hazratganj, Lucknow"}</p>
-                        <p className="text-[11px] font-mono font-bold text-[#173D32]">Delivery OTP: {ord.delivery_otp || "8842"}</p>
-                      </div>
-                    </div>
-
-                    {/* Ops Action Transition Buttons */}
-                    <div className="border-t border-[#E9E7E1] pt-3 flex flex-wrap items-center gap-2">
-                      <span className="text-xs font-semibold text-[#7D8A65]">Ops State Override:</span>
-                      {ord.valid_transitions && ord.valid_transitions.map((st) => (
-                        <button
-                          key={st}
-                          onClick={() => handleAdvanceOrderStatus(ord.id, st)}
-                          className="rounded-full bg-[#173D32] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#215445] transition capitalize"
-                        >
-                          &rarr; Set to {st.replace("_", " ")}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
         {/* TAB 3: QUALITY HOLDS & EXCEPTIONS */}
         {activeTab === "exceptions" && (
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div>
-              <h3 className="font-serif text-2xl font-bold text-[#17201D]">
+              <h3 className="text-xl font-bold tracking-tight text-slate-900">
                 Quality Inspection Holds & Exceptions ({exceptions.length})
               </h3>
-              <p className="text-xs text-[#7D8A65] mt-0.5">
+              <p className="text-xs text-slate-500">
                 Investigate and resolve quality holds, sorting variances, or transport delays.
               </p>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {exceptions.map((exc, i) => (
-                <div key={i} className="rounded-3xl border border-[#C86B4A]/30 bg-[#FFFDF7] p-6 shadow-xs space-y-3">
+                <div key={i} className="editorial-card p-5 space-y-2.5 bg-white border-amber-200">
                   <div className="flex items-center justify-between">
-                    <span className="rounded-full bg-[#C86B4A]/10 px-3 py-1 text-xs font-bold text-[#C86B4A] uppercase flex items-center gap-1.5">
+                    <span className="rounded-md bg-amber-100 border border-amber-200 px-2.5 py-0.5 text-xs font-bold text-amber-800 uppercase flex items-center gap-1.5">
                       <AlertTriangle className="h-3.5 w-3.5" />
                       <span>{exc.event_type.replace("_", " ")}</span>
                     </span>
-                    <span className="text-xs text-[#7D8A65] font-mono">Order #{exc.order_id}</span>
+                    <span className="text-xs text-slate-500 font-mono">Order #{exc.order_id}</span>
                   </div>
 
-                  <p className="text-xs text-[#17201D] font-medium leading-relaxed">{exc.note}</p>
-                  <p className="text-[11px] text-[#7D8A65]">Logged by: {exc.actor} • {formatDateTime(exc.timestamp)}</p>
+                  <p className="text-xs text-slate-800 font-medium leading-relaxed">{exc.note}</p>
+                  <p className="text-[11px] text-slate-500">Logged by: {exc.actor} • {formatDateTime(exc.timestamp)}</p>
 
-                  <div className="flex gap-2 pt-2">
+                  <div className="flex gap-2 pt-1">
                     <button
                       onClick={() => {
                         alert(`Quality Hold on Order #${exc.order_id} resolved. Approved for vehicle loading.`);
                         loadData();
                       }}
-                      className="rounded-full bg-[#173D32] px-4 py-2 text-xs font-bold text-white hover:bg-[#215445] transition"
+                      className="rounded-lg bg-emerald-600 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-emerald-700 transition"
                     >
                       Approve & Release Hold
                     </button>
@@ -412,17 +442,17 @@ export default function OperationsControlTowerPage() {
 
         {/* TAB 4: APMC MANDI INGESTION MONITOR */}
         {activeTab === "mandi" && (
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div>
-              <h3 className="font-serif text-2xl font-bold text-[#17201D]">
+              <h3 className="text-xl font-bold tracking-tight text-slate-900">
                 Lucknow APMC Mandi Ingestion Monitor
               </h3>
-              <p className="text-xs text-[#7D8A65] mt-0.5">
-                Real-time benchmark feeds from Agmarknet & data.gov.in across Dubagga, Naveen Mandi, and Sitapur Road.
+              <p className="text-xs text-slate-500">
+                Real-time benchmark feeds from Agmarknet across Dubagga, Naveen Mandi, and Sitapur Road.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {[
                 {
                   mandi: "Dubagga Mandi, Lucknow",
@@ -449,28 +479,28 @@ export default function OperationsControlTowerPage() {
                   arrivals: "1,200 Quintals Today",
                 },
               ].map((m, idx) => (
-                <div key={idx} className="rounded-3xl border border-[#E9E7E1] bg-white p-6 shadow-xs space-y-4">
+                <div key={idx} className="editorial-card p-5 space-y-3 bg-white">
                   <div>
-                    <span className="text-[10px] font-bold text-[#C99B43] uppercase tracking-wider block">{m.mandi}</span>
-                    <h4 className="font-serif font-bold text-xl text-[#17201D] mt-0.5">{m.crop}</h4>
+                    <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider block">{m.mandi}</span>
+                    <h4 className="text-lg font-bold tracking-tight text-slate-900 mt-0.5">{m.crop}</h4>
                   </div>
 
-                  <div className="space-y-2 text-xs">
+                  <div className="space-y-1.5 text-xs">
                     <div className="flex justify-between">
-                      <span className="text-[#7D8A65]">APMC Mandi Modal:</span>
-                      <span className="font-bold text-[#17201D]">{m.apmcModal}</span>
+                      <span className="text-slate-500">APMC Mandi Modal:</span>
+                      <span className="font-bold text-slate-900">{m.apmcModal}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-[#7D8A65]">FarmLink Direct Price:</span>
-                      <span className="font-bold text-[#173D32]">{m.directFarmgate}</span>
+                      <span className="text-slate-500">FarmLink Direct:</span>
+                      <span className="font-bold text-emerald-700">{m.directFarmgate}</span>
                     </div>
-                    <div className="flex justify-between border-t border-[#E9E7E1] pt-2">
-                      <span className="text-[#7D8A65]">Farmer Realization:</span>
-                      <span className="font-bold text-[#173D32]">{m.farmerGain}</span>
+                    <div className="flex justify-between border-t border-slate-100 pt-1.5">
+                      <span className="text-slate-500">Farmer Realization:</span>
+                      <span className="font-bold text-emerald-700">{m.farmerGain}</span>
                     </div>
                   </div>
 
-                  <div className="rounded-xl bg-[#F7F5EF] p-2.5 text-center text-[11px] text-[#7D8A65] font-medium">
+                  <div className="rounded-lg bg-slate-50 p-2 text-center text-[11px] text-slate-600 font-medium border border-slate-200">
                     {m.arrivals}
                   </div>
                 </div>
@@ -481,58 +511,60 @@ export default function OperationsControlTowerPage() {
 
         {/* TAB 5: SETTLEMENT APPROVALS */}
         {activeTab === "settlements" && (
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div>
-              <h3 className="font-serif text-2xl font-bold text-[#17201D]">
+              <h3 className="text-xl font-bold tracking-tight text-slate-900">
                 Settlement Clearing & Payout Approvals
               </h3>
-              <p className="text-xs text-[#7D8A65] mt-0.5">
+              <p className="text-xs text-slate-500">
                 Automated 93% net farmer payout, 5% logistics fee, and 2% platform fee reconciliation.
               </p>
             </div>
 
-            <div className="rounded-3xl border border-[#E9E7E1] bg-white p-6 shadow-xs overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-[#F7F5EF] text-[#7D8A65] uppercase font-bold border-b border-[#E9E7E1]">
-                  <tr>
-                    <th className="p-4">Order ID</th>
-                    <th className="p-4">Produce Details</th>
-                    <th className="p-4">Gross Trade</th>
-                    <th className="p-4">Logistics (5%)</th>
-                    <th className="p-4">Platform (2%)</th>
-                    <th className="p-4">Farmer Payout (93%)</th>
-                    <th className="p-4">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#E9E7E1] text-[#17201D]">
-                  {orders.map((ord) => {
-                    const gross = ord.requested_qty * ord.agreed_price;
-                    const log = Math.round(gross * 0.05);
-                    const plat = Math.round(gross * 0.02);
-                    const net = gross - log - plat;
-                    return (
-                      <tr key={ord.id} className="hover:bg-[#F7F5EF]/50 transition">
-                        <td className="p-4 font-bold">#{ord.id}</td>
-                        <td className="p-4">{ord.requested_qty} kg {ord.lot_detail?.commodity} (Grade {ord.lot_detail?.grade})</td>
-                        <td className="p-4 font-bold">{formatCurrency(gross)}</td>
-                        <td className="p-4 text-[#7D8A65]">{formatCurrency(log)}</td>
-                        <td className="p-4 text-[#7D8A65]">{formatCurrency(plat)}</td>
-                        <td className="p-4 font-bold text-[#173D32] text-sm">{formatCurrency(net)}</td>
-                        <td className="p-4">
-                          <button
-                            onClick={() => {
-                              alert(`Settlement for Order #${ord.id} cleared and released to farmer's bank account.`);
-                            }}
-                            className="rounded-full bg-[#173D32] px-3.5 py-1 text-xs font-bold text-white hover:bg-[#215445] transition"
-                          >
-                            Clear Payout
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+            <div className="editorial-card overflow-hidden bg-white">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead className="bg-slate-50 text-slate-600 uppercase font-bold text-[10px] tracking-wider border-b border-slate-200">
+                    <tr>
+                      <th className="py-3.5 px-4">Order ID</th>
+                      <th className="py-3.5 px-4">Produce Details</th>
+                      <th className="py-3.5 px-4">Gross Trade</th>
+                      <th className="py-3.5 px-4">Logistics (5%)</th>
+                      <th className="py-3.5 px-4">Platform (2%)</th>
+                      <th className="py-3.5 px-4">Farmer Payout (93%)</th>
+                      <th className="py-3.5 px-4">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 text-slate-800">
+                    {orders.map((ord) => {
+                      const gross = ord.requested_qty * ord.agreed_price;
+                      const log = Math.round(gross * 0.05);
+                      const plat = Math.round(gross * 0.02);
+                      const net = gross - log - plat;
+                      return (
+                        <tr key={ord.id} className="hover:bg-slate-50/70 transition">
+                          <td className="py-3 px-4 font-mono font-bold text-slate-900">#{ord.id}</td>
+                          <td className="py-3 px-4">{ord.requested_qty} kg {ord.lot_detail?.commodity} (Grade {ord.lot_detail?.grade})</td>
+                          <td className="py-3 px-4 font-bold text-slate-900">{formatCurrency(gross)}</td>
+                          <td className="py-3 px-4 text-slate-500">{formatCurrency(log)}</td>
+                          <td className="py-3 px-4 text-slate-500">{formatCurrency(plat)}</td>
+                          <td className="py-3 px-4 font-bold text-emerald-700 text-sm">{formatCurrency(net)}</td>
+                          <td className="py-3 px-4">
+                            <button
+                              onClick={() => {
+                                alert(`Settlement for Order #${ord.id} cleared and released to farmer's bank account.`);
+                              }}
+                              className="rounded-lg bg-emerald-600 px-3 py-1 text-xs font-bold text-white hover:bg-emerald-700 transition"
+                            >
+                              Clear Payout
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}

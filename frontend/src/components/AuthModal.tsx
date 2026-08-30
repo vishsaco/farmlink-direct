@@ -95,7 +95,6 @@ export function AuthModal({
     }
   };
 
-  // Load Google Identity Services Script and Render Native Official Button
   useEffect(() => {
     if (typeof window === "undefined" || !isOpen) return;
 
@@ -115,7 +114,7 @@ export function AuthModal({
               theme: "outline",
               size: "large",
               text: "continue_with",
-              shape: "pill",
+              shape: "rectangular",
               width: 320,
               logo_alignment: "left",
             });
@@ -168,7 +167,6 @@ export function AuthModal({
 
       onClose();
 
-      // Navigate to corresponding persona portal
       if (role === "farmer") router.push("/farmer");
       else if (role === "fpo") router.push("/fpo");
       else if (role === "buyer") router.push("/buyer");
@@ -184,19 +182,19 @@ export function AuthModal({
 
   const roleConfigs = [
     { id: "farmer", label: "Farmer / Kisan", icon: Sprout, desc: "List produce directly" },
-    { id: "fpo", label: "FPO Aggregator", icon: Sprout, desc: "Manage member farms" },
+    { id: "fpo", label: "FPO Aggregator", icon: Building, desc: "Manage member farms" },
     { id: "buyer", label: "Bulk Buyer", icon: ShoppingBag, desc: "Kitchens & retailers" },
     { id: "driver", label: "Fleet Driver", icon: Truck, desc: "Tata Ace fulfillment" },
     { id: "ops", label: "Ops Coordinator", icon: ShieldAlert, desc: "Control tower" },
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#17201D]/75 p-4 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg rounded-3xl border border-[#E9E7E1] bg-[#FFFFFF] p-6 sm:p-8 shadow-2xl space-y-6 text-[#17201D] max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs animate-calm-reveal">
+      <div className="relative w-full max-w-lg rounded-xl border border-slate-200 bg-white p-6 sm:p-7 shadow-2xl space-y-5 text-slate-800 max-h-[90vh] overflow-y-auto">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute right-5 top-5 rounded-full p-2 text-[#7D8A65] hover:bg-[#F7F5EF] hover:text-[#17201D] transition"
+          className="absolute right-4 top-4 rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-800 transition"
         >
           <X className="h-5 w-5" />
         </button>
@@ -204,38 +202,38 @@ export function AuthModal({
         {/* Header & Mode Switch */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center bg-[#F7F5EF] p-1.5 rounded-xl border border-[#E9E7E1]">
+            <div className="flex items-center bg-slate-50 p-1 rounded-md border border-slate-200">
               <img
                 src="/logo.png"
                 alt="FarmLink Direct"
-                className="h-8 w-auto object-contain"
+                className="h-7 w-auto object-contain"
               />
             </div>
-            <span className="text-[10px] uppercase tracking-wider font-extrabold text-[#C99B43] bg-[#C99B43]/15 px-2.5 py-1 rounded-full border border-[#C99B43]/30">
+            <span className="text-[10px] uppercase tracking-wider font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200">
               Verified B2B Direct
             </span>
           </div>
 
-          <h3 className="font-serif text-2xl font-bold text-[#17201D]">
+          <h3 className="text-2xl font-bold tracking-tight text-slate-900">
             {mode === "register" ? "Join the Agricultural Network" : "Welcome Back"}
           </h3>
-          <p className="text-xs text-[#7D8A65] mt-1 font-light">
+          <p className="text-xs text-slate-500 mt-0.5">
             {mode === "register"
-              ? "Create your verified real account for the Lucknow Agri-Cluster."
+              ? "Create your verified account for the Lucknow Regional Cluster."
               : "Sign in with your registered account credentials."}
           </p>
 
-          <div className="mt-4 flex rounded-full bg-[#F7F5EF] p-1 border border-[#E9E7E1]">
+          <div className="mt-3.5 flex rounded-lg bg-slate-100 p-1 border border-slate-200">
             <button
               type="button"
               onClick={() => {
                 setMode("register");
                 setError(null);
               }}
-              className={`flex-1 rounded-full py-1.5 text-xs font-bold transition ${
+              className={`flex-1 rounded-md py-1.5 text-xs font-bold transition ${
                 mode === "register"
-                  ? "bg-[#173D32] text-white shadow-sm"
-                  : "text-[#7D8A65] hover:text-[#17201D]"
+                  ? "bg-white text-slate-900 shadow-xs"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
               Create Account
@@ -246,10 +244,10 @@ export function AuthModal({
                 setMode("login");
                 setError(null);
               }}
-              className={`flex-1 rounded-full py-1.5 text-xs font-bold transition ${
+              className={`flex-1 rounded-md py-1.5 text-xs font-bold transition ${
                 mode === "login"
-                  ? "bg-[#173D32] text-white shadow-sm"
-                  : "text-[#7D8A65] hover:text-[#17201D]"
+                  ? "bg-white text-slate-900 shadow-xs"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
               Sign In
@@ -258,14 +256,14 @@ export function AuthModal({
         </div>
 
         {error && (
-          <div className="rounded-xl bg-[#C86B4A]/10 p-3.5 border border-[#C86B4A]/30 text-xs font-semibold text-[#C86B4A]">
+          <div className="rounded-lg bg-rose-50 p-3 border border-rose-200 text-xs font-semibold text-rose-700">
             {error}
           </div>
         )}
 
         {/* Role Selector Card */}
         <div>
-          <label className="block text-xs font-semibold text-[#17201D] mb-1.5">
+          <label className="block text-xs font-bold text-slate-800 mb-1.5 uppercase tracking-wide">
             Select Your Role / खाता प्रकार
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -279,16 +277,16 @@ export function AuthModal({
                   onClick={() => setRole(cfg.id as any)}
                   className={`rounded-xl border p-2.5 text-left text-xs transition flex flex-col justify-between ${
                     isSelected
-                      ? "border-[#173D32] bg-[#DCE8DD]/40 text-[#173D32] ring-2 ring-[#173D32]/20"
-                      : "border-[#E9E7E1] bg-[#F7F5EF] text-[#17201D] hover:border-[#173D32]/30"
+                      ? "border-emerald-600 bg-emerald-50 text-emerald-800 ring-1 ring-emerald-600 shadow-xs"
+                      : "border-slate-200 bg-slate-50 text-slate-800 hover:border-slate-300 hover:bg-white"
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <Icon className="h-4 w-4 text-[#173D32]" />
-                    {isSelected && <CheckCircle2 className="h-3 w-3 text-[#173D32]" />}
+                    <Icon className="h-4 w-4 text-emerald-700" />
+                    {isSelected && <CheckCircle2 className="h-3.5 w-3.5 text-emerald-700" />}
                   </div>
                   <span className="font-bold">{cfg.label}</span>
-                  <span className="text-[9px] text-[#7D8A65] line-clamp-1">{cfg.desc}</span>
+                  <span className="text-[9px] text-slate-500 line-clamp-1">{cfg.desc}</span>
                 </button>
               );
             })}
@@ -296,31 +294,30 @@ export function AuthModal({
         </div>
 
         {/* Real Official Google Authentication */}
-        <div className="space-y-3 pt-1">
-          {/* Native Official Google GSI Button Container */}
-          <div className="flex justify-center min-h-[44px]" ref={googleBtnContainerRef} />
+        <div className="space-y-2.5 pt-0.5">
+          <div className="flex justify-center min-h-[40px]" ref={googleBtnContainerRef} />
 
           {googleLoading && (
-            <p className="text-center text-xs text-[#7D8A65] animate-pulse font-medium">
+            <p className="text-center text-xs text-slate-500 animate-pulse font-medium">
               Verifying Google credentials...
             </p>
           )}
 
-          <div className="relative flex items-center justify-center text-[10px] uppercase font-bold text-[#7D8A65]">
+          <div className="relative flex items-center justify-center text-[10px] uppercase font-bold text-slate-400">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-[#E9E7E1]" />
+              <div className="w-full border-t border-slate-200" />
             </div>
             <span className="relative bg-white px-3">or continue with password</span>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3.5">
           {/* Name & Phone for Register */}
           {mode === "register" && (
             <>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2.5">
                 <div>
-                  <label className="block text-xs font-semibold text-[#17201D] mb-1">
+                  <label className="block text-xs font-bold text-slate-800 mb-1">
                     First Name
                   </label>
                   <input
@@ -329,11 +326,11 @@ export function AuthModal({
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="e.g. Vikas"
-                    className="w-full rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] px-3 py-2 text-xs font-medium focus:bg-white focus:border-[#173D32] focus:outline-none"
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium focus:border-emerald-500 focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#17201D] mb-1">
+                  <label className="block text-xs font-bold text-slate-800 mb-1">
                     Last Name
                   </label>
                   <input
@@ -341,13 +338,13 @@ export function AuthModal({
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     placeholder="e.g. Yadav"
-                    className="w-full rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] px-3 py-2 text-xs font-medium focus:bg-white focus:border-[#173D32] focus:outline-none"
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium focus:border-emerald-500 focus:outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#17201D] mb-1">
+                <label className="block text-xs font-bold text-slate-800 mb-1">
                   Phone Number
                 </label>
                 <input
@@ -356,23 +353,23 @@ export function AuthModal({
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="9876543210"
-                  className="w-full rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] px-3 py-2 text-xs font-medium focus:bg-white focus:border-[#173D32] focus:outline-none"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium focus:border-emerald-500 focus:outline-none"
                 />
               </div>
 
               {/* Interactive Google Maps & GPS Location Picker */}
-              <div className="rounded-2xl border border-[#E9E7E1] bg-[#F7F5EF] p-3.5 space-y-2.5">
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="block text-xs font-bold text-[#17201D] flex items-center gap-1.5">
-                    <MapPin className="h-3.5 w-3.5 text-[#C99B43]" />
+                  <label className="block text-xs font-bold text-slate-800 flex items-center gap-1">
+                    <MapPin className="h-3.5 w-3.5 text-emerald-600" />
                     <span>
-                      {role === "buyer" ? "Delivery Receiving Dock Location" : "Farm Gate Pickup Location"}
+                      {role === "buyer" ? "Delivery Receiving Dock" : "Farm Gate Location"}
                     </span>
                   </label>
                   <button
                     type="button"
                     onClick={() => setShowLocationPicker(true)}
-                    className="text-[11px] font-bold text-[#173D32] hover:underline flex items-center gap-1 bg-white px-2.5 py-1 rounded-full border border-[#E9E7E1] shadow-xs"
+                    className="text-[11px] font-bold text-emerald-700 hover:underline flex items-center gap-1 bg-white px-2 py-0.5 rounded-md border border-slate-200 shadow-xs"
                   >
                     <span>🗺️ Choose on Map</span>
                   </button>
@@ -384,35 +381,34 @@ export function AuthModal({
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   placeholder="e.g. Bakshi Ka Talab, Lucknow"
-                  className="w-full rounded-xl border border-[#E9E7E1] bg-white px-3 py-2 text-xs font-bold text-[#17201D] focus:border-[#173D32] focus:outline-none"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-900 focus:border-emerald-500 focus:outline-none"
                 />
 
-                <div className="flex items-center justify-between text-[11px] text-[#7D8A65] pt-0.5">
+                <div className="flex items-center justify-between text-[11px] text-slate-500 pt-0.5">
                   <span className="font-mono">
-                    📍 GPS: <strong className="text-[#17201D]">{geoLat}, {geoLng}</strong>
+                    📍 GPS: <strong className="text-slate-800">{geoLat}, {geoLng}</strong>
                   </span>
                   <a
                     href={`https://www.google.com/maps/search/?api=1&query=${geoLat},${geoLng}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-bold text-[#173D32] hover:underline inline-flex items-center gap-0.5"
+                    className="font-bold text-emerald-700 hover:underline inline-flex items-center gap-0.5"
                   >
-                    <span>Check Google Maps</span>
-                    <ExternalLink className="h-2.5 w-2.5 text-[#C99B43]" />
+                    <span>Check Maps &rarr;</span>
                   </a>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#17201D] mb-1">
-                  {role === "buyer" ? "Business / Company Name (Optional)" : "Farm Name or Organization (Optional)"}
+                <label className="block text-xs font-bold text-slate-800 mb-1">
+                  {role === "buyer" ? "Business / Organization (Optional)" : "Farm Name (Optional)"}
                 </label>
                 <input
                   type="text"
                   value={orgName}
                   onChange={(e) => setOrgName(e.target.value)}
                   placeholder={role === "buyer" ? "e.g. Lucknow Fresh Mart" : "e.g. Vikas Organic Produce Farm"}
-                  className="w-full rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] px-3 py-2 text-xs font-medium focus:bg-white focus:border-[#173D32] focus:outline-none"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium focus:border-emerald-500 focus:outline-none"
                 />
               </div>
             </>
@@ -420,7 +416,7 @@ export function AuthModal({
 
           {/* Username & Password */}
           <div>
-            <label className="block text-xs font-semibold text-[#17201D] mb-1">
+            <label className="block text-xs font-bold text-slate-800 mb-1">
               Username
             </label>
             <input
@@ -428,13 +424,13 @@ export function AuthModal({
               required
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder={mode === "login" ? "Enter your username" : "Choose unique username (e.g. vikas_kisan)"}
-              className="w-full rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] px-3.5 py-2.5 text-xs font-medium focus:bg-white focus:border-[#173D32] focus:outline-none"
+              placeholder={mode === "login" ? "Enter your username" : "Choose username (e.g. vikas_kisan)"}
+              className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-medium focus:border-emerald-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#17201D] mb-1">
+            <label className="block text-xs font-bold text-slate-800 mb-1">
               Password
             </label>
             <input
@@ -443,16 +439,16 @@ export function AuthModal({
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] px-3.5 py-2.5 text-xs font-medium focus:bg-white focus:border-[#173D32] focus:outline-none"
+              className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-medium focus:border-emerald-500 focus:outline-none"
             />
           </div>
 
           {/* Submit CTA */}
-          <div className="pt-2">
+          <div className="pt-1.5">
             <button
               type="submit"
               disabled={loading || googleLoading}
-              className="w-full flex items-center justify-center gap-2 rounded-full bg-[#173D32] py-3.5 text-xs font-bold text-white hover:bg-[#215445] transition-all shadow-md disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 py-3 text-xs font-bold text-white hover:bg-emerald-700 transition-all shadow-xs disabled:opacity-50 cursor-pointer"
             >
               <span>{loading ? "Processing..." : mode === "register" ? "Register & Enter Portal" : "Sign In"}</span>
               <ArrowRight className="h-4 w-4" />

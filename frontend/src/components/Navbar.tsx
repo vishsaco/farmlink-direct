@@ -21,6 +21,8 @@ import {
   LogIn,
   UserPlus,
   Building,
+  TrendingUp,
+  Sparkles,
 } from "lucide-react";
 
 interface NavbarProps {
@@ -51,109 +53,86 @@ export function Navbar(props: NavbarProps) {
     router.push("/");
   };
 
-  // Clean Navigation: Market Predictor as primary showcase
-  const getNavLinks = () => {
-    const predictorLink = {
-      label: lang === "hi" ? "🔮 बाज़ार पूर्वानुमान" : "🔮 Market Predictor",
-      path: "/predict",
-    };
-
-    if (!user) {
-      return [predictorLink];
-    }
-
-    switch (user.role) {
-      case "farmer":
-        return [
-          { label: t.navFarmer, path: "/farmer" },
-          predictorLink,
-        ];
-      case "fpo":
-        return [
-          { label: t.navFPO, path: "/fpo" },
-          predictorLink,
-        ];
-      case "buyer":
-        return [
-          { label: t.navMarketplace, path: "/buyer" },
-          predictorLink,
-        ];
-      case "driver":
-        return [
-          { label: t.navDriver, path: "/driver" },
-          predictorLink,
-        ];
-      case "ops":
-        return [
-          { label: t.navOps, path: "/ops" },
-          predictorLink,
-        ];
-      default:
-        return [predictorLink];
-    }
-  };
-
-  const navLinks = getNavLinks();
+  // 5 Role Nav Items
+  const NAV_ROLES = [
+    { label: lang === "hi" ? "बाज़ार पूर्वानुमान" : "Market Predictor", path: "/predict", icon: "🔮" },
+    { label: lang === "hi" ? "किसान पोर्टल" : "Farmer Portal", path: "/farmer", icon: "🌾" },
+    { label: lang === "hi" ? "खरीदार बाज़ार" : "Buyer Hub", path: "/buyer", icon: "🛒" },
+    { label: lang === "hi" ? "ड्राइवर प्रेषण" : "Driver Dispatch", path: "/driver", icon: "🚚" },
+    { label: lang === "hi" ? "कंट्रोल टॉवर" : "Ops Tower", path: "/ops", icon: "🛡️" },
+  ];
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full bg-[#173D32] text-white border-b border-[#215445] shadow-lg">
-        {/* Top Announcement Ribbon */}
-        <div className="bg-[#0f2720] border-b border-white/10 px-4 py-1.5 text-[11px] text-[#DCE8DD]">
-          <div className="mx-auto flex max-w-7xl items-center justify-between">
-            <div className="flex items-center gap-2 overflow-hidden">
-              <span className="flex h-2 w-2 rounded-full bg-[#C99B43] animate-pulse shrink-0" />
-              <span className="font-semibold text-white whitespace-nowrap">{t.lucknowCluster}:</span>
-              <span className="hidden sm:inline text-[#DCE8DD]/80 truncate">
-                {t.clusterTicker}
-              </span>
+      <header className="sticky top-0 z-50 w-full bg-white border-b border-slate-200 shadow-xs">
+        {/* Top Ticker: Live Lucknow Mandi Feed */}
+        <div className="bg-[#064E3B] text-white px-4 py-1.5 text-xs border-b border-emerald-950/20">
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+            <div className="flex items-center gap-2 overflow-hidden flex-1">
+              <div className="flex items-center gap-1.5 font-bold text-emerald-300 shrink-0 text-[11px] uppercase tracking-wider">
+                <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Lucknow Live Mandi Feed:</span>
+              </div>
+              <div className="hidden sm:block overflow-hidden flex-1">
+                <div className="animate-ticker-smooth text-[11px] text-emerald-100/90 flex items-center gap-6">
+                  <span>Tomato (टमाटर): <strong className="text-white">₹38/kg</strong> (+12% Direct)</span>
+                  <span>•</span>
+                  <span>Onion (प्याज): <strong className="text-white">₹30/kg</strong> (+9% Direct)</span>
+                  <span>•</span>
+                  <span>Potato (आलू): <strong className="text-white">₹24/kg</strong> (+14% Direct)</span>
+                  <span>•</span>
+                  <span>Dussehri Mango: <strong className="text-white">₹65/kg</strong> (+18% Direct)</span>
+                  <span>•</span>
+                  <span>Green Chilli: <strong className="text-white">₹48/kg</strong> (+11% Direct)</span>
+                  <span>•</span>
+                  <span>Dubagga & Naveen Mandi Synced</span>
+                </div>
+              </div>
             </div>
 
-            <div className="flex items-center gap-3 font-semibold text-xs shrink-0">
-              <span className="text-[#C99B43]">{t.b2bDirectSubtitle}</span>
+            <div className="flex items-center gap-2 text-[11px] text-emerald-200 shrink-0 font-medium">
+              <span className="hidden md:inline">0% Middlemen Commission</span>
+              <span className="text-emerald-400">•</span>
+              <span className="text-white font-semibold">Whole Lucknow Cluster</span>
             </div>
           </div>
         </div>
 
         {/* Main Navigation Bar */}
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6 lg:px-8">
-          {/* Left: Brand Identity with Official FarmLink Logo */}
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+          {/* Left: Brand Identity */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="flex items-center bg-white px-2.5 py-1 rounded-xl border border-white/20 shadow-md transition-transform duration-200 group-hover:scale-105">
+            <div className="flex items-center transition-transform duration-150 group-hover:scale-102">
               <img
                 src="/logo.png"
                 alt="FarmLink Direct"
-                className="h-8 sm:h-9 w-auto object-contain max-w-[160px] sm:max-w-[190px]"
+                className="h-8 sm:h-9 w-auto object-contain max-w-[160px] sm:max-w-[185px]"
               />
             </div>
-            <div className="hidden lg:block">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] uppercase tracking-widest font-extrabold text-[#C99B43] bg-[#C99B43]/15 px-2 py-0.5 rounded-full border border-[#C99B43]/30">
-                  Direct B2B
-                </span>
-              </div>
-              <p className="text-[10px] uppercase tracking-wider font-semibold text-[#DCE8DD]/80 flex items-center gap-1 mt-0.5">
-                <MapPin className="h-2.5 w-2.5 text-[#C99B43]" />
-                <span>Whole Lucknow Agri-Cluster</span>
+            <div className="hidden xl:block border-l border-slate-200 pl-3">
+              <p className="text-[11px] font-semibold text-slate-700 flex items-center gap-1">
+                <MapPin className="h-3 w-3 text-emerald-600" />
+                <span>Lucknow Regional Agri-Cluster</span>
               </p>
             </div>
           </Link>
 
-          {/* Center: Role-Based Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1 bg-[#0f2720]/80 p-1 rounded-full border border-white/10 backdrop-blur-sm">
-            {navLinks.map((link) => {
-              const isActive = pathname === link.path;
+          {/* Center: Clean 5-Role Navigation */}
+          <nav className="hidden lg:flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200">
+            {NAV_ROLES.map((role) => {
+              const isActive = pathname === role.path;
               return (
                 <Link
-                  key={link.path}
-                  href={link.path}
-                  className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-all duration-200 ${
+                  key={role.path}
+                  href={role.path}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
                     isActive
-                      ? "bg-[#C99B43] text-[#17201D] font-bold shadow-sm"
-                      : "text-[#DCE8DD] hover:text-white hover:bg-white/10"
+                      ? "bg-emerald-50 text-emerald-700 font-bold shadow-xs border border-emerald-200/60"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-white"
                   }`}
                 >
-                  {link.label}
+                  <span className="text-sm">{role.icon}</span>
+                  <span>{role.label}</span>
                 </Link>
               );
             })}
@@ -164,10 +143,10 @@ export function Navbar(props: NavbarProps) {
             {/* Real Instant Language Switch Button */}
             <button
               onClick={toggleLang}
-              className="flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold border border-white/25 bg-[#0f2720] text-white hover:bg-white/15 hover:border-[#C99B43] transition-all shadow-sm active:scale-95"
+              className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition shadow-xs active:scale-95"
               title="Switch Language / भाषा बदलें"
             >
-              <Globe className="h-3.5 w-3.5 text-[#C99B43]" />
+              <Globe className="h-3.5 w-3.5 text-emerald-600" />
               <span>{lang === "en" ? "हिन्दी" : "English"}</span>
             </button>
 
@@ -176,14 +155,14 @@ export function Navbar(props: NavbarProps) {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => openAuth("login")}
-                  className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold border border-white/20 bg-white/5 text-white hover:bg-white/15 transition"
+                  className="inline-flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition"
                 >
-                  <LogIn className="h-3.5 w-3.5 text-[#C99B43]" />
+                  <LogIn className="h-3.5 w-3.5 text-slate-500" />
                   <span>{t.signIn}</span>
                 </button>
                 <button
                   onClick={() => openAuth("register")}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-[#C99B43] px-4 py-1.5 text-xs font-bold text-[#17201D] hover:bg-[#d8a94d] transition shadow-md"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700 transition shadow-xs"
                 >
                   <UserPlus className="h-3.5 w-3.5" />
                   <span>{t.register}</span>
@@ -194,34 +173,34 @@ export function Navbar(props: NavbarProps) {
               <div className="relative">
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex items-center gap-2 rounded-full border border-white/20 bg-[#0f2720] px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-white/10 transition-all shadow-sm"
+                  className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-50 transition shadow-xs"
                 >
-                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#C99B43] text-[#17201D] font-bold text-[10px]">
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600 text-white font-bold text-[10px]">
                     {user.first_name ? user.first_name.charAt(0).toUpperCase() : "U"}
                   </div>
                   <span className="hidden sm:inline font-bold">
                     {user.first_name} {user.last_name}
                   </span>
-                  <span className="rounded bg-[#DCE8DD] px-1.5 py-0.2 text-[9px] font-bold text-[#173D32] uppercase">
+                  <span className="rounded bg-emerald-50 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700 uppercase border border-emerald-200">
                     {user.role}
                   </span>
-                  <ChevronDown className="h-3.5 w-3.5 text-[#DCE8DD]" />
+                  <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
                 </button>
 
                 {userDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-64 rounded-2xl border border-[#E9E7E1] bg-[#FFFFFF] p-3 shadow-2xl z-50 text-[#17201D] animate-in fade-in slide-in-from-top-2 duration-150">
-                    <div className="border-b border-[#E9E7E1] pb-2.5 mb-2">
-                      <p className="font-bold text-sm text-[#17201D]">
+                  <div className="absolute right-0 mt-2 w-64 rounded-xl border border-slate-200 bg-white p-3 shadow-lg z-50 text-slate-800 animate-calm-reveal">
+                    <div className="border-b border-slate-100 pb-2.5 mb-2">
+                      <p className="font-bold text-sm text-slate-900">
                         {user.first_name} {user.last_name}
                       </p>
-                      <p className="text-xs text-[#7D8A65]">@{user.username}</p>
-                      <p className="text-[11px] text-[#7D8A65] mt-0.5">{user.phone}</p>
+                      <p className="text-xs text-slate-500">@{user.username}</p>
+                      <p className="text-[11px] text-slate-500 mt-0.5">{user.phone}</p>
                       <div className="mt-1 flex items-center gap-1.5">
-                        <span className="rounded-full bg-[#DCE8DD] px-2 py-0.5 text-[10px] font-bold text-[#173D32] uppercase">
+                        <span className="rounded-md bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 uppercase border border-emerald-200">
                           Role: {user.role}
                         </span>
                         {user.organization_detail?.location && (
-                          <span className="text-[10px] text-[#7D8A65] truncate">
+                          <span className="text-[10px] text-slate-500 truncate">
                             • {user.organization_detail.location}
                           </span>
                         )}
@@ -229,21 +208,24 @@ export function Navbar(props: NavbarProps) {
                     </div>
 
                     <div className="space-y-1">
-                      {navLinks.map((link) => (
+                      {NAV_ROLES.map((role) => (
                         <Link
-                          key={link.path}
-                          href={link.path}
+                          key={role.path}
+                          href={role.path}
                           onClick={() => setUserDropdownOpen(false)}
-                          className="flex items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold text-[#17201D] hover:bg-[#F7F5EF] transition"
+                          className="flex items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
                         >
-                          <span>{link.label}</span>
-                          <ChevronDown className="h-3.5 w-3.5 -rotate-90 text-[#7D8A65]" />
+                          <span className="flex items-center gap-2">
+                            <span>{role.icon}</span>
+                            <span>{role.label}</span>
+                          </span>
+                          <span className="text-slate-400 text-[10px]">&rarr;</span>
                         </Link>
                       ))}
 
                       <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-[#C86B4A] hover:bg-[#C86B4A]/10 transition border-t border-[#E9E7E1] mt-1 pt-2"
+                        className="w-full flex items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 transition border-t border-slate-100 mt-1 pt-2"
                       >
                         <LogOut className="h-3.5 w-3.5" />
                         <span>{t.logOut}</span>
@@ -257,7 +239,7 @@ export function Navbar(props: NavbarProps) {
             {/* Mobile Menu Hamburger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden rounded-lg p-2 text-white hover:bg-white/10 transition"
+              className="lg:hidden rounded-lg p-2 text-slate-700 hover:bg-slate-100 transition"
             >
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
@@ -266,77 +248,55 @@ export function Navbar(props: NavbarProps) {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-[#0F2720] border-t border-[#C99B43]/20 px-4 py-5 space-y-3 shadow-2xl animate-calm-reveal">
-            {/* Primary Nav Link */}
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                href={link.path}
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between rounded-xl bg-white/10 px-4 py-3 text-sm font-bold text-white hover:bg-white/20 border border-white/10"
-              >
-                <span>{link.label}</span>
-                <span className="text-[#C99B43]">&rarr;</span>
-              </Link>
-            ))}
+          <div className="lg:hidden bg-white border-t border-slate-200 px-4 py-4 space-y-3 shadow-lg animate-calm-reveal">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
+              {lang === "hi" ? "पोर्टल चुनें:" : "Choose Dashboard:"}
+            </span>
 
-            {/* Quick Portals for Mobile */}
-            <div className="pt-2 border-t border-white/10">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#C99B43] block mb-2">
-                {lang === "hi" ? "त्वरित पोर्टल प्रवेश:" : "Direct Portals:"}
-              </span>
-              <div className="grid grid-cols-2 gap-2">
-                <Link
-                  href="/farmer"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="rounded-xl bg-white/5 p-2.5 text-xs font-semibold text-white hover:bg-white/15 border border-white/10 text-center"
-                >
-                  🌾 {t.farmerTitle}
-                </Link>
-                <Link
-                  href="/buyer"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="rounded-xl bg-white/5 p-2.5 text-xs font-semibold text-white hover:bg-white/15 border border-white/10 text-center"
-                >
-                  🛒 {t.buyerTitle}
-                </Link>
-                <Link
-                  href="/fpo"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="rounded-xl bg-white/5 p-2.5 text-xs font-semibold text-white hover:bg-white/15 border border-white/10 text-center"
-                >
-                  🤝 {t.fpoTitle}
-                </Link>
-                <Link
-                  href="/driver"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="rounded-xl bg-white/5 p-2.5 text-xs font-semibold text-white hover:bg-white/15 border border-white/10 text-center"
-                >
-                  🚚 {t.driverTitle}
-                </Link>
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {NAV_ROLES.map((role) => {
+                const isActive = pathname === role.path;
+                return (
+                  <Link
+                    key={role.path}
+                    href={role.path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-bold transition border ${
+                      isActive
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-300 shadow-xs"
+                        : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className="text-base">{role.icon}</span>
+                      <span>{role.label}</span>
+                    </span>
+                    <span className="text-emerald-700 font-bold">&rarr;</span>
+                  </Link>
+                );
+              })}
             </div>
 
             {!user ? (
-              <div className="pt-3 border-t border-white/10 flex gap-2">
+              <div className="pt-3 border-t border-slate-200 flex gap-2">
                 <button
                   onClick={() => openAuth("login")}
-                  className="flex-1 rounded-xl bg-white/15 py-3 text-xs font-bold text-white text-center border border-white/20"
+                  className="flex-1 rounded-lg bg-slate-100 py-2.5 text-xs font-bold text-slate-800 text-center border border-slate-200 hover:bg-slate-200"
                 >
                   {t.signIn}
                 </button>
                 <button
                   onClick={() => openAuth("register")}
-                  className="flex-1 rounded-xl bg-[#C99B43] py-3 text-xs font-bold text-[#17201D] text-center shadow-md"
+                  className="flex-1 rounded-lg bg-emerald-600 py-2.5 text-xs font-bold text-white text-center hover:bg-emerald-700 shadow-xs"
                 >
                   {t.register}
                 </button>
               </div>
             ) : (
-              <div className="pt-3 border-t border-white/10">
+              <div className="pt-2 border-t border-slate-200">
                 <button
                   onClick={handleLogout}
-                  className="w-full rounded-xl bg-white/10 py-3 text-xs font-bold text-[#C86B4A] text-center border border-white/10"
+                  className="w-full rounded-lg bg-rose-50 py-2.5 text-xs font-bold text-rose-600 text-center border border-rose-200 hover:bg-rose-100"
                 >
                   {t.logOut} ({user.first_name})
                 </button>

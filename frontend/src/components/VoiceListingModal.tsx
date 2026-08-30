@@ -137,12 +137,10 @@ export function VoiceListingModal({
 
         analyser.getByteFrequencyData(dataArray);
 
-        // Sample 16 bars
         const bars: number[] = [];
         const step = Math.floor(bufferLength / 16);
         for (let i = 0; i < 16; i++) {
           const val = dataArray[i * step] || 0;
-          // Scale to percentage height (15% to 100%)
           const heightPct = Math.max(15, Math.min(100, (val / 255) * 100));
           bars.push(heightPct);
         }
@@ -161,7 +159,6 @@ export function VoiceListingModal({
     setMicError(null);
     shouldKeepRecordingRef.current = true;
 
-    // 1. Request Media Permission explicitly
     let stream: MediaStream;
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -176,7 +173,6 @@ export function VoiceListingModal({
       return;
     }
 
-    // 2. Start Speech Recognition
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRec) {
       const recognition = new SpeechRec();
@@ -210,7 +206,6 @@ export function VoiceListingModal({
       };
 
       recognition.onend = () => {
-        // Auto-restart if user has not tapped stop
         if (shouldKeepRecordingRef.current) {
           try {
             recognition.start();
@@ -263,30 +258,30 @@ export function VoiceListingModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#17201D]/75 p-4 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg rounded-3xl border border-[#E9E7E1] bg-[#FFFFFF] p-6 sm:p-8 shadow-2xl space-y-6 text-[#17201D]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs animate-calm-reveal">
+      <div className="relative w-full max-w-lg rounded-xl border border-slate-200 bg-white p-6 sm:p-7 shadow-2xl space-y-5 text-slate-800">
         {/* Close Button */}
         <button
           onClick={() => {
             stopAllAudio();
             onClose();
           }}
-          className="absolute right-5 top-5 rounded-full p-2 text-[#7D8A65] hover:bg-[#F7F5EF] hover:text-[#17201D] transition"
+          className="absolute right-4 top-4 rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-800 transition"
         >
           <X className="h-5 w-5" />
         </button>
 
         {/* Header & Language Toggle */}
-        <div className="flex items-start justify-between gap-4 border-b border-[#E9E7E1] pb-4">
+        <div className="flex items-start justify-between gap-4 border-b border-slate-100 pb-3.5">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#173D32] text-white shadow-sm">
-              <Mic className="h-5 w-5 text-[#C99B43]" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 shadow-xs">
+              <Mic className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-serif text-xl font-bold text-[#17201D]">
+              <h3 className="text-lg font-bold tracking-tight text-slate-900">
                 {selectedLang === "hi" ? "आवाज से उपज लिस्ट करें" : "Voice-Assisted Produce Listing"}
               </h3>
-              <p className="text-xs text-[#7D8A65] font-light">
+              <p className="text-xs text-slate-500 font-normal">
                 {selectedLang === "hi"
                   ? "बोलें — फसल, मात्रा, ग्रेड और भाव स्वतः भर जाएंगे"
                   : "Speak naturally in Hindi or English to auto-populate your produce lot"}
@@ -297,55 +292,55 @@ export function VoiceListingModal({
           <button
             type="button"
             onClick={() => setSelectedLang(selectedLang === "hi" ? "en" : "hi")}
-            className="flex items-center gap-1.5 rounded-full bg-[#F7F5EF] px-3 py-1.5 text-xs font-semibold border border-[#E9E7E1] hover:border-[#173D32] transition"
+            className="flex items-center gap-1 rounded-md bg-slate-50 px-2.5 py-1 text-xs font-semibold border border-slate-200 hover:bg-slate-100 transition"
           >
-            <Languages className="h-3.5 w-3.5 text-[#173D32]" />
+            <Languages className="h-3.5 w-3.5 text-emerald-600" />
             <span>{selectedLang === "hi" ? "हिन्दी" : "English"}</span>
           </button>
         </div>
 
         {micError && (
-          <div className="rounded-xl bg-[#C86B4A]/10 p-3.5 border border-[#C86B4A]/30 text-xs font-medium text-[#C86B4A] flex items-start gap-2">
+          <div className="rounded-lg bg-rose-50 p-3 border border-rose-200 text-xs font-medium text-rose-700 flex items-start gap-2">
             <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
             <span>{micError}</span>
           </div>
         )}
 
-        {/* Real-time Voice Visualizer & Mic Button */}
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-[#E9E7E1] bg-[#F7F5EF] p-6 text-center space-y-4">
+        {/* Real-time Voice Visualizer & Tactile Mic Button */}
+        <div className="flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-slate-50 p-6 text-center space-y-3.5">
           <div className="relative">
             {isRecording && (
-              <div className="absolute -inset-4 rounded-full bg-[#C86B4A]/25 animate-ping" />
+              <div className="absolute -inset-3 rounded-full bg-rose-500/20 animate-ping" />
             )}
             <button
               onClick={handleToggleRecord}
-              className={`relative z-10 flex h-20 w-20 items-center justify-center rounded-full shadow-lg transition-all duration-300 ${
+              className={`relative z-10 flex h-18 w-18 items-center justify-center rounded-full shadow-md transition-all duration-200 cursor-pointer ${
                 isRecording
-                  ? "bg-[#C86B4A] text-white scale-105 ring-4 ring-[#C86B4A]/30"
-                  : "bg-[#173D32] text-white hover:scale-105 hover:bg-[#215445]"
+                  ? "bg-rose-600 text-white scale-105 ring-4 ring-rose-200"
+                  : "bg-emerald-600 text-white hover:scale-105 hover:bg-emerald-700 active:scale-95"
               }`}
             >
               {isRecording ? (
-                <MicOff className="h-8 w-8 animate-pulse" />
+                <MicOff className="h-7 w-7 animate-pulse" />
               ) : (
-                <Mic className="h-8 w-8 text-[#C99B43]" />
+                <Mic className="h-7 w-7" />
               )}
             </button>
           </div>
 
           {/* Live Audio Frequency Waveform Bars */}
           {isRecording ? (
-            <div className="flex items-end justify-center gap-1 h-10 w-full px-8">
+            <div className="flex items-end justify-center gap-1 h-8 w-full px-8">
               {audioLevel.map((heightPct, idx) => (
                 <div
                   key={idx}
                   style={{ height: `${heightPct}%` }}
-                  className="w-1.5 rounded-full bg-[#173D32] transition-all duration-75"
+                  className="w-1.5 rounded-full bg-emerald-600 transition-all duration-75"
                 />
               ))}
             </div>
           ) : (
-            <p className="text-xs font-semibold text-[#17201D]">
+            <p className="text-xs font-bold text-slate-800">
               {selectedLang === "hi"
                 ? "बोलने के लिए माइक दबाएं (Tap to Speak)"
                 : "Tap microphone to begin speaking"}
@@ -353,11 +348,11 @@ export function VoiceListingModal({
           )}
 
           {/* Live Transcript Box */}
-          <div className="w-full min-h-[60px] rounded-xl border border-[#E9E7E1] bg-[#FFFFFF] p-3.5 text-left text-xs text-[#17201D]">
+          <div className="w-full min-h-[52px] rounded-lg border border-slate-200 bg-white p-3 text-left text-xs text-slate-800">
             {transcript ? (
               <p className="italic font-medium">{transcript}</p>
             ) : (
-              <span className="text-[#7D8A65]/70 italic font-light">
+              <span className="text-slate-400 italic font-normal">
                 {selectedLang === "hi"
                   ? "उदा. '500 किलो टमाटर ग्रेड ए भाव 38 रुपये'..."
                   : "e.g. '500 kg Grade A tomatoes asking price 38 rupees'..."}
@@ -367,18 +362,18 @@ export function VoiceListingModal({
         </div>
 
         {/* Quick Sample Voice Buttons */}
-        <div className="space-y-2">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-[#7D8A65] flex items-center gap-1">
-            <Sparkles className="h-3.5 w-3.5 text-[#C99B43]" />
-            <span>Try Sample Voice Scenarios (One-Tap Demo)</span>
+        <div className="space-y-1.5">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1">
+            <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
+            <span>Try Sample Voice Prompts (One-Tap Test)</span>
           </span>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5">
             {sampleVoicePrompts.map((sample, idx) => (
               <button
                 key={idx}
                 type="button"
                 onClick={() => handleSimulateVoice(sample.text)}
-                className="rounded-full border border-[#E9E7E1] bg-[#F7F5EF] px-3 py-1 text-[11px] font-semibold text-[#17201D] hover:border-[#173D32] hover:bg-white transition"
+                className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-medium text-slate-700 hover:border-emerald-500 hover:bg-white transition"
               >
                 {sample.label}
               </button>
@@ -388,39 +383,39 @@ export function VoiceListingModal({
 
         {/* Extracted Fields Preview */}
         {parsedData && (
-          <div className="rounded-2xl border border-[#173D32]/20 bg-[#DCE8DD]/40 p-4 space-y-3">
+          <div className="rounded-xl border border-emerald-200 bg-emerald-50/70 p-3.5 space-y-2.5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[#173D32] flex items-center gap-1.5">
+              <span className="text-xs font-bold text-emerald-800 flex items-center gap-1.5">
                 <CheckCircle2 className="h-4 w-4" />
                 <span>Extracted Produce Details</span>
               </span>
-              <span className="rounded-full bg-[#173D32] px-2 py-0.5 text-[10px] font-bold text-white">
+              <span className="rounded-md bg-emerald-600 px-2 py-0.2 text-[10px] font-bold text-white">
                 {parsedData.commodity ? "100% Parsed" : "Listening..."}
               </span>
             </div>
 
             <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="rounded-xl bg-white p-2.5 border border-[#E9E7E1]">
-                <span className="text-[#7D8A65] text-[10px] uppercase font-semibold">Commodity</span>
-                <p className="font-bold text-[#17201D] capitalize">
+              <div className="rounded-lg bg-white p-2 border border-slate-200">
+                <span className="text-slate-500 text-[10px] uppercase font-bold">Commodity</span>
+                <p className="font-bold text-slate-900 capitalize">
                   {parsedData.commodity || "Not detected"}
                 </p>
               </div>
-              <div className="rounded-xl bg-white p-2.5 border border-[#E9E7E1]">
-                <span className="text-[#7D8A65] text-[10px] uppercase font-semibold">Grade</span>
-                <p className="font-bold text-[#17201D]">
+              <div className="rounded-lg bg-white p-2 border border-slate-200">
+                <span className="text-slate-500 text-[10px] uppercase font-bold">Grade</span>
+                <p className="font-bold text-slate-900">
                   {parsedData.grade ? `Grade ${parsedData.grade}` : "Not detected"}
                 </p>
               </div>
-              <div className="rounded-xl bg-white p-2.5 border border-[#E9E7E1]">
-                <span className="text-[#7D8A65] text-[10px] uppercase font-semibold">Quantity</span>
-                <p className="font-bold text-[#173D32]">
+              <div className="rounded-lg bg-white p-2 border border-slate-200">
+                <span className="text-slate-500 text-[10px] uppercase font-bold">Quantity</span>
+                <p className="font-bold text-emerald-700">
                   {parsedData.available_qty ? `${parsedData.available_qty} kg` : "Not detected"}
                 </p>
               </div>
-              <div className="rounded-xl bg-white p-2.5 border border-[#E9E7E1]">
-                <span className="text-[#7D8A65] text-[10px] uppercase font-semibold">Rate</span>
-                <p className="font-bold text-[#173D32]">
+              <div className="rounded-lg bg-white p-2 border border-slate-200">
+                <span className="text-slate-500 text-[10px] uppercase font-bold">Rate</span>
+                <p className="font-bold text-emerald-700">
                   {parsedData.asking_price ? `₹${parsedData.asking_price}/kg` : "Not detected"}
                 </p>
               </div>
@@ -429,14 +424,14 @@ export function VoiceListingModal({
         )}
 
         {/* Action Buttons */}
-        <div className="pt-2 flex items-center justify-end gap-3">
+        <div className="pt-2 flex items-center justify-end gap-2.5">
           <button
             type="button"
             onClick={() => {
               stopAllAudio();
               onClose();
             }}
-            className="rounded-full border border-[#E9E7E1] px-5 py-2 text-xs font-semibold text-[#17201D] hover:bg-[#F7F5EF] transition"
+            className="rounded-lg border border-slate-300 px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
           >
             Cancel
           </button>
@@ -449,10 +444,10 @@ export function VoiceListingModal({
                 onClose();
               }
             }}
-            className="flex items-center gap-2 rounded-full bg-[#173D32] px-6 py-2.5 text-xs font-bold text-white hover:bg-[#215445] transition-all shadow-md disabled:opacity-50"
+            className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-5 py-2 text-xs font-bold text-white hover:bg-emerald-700 transition shadow-xs disabled:opacity-50 cursor-pointer"
           >
             <span>Apply to Listing Form</span>
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>

@@ -44,8 +44,8 @@ export default function HomePage() {
         : "7 & 14-day APMC price forecasting, hold vs sell harvest timing advice, and batch payout simulator.",
       href: "/predict",
       icon: Sparkles,
-      badge: lang === "hi" ? "एआई पावर्ड" : "AI Powered",
-      badgeColor: "bg-[#C99B43] text-[#17201D]",
+      badge: lang === "hi" ? "पूर्वानुमान इंजन" : "AI Forecast Engine",
+      badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
       image: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&auto=format&fit=crop&q=80",
     },
     {
@@ -56,7 +56,7 @@ export default function HomePage() {
       href: "/farmer",
       icon: Sprout,
       badge: t.farmerBadge,
-      badgeColor: "bg-[#173D32] text-white",
+      badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
       image: "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=800&auto=format&fit=crop&q=80",
     },
     {
@@ -67,7 +67,7 @@ export default function HomePage() {
       href: "/buyer",
       icon: ShoppingBag,
       badge: t.buyerBadge,
-      badgeColor: "bg-[#173D32] text-white",
+      badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
       image: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&auto=format&fit=crop&q=80",
     },
     {
@@ -78,7 +78,7 @@ export default function HomePage() {
       href: "/fpo",
       icon: Building,
       badge: t.fpoBadge,
-      badgeColor: "bg-[#173D32] text-white",
+      badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
       image: "https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?w=800&auto=format&fit=crop&q=80",
     },
     {
@@ -89,7 +89,7 @@ export default function HomePage() {
       href: "/driver",
       icon: Truck,
       badge: t.driverBadge,
-      badgeColor: "bg-[#173D32] text-white",
+      badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
       image: "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=800&auto=format&fit=crop&q=80",
     },
     {
@@ -100,72 +100,34 @@ export default function HomePage() {
       href: "/ops",
       icon: ShieldAlert,
       badge: t.opsBadge,
-      badgeColor: "bg-[#173D32] text-white",
+      badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
       image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&auto=format&fit=crop&q=80",
     },
   ];
 
-  const LIVE_MANDI_FEEDS = [
-    { mandi: "Dubagga Mandi", crop: "Tomato (टमाटर)", price: "₹38.0/kg", change: "+12% Direct Gain" },
-    { mandi: "Sitapur Road Mandi", crop: "Onion (प्याज)", price: "₹30.0/kg", change: "+9% Direct Gain" },
-    { mandi: "Naveen Mandi Sthal", crop: "Potato (आलू)", price: "₹24.0/kg", change: "+14% Direct Gain" },
-    { mandi: "Malihabad Hub", crop: "Dussehri Mango", price: "₹65.0/kg", change: "+18% Direct Gain" },
-    { mandi: "Bakshi Ka Talab", crop: "Green Chilli", price: "₹48.0/kg", change: "+11% Direct Gain" },
-    { mandi: "Dubagga Mandi", crop: "Tomato (टमाटर)", price: "₹38.0/kg", change: "+12% Direct Gain" },
-    { mandi: "Sitapur Road Mandi", crop: "Onion (प्याज)", price: "₹30.0/kg", change: "+9% Direct Gain" },
-    { mandi: "Naveen Mandi Sthal", crop: "Potato (आलू)", price: "₹24.0/kg", change: "+14% Direct Gain" },
-    { mandi: "Malihabad Hub", crop: "Dussehri Mango", price: "₹65.0/kg", change: "+18% Direct Gain" },
-    { mandi: "Bakshi Ka Talab", crop: "Green Chilli", price: "₹48.0/kg", change: "+11% Direct Gain" },
-  ];
-
   return (
-    <div className="min-h-screen bg-[#FAF9F5] text-[#17201D] flex flex-col selection:bg-[#DCE8DD] selection:text-[#173D32]">
+    <div className="min-h-screen bg-[#FAFAF9] text-slate-800 flex flex-col selection:bg-emerald-100 selection:text-emerald-900">
       {/* Floating Navbar */}
       <Navbar />
 
-      {/* 0. CALM CONTINUOUS MANDI TICKER STRIP */}
-      <div className="bg-[#0f2720] border-b border-white/10 py-2.5 overflow-hidden shadow-inner">
-        <div className="flex items-center">
-          <div className="bg-[#0f2720] z-10 px-4 flex items-center gap-1.5 font-bold text-[#C99B43] uppercase text-[10px] tracking-wider shrink-0 border-r border-white/10 shadow-md">
-            <Zap className="h-3.5 w-3.5 fill-[#C99B43]" />
-            <span>Lucknow Live Mandi Feed:</span>
-          </div>
-
-          <div className="overflow-hidden flex-1">
-            <div className="animate-ticker-smooth text-xs text-[#DCE8DD] flex items-center gap-8 pl-4">
-              {LIVE_MANDI_FEEDS.map((feed, i) => (
-                <span key={i} className="flex items-center gap-2 shrink-0">
-                  <span className="text-white font-bold">{feed.crop}:</span>
-                  <span className="font-mono text-[#FAF9F5]">{feed.price}</span>
-                  <span className="rounded-full bg-[#DCE8DD]/20 px-2 py-0.5 text-[9px] font-bold text-[#C99B43] border border-[#C99B43]/30">
-                    {feed.change}
-                  </span>
-                  <span className="text-white/20 ml-2">✦</span>
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 1. HIGH-CONTRAST EDITORIAL HERO SECTION */}
-      <section className="relative bg-[#0F2720] text-white pt-10 pb-16 lg:pt-16 lg:pb-24 border-b border-[#C99B43]/20 map-contour-dark">
+      {/* 1. HIGH-CONTRAST FOREST GREEN HERO SECTION */}
+      <section className="relative bg-[#064E3B] text-white pt-10 pb-16 lg:pt-14 lg:pb-20 border-b border-emerald-950/20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             
             {/* Left Column: High-Contrast Headline & Value Prop */}
-            <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#C99B43]/40 bg-[#C99B43]/15 px-3.5 py-1 text-xs font-bold text-[#C99B43] backdrop-blur-md">
-                <Compass className="h-3.5 w-3.5" />
+            <div className="lg:col-span-7 space-y-5">
+              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/15 px-3.5 py-1 text-xs font-semibold text-emerald-200">
+                <Compass className="h-3.5 w-3.5 text-emerald-300" />
                 <span>{t.heroBadge}</span>
               </div>
 
-              <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-white leading-tight">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight">
                 {t.heroTitleLine1} <br />
-                <span className="italic font-light text-[#DCE8DD]">{t.heroTitleLine2}</span>
+                <span className="text-emerald-200 font-normal">{t.heroTitleLine2}</span>
               </h1>
 
-              <p className="text-sm sm:text-base text-[#DCE8DD]/90 font-light leading-relaxed max-w-xl">
+              <p className="text-sm sm:text-base text-emerald-100/90 font-normal leading-relaxed max-w-xl">
                 {t.heroSubtitle}
               </p>
 
@@ -173,7 +135,7 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
                 <Link
                   href="/predict"
-                  className="flex items-center justify-center gap-2 rounded-xl bg-[#C99B43] px-7 py-3.5 text-xs font-bold text-[#17201D] hover:bg-[#d8a84b] transition-all shadow-lg hover:scale-102 active:scale-98"
+                  className="flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 py-3.5 text-sm font-bold text-white hover:bg-emerald-600 transition-all shadow-sm active:scale-98"
                 >
                   <Sparkles className="h-4 w-4" />
                   <span>{lang === "hi" ? "फसल भाव का सही अनुमान लगाएं 🔮" : "Produce Market Predictor 🔮"}</span>
@@ -181,53 +143,53 @@ export default function HomePage() {
 
                 <Link
                   href="/buyer"
-                  className="flex items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/10 px-6 py-3.5 text-xs font-bold text-white hover:bg-white/20 transition-all backdrop-blur-sm"
+                  className="flex items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/10 px-5 py-3.5 text-sm font-semibold text-white hover:bg-white/20 transition-all"
                 >
-                  <ShoppingBag className="h-4 w-4 text-[#C99B43]" />
+                  <ShoppingBag className="h-4 w-4 text-emerald-300" />
                   <span>{lang === "hi" ? "ताज़ी फसलें खरीदें" : "Browse Fresh Marketplace"}</span>
                 </Link>
               </div>
 
-              {/* Thin Warm-Gold Feature Line & Badges */}
-              <div className="pt-6 border-t border-[#C99B43]/20 flex flex-wrap items-center gap-6 text-xs text-[#DCE8DD]/80">
-                <span className="flex items-center gap-1.5 font-medium">
-                  <CheckCircle2 className="h-4 w-4 text-[#C99B43]" />
+              {/* Feature Badges */}
+              <div className="pt-5 border-t border-emerald-600/30 flex flex-wrap items-center gap-6 text-xs text-emerald-100/90 font-medium">
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-300" />
                   <span>12 Lucknow Agri Zones</span>
                 </span>
-                <span className="flex items-center gap-1.5 font-medium">
-                  <CheckCircle2 className="h-4 w-4 text-[#C99B43]" />
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-300" />
                   <span>Digital Escrow Payments</span>
                 </span>
-                <span className="flex items-center gap-1.5 font-medium">
-                  <CheckCircle2 className="h-4 w-4 text-[#C99B43]" />
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-300" />
                   <span>Direct GPS Farm Logistics</span>
                 </span>
               </div>
             </div>
 
-            {/* Right Column: ONE Sharp, Pristine Real Agricultural Image Frame */}
+            {/* Right Column: Sharp Real Agricultural Image Frame */}
             <div className="lg:col-span-5">
-              <div className="relative rounded-2xl overflow-hidden border border-[#C99B43]/30 bg-[#173D32] shadow-2xl group">
+              <div className="relative rounded-2xl overflow-hidden border border-emerald-600/30 bg-[#064E3B] shadow-xl group">
                 <div className="relative h-72 sm:h-96 w-full">
                   <img
                     src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=1200&auto=format&fit=crop&q=85"
                     alt="Fresh produce harvest in Lucknow"
-                    className="h-full w-full object-cover group-hover:scale-103 transition-transform duration-700"
+                    className="h-full w-full object-cover group-hover:scale-102 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0F2720] via-transparent to-transparent opacity-80" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#064E3B]/80 via-transparent to-transparent" />
                 </div>
 
-                {/* Overlay Editorial Stat Card */}
-                <div className="absolute bottom-4 left-4 right-4 rounded-xl border border-white/20 bg-[#0F2720]/90 p-3.5 backdrop-blur-md flex items-center justify-between text-xs">
+                {/* Overlay Stat Card */}
+                <div className="absolute bottom-4 left-4 right-4 rounded-xl border border-slate-200 bg-white p-3.5 shadow-md flex items-center justify-between text-xs text-slate-800">
                   <div>
-                    <span className="rounded-full bg-[#C99B43] px-2 py-0.5 text-[9px] font-bold text-[#17201D] uppercase">
+                    <span className="rounded-md bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold text-emerald-700 uppercase">
                       Live APMC Benchmark
                     </span>
-                    <p className="font-bold text-white text-sm mt-1">Lucknow Cluster • 0% Broker Cut</p>
+                    <p className="font-bold text-slate-900 text-sm mt-1">Lucknow Cluster • 0% Broker Cut</p>
                   </div>
                   <div className="text-right">
-                    <span className="text-[10px] text-[#DCE8DD]/70 block">Farmer Extra Net</span>
-                    <span className="font-serif text-lg font-bold text-[#C99B43]">+22.4%</span>
+                    <span className="text-[10px] text-slate-500 block">Farmer Extra Net</span>
+                    <span className="text-lg font-bold text-emerald-700">+22.4%</span>
                   </div>
                 </div>
               </div>
@@ -237,18 +199,18 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 2. RECTANGULAR EDITORIAL DASHBOARDS GRID (16px Radius) */}
-      <section className="py-16 bg-[#FAF9F5] border-b border-[#E9E7E1] map-contour-bg">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#E9E7E1] pb-4">
+      {/* 2. RECTANGULAR EDITORIAL DASHBOARDS GRID */}
+      <section className="py-14 bg-[#FAFAF9] border-b border-slate-200">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 border-b border-slate-200 pb-4">
             <div>
-              <span className="text-xs font-bold uppercase tracking-widest text-[#173D32]">
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">
                 {t.dashboardShowcaseTag}
               </span>
-              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#17201D] mt-1">
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mt-1">
                 {t.dashboardShowcaseTitle}
               </h2>
-              <p className="text-xs sm:text-sm text-[#7D8A65] mt-1 max-w-2xl font-light">
+              <p className="text-xs sm:text-sm text-slate-600 mt-0.5 max-w-2xl">
                 {t.dashboardShowcaseSubtitle}
               </p>
             </div>
@@ -260,47 +222,47 @@ export default function HomePage() {
               return (
                 <div
                   key={portal.id}
-                  className="editorial-card p-6 flex flex-col justify-between space-y-4 group"
+                  className="editorial-card p-5 flex flex-col justify-between space-y-4 group bg-white"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className={`rounded-full px-3 py-1 text-[10px] font-bold uppercase ${portal.badgeColor}`}>
+                      <span className={`rounded-md border px-2.5 py-0.5 text-[10px] font-bold uppercase ${portal.badgeColor}`}>
                         {portal.badge}
                       </span>
-                      <div className="h-8 w-8 rounded-lg bg-[#FAF9F5] border border-[#E9E7E1] flex items-center justify-center text-[#173D32] group-hover:border-[#C99B43] transition">
-                        <Icon className="h-4 w-4 text-[#173D32]" />
+                      <div className="h-8 w-8 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center text-emerald-700 group-hover:border-emerald-300 transition">
+                        <Icon className="h-4 w-4 text-emerald-700" />
                       </div>
                     </div>
 
-                    <div className="relative h-40 w-full rounded-xl overflow-hidden bg-[#FAF9F5] border border-[#E9E7E1]">
+                    <div className="relative h-40 w-full rounded-lg overflow-hidden bg-slate-100 border border-slate-200">
                       <img
                         src={portal.image}
                         alt={portal.title}
-                        className="h-full w-full object-cover group-hover:scale-104 transition-transform duration-500"
+                        className="h-full w-full object-cover group-hover:scale-103 transition-transform duration-300"
                       />
                     </div>
 
                     <div>
-                      <span className="text-[11px] font-bold text-[#7D8A65] uppercase tracking-wider block">
+                      <span className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider block">
                         {portal.role}
                       </span>
-                      <h3 className="font-serif text-xl font-bold text-[#17201D] mt-0.5">
+                      <h3 className="text-lg font-bold text-slate-900 mt-0.5 tracking-tight">
                         {portal.title}
                       </h3>
                     </div>
 
-                    <p className="text-xs text-[#7D8A65] font-light leading-relaxed">
+                    <p className="text-xs text-slate-600 font-normal leading-relaxed">
                       {portal.description}
                     </p>
                   </div>
 
-                  <div className="border-t border-[#E9E7E1] pt-4">
+                  <div className="border-t border-slate-100 pt-3">
                     <Link
                       href={portal.href}
-                      className="flex items-center justify-between rounded-xl bg-[#FAF9F5] hover:bg-[#DCE8DD] border border-[#E9E7E1] px-4 py-2.5 text-xs font-bold text-[#173D32] transition group-hover:border-[#173D32]/30"
+                      className="flex items-center justify-between rounded-lg bg-slate-50 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-200 px-3.5 py-2 text-xs font-bold text-slate-800 hover:text-emerald-800 transition"
                     >
                       <span>{lang === "hi" ? "पोर्टल में प्रवेश करें" : `Enter ${portal.role}`}</span>
-                      <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform text-emerald-700" />
                     </Link>
                   </div>
                 </div>
@@ -311,57 +273,57 @@ export default function HomePage() {
       </section>
 
       {/* 3. CORE ARCHITECTURE & LOGISTICS TRUST PILLARS */}
-      <section className="py-16 bg-[#173D32] text-[#FAF9F5] border-b border-[#C99B43]/20 map-contour-dark">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="max-w-2xl border-b border-[#C99B43]/20 pb-4">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#C99B43]">
+      <section className="py-14 bg-white border-b border-slate-200">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
+          <div className="max-w-2xl border-b border-slate-200 pb-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">
               {lang === "hi" ? "तकनीक एवं बुनियादी ढांचा" : "SYSTEM ARCHITECTURE"}
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-white mt-1">
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mt-1">
               {t.techTitle}
             </h2>
-            <p className="text-xs sm:text-sm text-[#DCE8DD]/80 mt-2 font-light">
+            <p className="text-xs sm:text-sm text-slate-600 mt-1 font-normal">
               {t.techSubtitle}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-3 hover:border-[#C99B43]/40 transition">
-              <div className="h-10 w-10 rounded-xl bg-[#C99B43]/20 flex items-center justify-center text-[#C99B43] border border-[#C99B43]/30">
-                <Navigation2 className="h-5 w-5" />
+            <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5 hover:border-emerald-300 transition">
+              <div className="h-9 w-9 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-700">
+                <Navigation2 className="h-4.5 w-4.5" />
               </div>
-              <h3 className="text-base font-bold text-white">{t.featureGmapsTitle}</h3>
-              <p className="text-xs text-[#DCE8DD]/70 font-light leading-relaxed">
+              <h3 className="text-sm font-bold text-slate-900">{t.featureGmapsTitle}</h3>
+              <p className="text-xs text-slate-600 font-normal leading-relaxed">
                 {t.featureGmapsDesc}
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-3 hover:border-[#C99B43]/40 transition">
-              <div className="h-10 w-10 rounded-xl bg-[#C99B43]/20 flex items-center justify-center text-[#C99B43] border border-[#C99B43]/30">
-                <MapPin className="h-5 w-5" />
+            <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5 hover:border-emerald-300 transition">
+              <div className="h-9 w-9 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-700">
+                <MapPin className="h-4.5 w-4.5" />
               </div>
-              <h3 className="text-base font-bold text-white">{t.featureGpsTitle}</h3>
-              <p className="text-xs text-[#DCE8DD]/70 font-light leading-relaxed">
+              <h3 className="text-sm font-bold text-slate-900">{t.featureGpsTitle}</h3>
+              <p className="text-xs text-slate-600 font-normal leading-relaxed">
                 {t.featureGpsDesc}
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-3 hover:border-[#C99B43]/40 transition">
-              <div className="h-10 w-10 rounded-xl bg-[#C99B43]/20 flex items-center justify-center text-[#C99B43] border border-[#C99B43]/30">
-                <Building className="h-5 w-5" />
+            <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5 hover:border-emerald-300 transition">
+              <div className="h-9 w-9 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-700">
+                <Building className="h-4.5 w-4.5" />
               </div>
-              <h3 className="text-base font-bold text-white">{t.featurePoolingTitle}</h3>
-              <p className="text-xs text-[#DCE8DD]/70 font-light leading-relaxed">
+              <h3 className="text-sm font-bold text-slate-900">{t.featurePoolingTitle}</h3>
+              <p className="text-xs text-slate-600 font-normal leading-relaxed">
                 {t.featurePoolingDesc}
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-3 hover:border-[#C99B43]/40 transition">
-              <div className="h-10 w-10 rounded-xl bg-[#C99B43]/20 flex items-center justify-center text-[#C99B43] border border-[#C99B43]/30">
-                <Receipt className="h-5 w-5" />
+            <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5 hover:border-emerald-300 transition">
+              <div className="h-9 w-9 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-700">
+                <Receipt className="h-4.5 w-4.5" />
               </div>
-              <h3 className="text-base font-bold text-white">{t.featureSettlementsTitle}</h3>
-              <p className="text-xs text-[#DCE8DD]/70 font-light leading-relaxed">
+              <h3 className="text-sm font-bold text-slate-900">{t.featureSettlementsTitle}</h3>
+              <p className="text-xs text-slate-600 font-normal leading-relaxed">
                 {t.featureSettlementsDesc}
               </p>
             </div>
@@ -370,20 +332,20 @@ export default function HomePage() {
       </section>
 
       {/* 4. FOOTER */}
-      <footer className="border-t border-[#E9E7E1] bg-[#0F2720] text-[#FAF9F5] py-8 text-xs">
+      <footer className="border-t border-slate-200 bg-[#064E3B] text-slate-200 py-8 text-xs">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="bg-white p-1 rounded-lg">
+            <div className="bg-white p-1 rounded-md">
               <img
                 src="/logo.png"
                 alt="FarmLink Direct"
                 className="h-6 w-auto object-contain"
               />
             </div>
-            <span className="text-[#C99B43]">·</span>
-            <span className="text-[#DCE8DD]/80 font-medium">Better markets for every harvest.</span>
+            <span className="text-emerald-400">·</span>
+            <span className="text-emerald-100 font-medium">Direct B2B Fresh Produce Platform</span>
           </div>
-          <div className="text-[#DCE8DD]/60">
+          <div className="text-emerald-200/80">
             Smart India Hackathon (SIH) 26033 • Whole Lucknow Regional Agri-Cluster
           </div>
         </div>

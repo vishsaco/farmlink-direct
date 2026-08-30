@@ -1,15 +1,9 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans, Caveat } from "next/font/google";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth";
 import { LanguageProvider } from "@/lib/LanguageContext";
-
-const serifFont = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-serif",
-  display: "swap",
-});
 
 const sansFont = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -17,8 +11,14 @@ const sansFont = Plus_Jakarta_Sans({
   display: "swap",
 });
 
+const caveatFont = Caveat({
+  subsets: ["latin"],
+  variable: "--font-caveat",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "FarmLink Direct — Better markets for every harvest.",
+  title: "FarmLink Direct — Direct B2B Fresh Produce Platform",
   description:
     "A direct B2B fresh produce marketplace connecting verified farmers and FPOs with reliable institutional buyers, transparent price intelligence, and traceable fulfillment across the whole of Lucknow.",
 };
@@ -29,8 +29,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${serifFont.variable} ${sansFont.variable}`}>
-      <body className="bg-[#F7F5EF] text-[#17201D] font-sans min-h-screen antialiased selection:bg-[#DCE8DD] selection:text-[#173D32]">
+    <html lang="en" className={`${sansFont.variable} ${caveatFont.variable}`}>
+      <body className="bg-[#FAFAF9] text-slate-800 font-sans min-h-screen antialiased selection:bg-emerald-100 selection:text-emerald-900">
         <LanguageProvider>
           <AuthProvider>{children}</AuthProvider>
         </LanguageProvider>
