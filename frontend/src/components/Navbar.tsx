@@ -51,7 +51,7 @@ export function Navbar(props: NavbarProps) {
     router.push("/");
   };
 
-  // Role-tailored navigation links
+  // Clean Navigation: Market Predictor as primary showcase
   const getNavLinks = () => {
     const predictorLink = {
       label: lang === "hi" ? "🔮 बाज़ार पूर्वानुमान" : "🔮 Market Predictor",
@@ -59,15 +59,7 @@ export function Navbar(props: NavbarProps) {
     };
 
     if (!user) {
-      return [
-        { label: lang === "hi" ? "होम" : "Home", path: "/" },
-        predictorLink,
-        { label: t.navFarmer, path: "/farmer" },
-        { label: t.navMarketplace, path: "/buyer" },
-        { label: t.navFPO, path: "/fpo" },
-        { label: t.navDriver, path: "/driver" },
-        { label: t.navOps, path: "/ops" },
-      ];
+      return [predictorLink];
     }
 
     switch (user.role) {
@@ -75,13 +67,11 @@ export function Navbar(props: NavbarProps) {
         return [
           { label: t.navFarmer, path: "/farmer" },
           predictorLink,
-          { label: t.navBrowseMarket, path: "/buyer" },
         ];
       case "fpo":
         return [
           { label: t.navFPO, path: "/fpo" },
           predictorLink,
-          { label: t.navBulkDemand, path: "/buyer" },
         ];
       case "buyer":
         return [
@@ -97,13 +87,9 @@ export function Navbar(props: NavbarProps) {
         return [
           { label: t.navOps, path: "/ops" },
           predictorLink,
-          { label: t.navMarketplace, path: "/buyer" },
         ];
       default:
-        return [
-          { label: t.navMarketplace, path: "/buyer" },
-          predictorLink,
-        ];
+        return [predictorLink];
     }
   };
 
