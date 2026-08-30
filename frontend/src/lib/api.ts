@@ -12,7 +12,21 @@ import type {
   Settlement,
 } from "./types";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+const getApiBaseUrl = () => {
+  if (typeof window !== "undefined") {
+    const override = localStorage.getItem("farmlink_custom_api_url");
+    if (override) {
+      let clean = override.trim().replace(/\/+$/, "");
+      return clean.endsWith("/api") ? clean : `${clean}/api`;
+    }
+  }
+  let url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+  url = url.trim().replace(/\/+$/, "");
+  if (!url.endsWith("/api")) {
+    url = `${url}/api`;
+  }
+  return url;
+};
 
 class ApiClient {
   private accessToken: string | null = null;
@@ -47,7 +61,7 @@ class ApiClient {
       headers["Authorization"] = `Bearer ${this.accessToken}`;
     }
 
-    const res = await fetch(`${API_BASE}${path}`, {
+    const res = await fetch(`${getApiBaseUrl()}${path}`, {
       ...options,
       headers,
     });
