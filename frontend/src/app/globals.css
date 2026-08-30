@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-forest: #173D32;
+    --color-forest-dark: #0f2720;
+    --color-forest-light: #215445;
+    --color-charcoal: #17201D;
+    --color-ivory: #F7F5EF;
+    --color-ivory-dark: #ECE8DE;
+    --color-sage: #DCE8DD;
+    --color-sage-light: #EDF3EE;
+    --color-clay: #C86B4A;
+    --color-clay-dark: #A95436;
+    --color-gold: #C99B43;
+    --color-gold-dark: #A87D2E;
+    --color-olive: #7D8A65;
+    --color-stone: #E9E7E1;
+    --color-stone-dark: #D3D0C6;
+  }
+
+  body {
+    background-color: var(--color-ivory);
+    color: var(--color-charcoal);
+    font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    selection-background-color: #DCE8DD;
+    selection-color: #173D32;
+  }
+
+  h1, h2, h3, .font-serif-heading {
+    font-family: var(--font-serif), Georgia, serif;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Editorial Grain Texture Overlay */
+.editorial-grain {
+  background-image: radial-gradient(rgba(23, 61, 50, 0.04) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* Subtle Editorial Card styling */
+.agri-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E9E7E1;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px -2px rgba(23, 32, 29, 0.04), 0 1px 2px 0 rgba(23, 32, 29, 0.02);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.agri-card:hover {
+  border-color: #DCE8DD;
+  box-shadow: 0 12px 24px -6px rgba(23, 61, 50, 0.08), 0 4px 8px -2px rgba(23, 61, 50, 0.03);
+  transform: translateY(-2px);
+}
+
+/* Forest Dark Panel */
+.forest-panel {
+  background-color: #173D32;
+  color: #F7F5EF;
+  border-radius: 24px;
+}
+
+/* Clean Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F7F5EF;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D3D0C6;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7D8A65;
+}
+
+/* Leaflet Map overrides for Editorial Palette */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  background-color: #F7F5EF !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: #FFFFFF !important;
+  color: #17201D !important;
+  border: 1px solid #E9E7E1 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 12px 30px rgba(23, 32, 29, 0.12) !important;
+}
+
+.leaflet-popup-tip {
+  background: #FFFFFF !important;
+}
