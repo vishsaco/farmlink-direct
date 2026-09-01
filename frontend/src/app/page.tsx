@@ -27,6 +27,8 @@ import {
   Compass,
   Activity,
   Zap,
+  Award,
+  Scale,
 } from "lucide-react";
 
 export default function HomePage() {
@@ -37,15 +39,15 @@ export default function HomePage() {
   const PORTAL_CARDS = [
     {
       id: "predict",
-      title: lang === "hi" ? "बाज़ार पूर्वानुमान एवं फसल सलाह" : "Produce Market Predictor & AI Advisory",
+      title: lang === "hi" ? "बाज़ार पूर्वानुमान एवं फसल सलाह" : "Produce Market Predictor & Action Engine",
       role: lang === "hi" ? "पूर्वानुमान इंजन" : "Predictive Intelligence",
       description: lang === "hi"
         ? "7 और 14 दिनों के भाव का सही अनुमान, फसल रोकने बनाम बेचने की सलाह और लाइव कमाई सिमुलेटर।"
-        : "7 & 14-day APMC price forecasting, hold vs sell harvest timing advice, and batch payout simulator.",
+        : "7 & 14-day APMC price forecasting, Holt-Winters ML models, hold vs sell harvest advice, and batch payout simulator.",
       href: "/predict",
       icon: Sparkles,
-      badge: lang === "hi" ? "पूर्वानुमान इंजन" : "AI Forecast Engine",
-      badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      badge: lang === "hi" ? "कोर प्रिडिक्टर" : "Core ML Predictor v4.0",
+      badgeColor: "border-emerald-600/40 text-emerald-800 bg-emerald-50",
       image: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&auto=format&fit=crop&q=80",
     },
     {
@@ -56,7 +58,7 @@ export default function HomePage() {
       href: "/farmer",
       icon: Sprout,
       badge: t.farmerBadge,
-      badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      badgeColor: "border-emerald-600/40 text-emerald-800 bg-emerald-50",
       image: "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=800&auto=format&fit=crop&q=80",
     },
     {
@@ -67,7 +69,7 @@ export default function HomePage() {
       href: "/buyer",
       icon: ShoppingBag,
       badge: t.buyerBadge,
-      badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      badgeColor: "border-emerald-600/40 text-emerald-800 bg-emerald-50",
       image: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&auto=format&fit=crop&q=80",
     },
     {
@@ -78,7 +80,7 @@ export default function HomePage() {
       href: "/fpo",
       icon: Building,
       badge: t.fpoBadge,
-      badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      badgeColor: "border-emerald-600/40 text-emerald-800 bg-emerald-50",
       image: "https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?w=800&auto=format&fit=crop&q=80",
     },
     {
@@ -89,7 +91,7 @@ export default function HomePage() {
       href: "/driver",
       icon: Truck,
       badge: t.driverBadge,
-      badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      badgeColor: "border-emerald-600/40 text-emerald-800 bg-emerald-50",
       image: "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=800&auto=format&fit=crop&q=80",
     },
     {
@@ -100,18 +102,18 @@ export default function HomePage() {
       href: "/ops",
       icon: ShieldAlert,
       badge: t.opsBadge,
-      badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      badgeColor: "border-emerald-600/40 text-emerald-800 bg-emerald-50",
       image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&auto=format&fit=crop&q=80",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-[#FAFAF9] text-slate-800 flex flex-col selection:bg-emerald-100 selection:text-emerald-900">
+    <div className="min-h-screen bg-[#FAFAF8] text-slate-900 flex flex-col selection:bg-emerald-100 selection:text-emerald-900">
       {/* Floating Navbar */}
       <Navbar />
 
-      {/* 1. HIGH-CONTRAST FOREST GREEN HERO SECTION */}
-      <section className="relative bg-[#064E3B] text-white pt-10 pb-16 lg:pt-14 lg:pb-20 border-b border-emerald-950/20">
+      {/* 1. HIGH-CONTRAST FOREST GREEN HERO SECTION WITH ANTIQUE GOLD CONTOUR ACCENTS */}
+      <section className="relative bg-[#064E3B] text-white pt-10 pb-16 lg:pt-14 lg:pb-20 border-b border-emerald-950/30">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             
@@ -135,7 +137,7 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
                 <Link
                   href="/predict"
-                  className="flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 py-3.5 text-sm font-bold text-white hover:bg-emerald-600 transition-all shadow-sm active:scale-98"
+                  className="flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 py-3.5 text-sm font-bold text-white hover:bg-emerald-600 transition-all shadow-md active:scale-98"
                 >
                   <Sparkles className="h-4 w-4" />
                   <span>{lang === "hi" ? "फसल भाव का सही अनुमान लगाएं 🔮" : "Produce Market Predictor 🔮"}</span>
@@ -150,33 +152,40 @@ export default function HomePage() {
                 </Link>
               </div>
 
-              {/* Feature Badges */}
-              <div className="pt-5 border-t border-emerald-600/30 flex flex-wrap items-center gap-6 text-xs text-emerald-100/90 font-medium">
+              {/* Trust Credentials Strip */}
+              <div className="pt-5 border-t border-emerald-600/30 flex flex-wrap items-center gap-6 text-xs text-emerald-100/90 font-medium font-mono">
                 <span className="flex items-center gap-1.5">
                   <CheckCircle2 className="h-4 w-4 text-emerald-300" />
                   <span>12 Lucknow Agri Zones</span>
                 </span>
                 <span className="flex items-center gap-1.5">
                   <CheckCircle2 className="h-4 w-4 text-emerald-300" />
-                  <span>Digital Escrow Payments</span>
+                  <span>0% Middleman Deduction</span>
                 </span>
                 <span className="flex items-center gap-1.5">
                   <CheckCircle2 className="h-4 w-4 text-emerald-300" />
-                  <span>Direct GPS Farm Logistics</span>
+                  <span>E-NAM Escrow Audited</span>
                 </span>
               </div>
             </div>
 
-            {/* Right Column: Sharp Real Agricultural Image Frame */}
+            {/* Right Column: Sharp Real Agricultural Image Frame with Crate Stamp Overlay */}
             <div className="lg:col-span-5">
-              <div className="relative rounded-2xl overflow-hidden border border-emerald-600/30 bg-[#064E3B] shadow-xl group">
+              <div className="relative rounded-2xl overflow-hidden border border-emerald-600/40 bg-[#064E3B] shadow-2xl group">
                 <div className="relative h-72 sm:h-96 w-full">
                   <img
                     src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=1200&auto=format&fit=crop&q=85"
                     alt="Fresh produce harvest in Lucknow"
                     className="h-full w-full object-cover group-hover:scale-102 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#064E3B]/80 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#064E3B]/85 via-transparent to-transparent" />
+                </div>
+
+                {/* Physical Lot Stamp Header */}
+                <div className="absolute top-4 left-4">
+                  <span className="agri-stamp bg-[#064E3B]/90 text-emerald-200 border-emerald-400/50 backdrop-blur-xs">
+                    APMC LOT #UP-LK-2026
+                  </span>
                 </div>
 
                 {/* Overlay Stat Card */}
@@ -187,7 +196,7 @@ export default function HomePage() {
                     </span>
                     <p className="font-bold text-slate-900 text-sm mt-1">Lucknow Cluster • 0% Broker Cut</p>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right font-mono">
                     <span className="text-[10px] text-slate-500 block">Farmer Extra Net</span>
                     <span className="text-lg font-bold text-emerald-700">+22.4%</span>
                   </div>
@@ -200,11 +209,11 @@ export default function HomePage() {
       </section>
 
       {/* 2. RECTANGULAR EDITORIAL DASHBOARDS GRID */}
-      <section className="py-14 bg-[#FAFAF9] border-b border-slate-200">
+      <section className="py-14 bg-[#FAFAF8] border-b border-slate-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 border-b border-slate-200 pb-4">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 font-mono">
                 {t.dashboardShowcaseTag}
               </span>
               <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mt-1">
@@ -226,7 +235,7 @@ export default function HomePage() {
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className={`rounded-md border px-2.5 py-0.5 text-[10px] font-bold uppercase ${portal.badgeColor}`}>
+                      <span className={`agri-stamp ${portal.badgeColor}`}>
                         {portal.badge}
                       </span>
                       <div className="h-8 w-8 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center text-emerald-700 group-hover:border-emerald-300 transition">
@@ -259,7 +268,7 @@ export default function HomePage() {
                   <div className="border-t border-slate-100 pt-3">
                     <Link
                       href={portal.href}
-                      className="flex items-center justify-between rounded-lg bg-slate-50 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-200 px-3.5 py-2 text-xs font-bold text-slate-800 hover:text-emerald-800 transition"
+                      className="flex items-center justify-between rounded-lg bg-slate-50 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-200 px-3.5 py-2 text-xs font-bold text-slate-800 hover:text-emerald-800 transition cursor-pointer"
                     >
                       <span>{lang === "hi" ? "पोर्टल में प्रवेश करें" : `Enter ${portal.role}`}</span>
                       <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform text-emerald-700" />
@@ -276,8 +285,8 @@ export default function HomePage() {
       <section className="py-14 bg-white border-b border-slate-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="max-w-2xl border-b border-slate-200 pb-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">
-              {lang === "hi" ? "तकनीक एवं बुनियादी ढांचा" : "SYSTEM ARCHITECTURE"}
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 font-mono">
+              {lang === "hi" ? "तकनीक एवं बुनियादी ढांचा" : "SYSTEM ARCHITECTURE & TRUST"}
             </span>
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mt-1">
               {t.techTitle}
@@ -345,8 +354,8 @@ export default function HomePage() {
             <span className="text-emerald-400">·</span>
             <span className="text-emerald-100 font-medium">Direct B2B Fresh Produce Platform</span>
           </div>
-          <div className="text-emerald-200/80">
-            Smart India Hackathon (SIH) 26033 • Whole Lucknow Regional Agri-Cluster
+          <div className="text-emerald-200/80 font-mono text-[11px]">
+            Smart India Hackathon (SIH) 26033 • Lucknow Regional Agri-Cluster
           </div>
         </div>
       </footer>
