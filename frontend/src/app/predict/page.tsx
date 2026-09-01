@@ -635,10 +635,33 @@ export default function MarketPredictorPage() {
   const todayBuyerCost = buyerSimulationMatrix.length ? buyerSimulationMatrix[0].totalProcurementCost : 0;
   const maxBuyerSavingsRupees = bestBuyDay ? todayBuyerCost - bestBuyDay.totalProcurementCost : 0;
 
-  // Chart data
+  // Chart data: Merge historical (past) + forecast (future) for continuous trajectory
   const chartData = useMemo(() => {
-    const list = horizon === "7day" ? (guidance?.seven_day || []) : (guidance?.fourteen_day || guidance?.seven_day || []);
-    return list.map((d, idx) => ({
+    const forecastList = horizon === "7day" ? (guidance?.seven_day || []) : (guidance?.fourteen_day || guidance?.seven_day || []);
+
+    // Build historical data points (last 7-14 days)
+    const historicalRaw: any[] = (guidance as any)?.historical || [];
+    const histLen = horizon === "7day" ? 7 : 14;
+    const histSlice = historicalRaw.slice(-histLen);
+
+    const histPoints = histSlice.map((h: any) => ({
+      date: new Date(h.date).toLocaleDateString("en-IN", { weekday: "short", day: "numeric" }),
+      shortDate: h.day_name || new Date(h.date).toLocaleDateString("en-IN", { weekday: "short" }),
+      farmerPrice: h.price,
+      farmerNet: Math.round(h.price * 0.93 * 10) / 10,
+      buyerLanded: Math.round(h.price * 1.05 * 10) / 10,
+      apmcRetail: Math.round(h.price * 1.35 * 10) / 10,
+      low: h.min,
+      high: h.max,
+      confidence: "actual" as const,
+      isHistorical: true,
+      // Historical price only — no forecast line
+      historicalPrice: h.price,
+      forecastPrice: undefined as number | undefined,
+    }));
+
+    // Build forecast data points
+    const forecastPoints = forecastList.map((d, idx) => ({
       date: new Date(d.date).toLocaleDateString("en-IN", { weekday: "short", day: "numeric" }),
       shortDate: d.day_name || new Date(d.date).toLocaleDateString("en-IN", { weekday: "short" }),
       farmerPrice: d.base,
@@ -648,21 +671,46 @@ export default function MarketPredictorPage() {
       low: d.low,
       high: d.high,
       confidence: d.confidence,
+      isHistorical: false,
+      // Connect the junction: first forecast also has historicalPrice to join the line
+      historicalPrice: idx === 0 ? d.base : undefined as number | undefined,
+      forecastPrice: d.base,
     }));
+
+    // If we have history, connect last hist point to first forecast
+    if (histPoints.length > 0 && forecastPoints.length > 0) {
+      histPoints[histPoints.length - 1].forecastPrice = histPoints[histPoints.length - 1].farmerPrice;
+    }
+
+    return [...histPoints, ...forecastPoints];
   }, [guidance, horizon]);
 
-  // All 5 Mandis comparison calculation
+  // All 5 Mandis comparison — prefer backend data (commodity-specific spreads)
   const all5MandisData = useMemo(() => {
     const todayBase = guidance?.today?.base || activeCropMeta.basePrice;
+    const backendMandis = guidance?.mandi_comparison || [];
 
     return LUCKNOW_5_MANDIS.map((mandi) => {
-      // Mandi price spread
+      // Try to match backend mandi_comparison data for this mandi
+      const backendMatch = backendMandis.find((bm) =>
+        bm.market_name?.toLowerCase().includes(mandi.id === "bkt" ? "bakshi" : mandi.id === "sitapur_rd" ? "sitapur" : mandi.id === "mohanlalganj" ? "mohanla" : mandi.id)
+      );
+
+      // Use backend price if available (reflects commodity-specific spread), else client fallback
       let mandiQuoted = todayBase;
-      if (mandi.id === "dubagga") mandiQuoted = Math.round(todayBase * 0.98 * 10) / 10;
-      else if (mandi.id === "sitapur_rd") mandiQuoted = Math.round(todayBase * 0.96 * 10) / 10;
-      else if (mandi.id === "malihabad") mandiQuoted = Math.round(todayBase * 0.94 * 10) / 10;
-      else if (mandi.id === "mohanlalganj") mandiQuoted = Math.round(todayBase * 0.93 * 10) / 10;
-      else if (mandi.id === "bkt") mandiQuoted = Math.round(todayBase * 0.92 * 10) / 10;
+      if (backendMatch?.price_per_kg) {
+        mandiQuoted = backendMatch.price_per_kg;
+      } else {
+        // Client-side fallback spreads
+        if (mandi.id === "dubagga") mandiQuoted = Math.round(todayBase * 0.98 * 10) / 10;
+        else if (mandi.id === "sitapur_rd") mandiQuoted = Math.round(todayBase * 0.96 * 10) / 10;
+        else if (mandi.id === "malihabad") mandiQuoted = Math.round(todayBase * 0.94 * 10) / 10;
+        else if (mandi.id === "mohanlalganj") mandiQuoted = Math.round(todayBase * 0.93 * 10) / 10;
+        else if (mandi.id === "bkt") mandiQuoted = Math.round(todayBase * 0.92 * 10) / 10;
+      }
+
+      // Use backend status text if available
+      const statusText = backendMatch?.status || "Active Trading";
 
       // Farmer deductions (Cess + Adhatiya + Handling + Transit)
       const farmerDeductionsPerKg = Math.round((mandiQuoted * ((mandi.cessPct + mandi.aadhatPct) / 100) + mandi.handlingFeeKg + (mandi.distanceKm * 0.05)) * 10) / 10;
@@ -677,6 +725,7 @@ export default function MarketPredictorPage() {
         farmerDeductionsPerKg,
         farmerNetRealization,
         buyerLandedCost,
+        statusText,
       };
     });
   }, [guidance, activeCropMeta]);
@@ -1031,18 +1080,26 @@ export default function MarketPredictorPage() {
                 </div>
               </div>
 
-              {/* Recharts Area Chart with Confidence Bands */}
-              <div className="h-64 w-full pt-2">
+              {/* Recharts Combined Historical + Forecast Chart with CI Bands */}
+              <div className="h-72 sm:h-80 w-full pt-2">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                     <defs>
-                      <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor={userPerspective === "seller" ? "#10B981" : "#064E3B"} stopOpacity={0.35} />
+                      <linearGradient id="chartGradForecast" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor={userPerspective === "seller" ? "#10B981" : "#064E3B"} stopOpacity={0.30} />
                         <stop offset="95%" stopColor={userPerspective === "seller" ? "#10B981" : "#064E3B"} stopOpacity={0.0} />
+                      </linearGradient>
+                      <linearGradient id="chartGradCI" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#10B981" stopOpacity={0.12} />
+                        <stop offset="95%" stopColor="#10B981" stopOpacity={0.04} />
+                      </linearGradient>
+                      <linearGradient id="chartGradHist" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#64748B" stopOpacity={0.15} />
+                        <stop offset="95%" stopColor="#64748B" stopOpacity={0.0} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
-                    <XAxis dataKey="shortDate" stroke="#94A3B8" fontSize={11} tickLine={false} axisLine={false} />
+                    <XAxis dataKey="shortDate" stroke="#94A3B8" fontSize={10} tickLine={false} axisLine={false} interval={chartData.length > 14 ? 2 : 0} />
                     <YAxis stroke="#94A3B8" fontSize={11} tickLine={false} axisLine={false} domain={["dataMin - 3", "dataMax + 3"]} tickFormatter={(v) => `₹${v}`} />
                     <Tooltip
                       content={({ active, payload }) => {
@@ -1051,39 +1108,95 @@ export default function MarketPredictorPage() {
                           return (
                             <div className="rounded-xl border border-slate-200 bg-white p-3 text-xs shadow-lg space-y-1">
                               <p className="font-bold text-slate-900">{d.date}</p>
-                              <p className="text-emerald-700 font-bold text-sm">
-                                {userPerspective === "seller" ? `Farm Gate Price: ₹${d.farmerPrice}/kg` : `Landed Cost: ₹${d.buyerLanded}/kg`}
-                              </p>
-                              <p className="text-slate-500 text-[11px]">
-                                {userPerspective === "seller" ? `Net In-Pocket: ₹${d.farmerNet}/kg` : `APMC Traditional: ₹${d.apmcRetail}/kg`}
-                              </p>
-                              <p className="text-[10px] text-slate-400 font-mono">
-                                95% Confidence Band: ₹{d.low} - ₹{d.high}
-                              </p>
+                              {d.isHistorical ? (
+                                <>
+                                  <p className="text-slate-700 font-bold text-sm">Actual Price: ₹{d.farmerPrice}/kg</p>
+                                  <p className="text-slate-500 text-[11px]">Range: ₹{d.low} – ₹{d.high}</p>
+                                  <p className="text-[10px] text-blue-600 font-medium">📜 Historical (Agmarknet)</p>
+                                </>
+                              ) : (
+                                <>
+                                  <p className="text-emerald-700 font-bold text-sm">
+                                    {userPerspective === "seller" ? `Forecast: ₹${d.farmerPrice}/kg` : `Landed Cost: ₹${d.buyerLanded}/kg`}
+                                  </p>
+                                  <p className="text-slate-500 text-[11px]">
+                                    {userPerspective === "seller" ? `Net In-Pocket: ₹${d.farmerNet}/kg` : `APMC Traditional: ₹${d.apmcRetail}/kg`}
+                                  </p>
+                                  <p className="text-[10px] text-slate-400 font-mono">
+                                    95% CI: ₹{d.low} – ₹{d.high}
+                                  </p>
+                                  <p className={`text-[10px] font-medium ${d.confidence === "high" ? "text-emerald-600" : d.confidence === "medium" ? "text-amber-600" : "text-rose-600"}`}>
+                                    Confidence: {d.confidence?.toUpperCase()}
+                                  </p>
+                                </>
+                              )}
                             </div>
                           );
                         }
                         return null;
                       }}
                     />
+                    {/* 95% Confidence Band (low to high) — only on forecast region */}
+                    <Area type="monotone" dataKey="high" stroke="none" fill="url(#chartGradCI)" fillOpacity={1} />
+                    <Area type="monotone" dataKey="low" stroke="none" fill="#FAFAF9" fillOpacity={1} />
+                    {/* Historical actual price line — solid slate */}
                     <Area
                       type="monotone"
-                      dataKey={userPerspective === "seller" ? "farmerPrice" : "buyerLanded"}
+                      dataKey="historicalPrice"
+                      stroke="#64748B"
+                      strokeWidth={2.5}
+                      strokeDasharray=""
+                      fill="url(#chartGradHist)"
+                      dot={{ r: 3, fill: "#64748B", stroke: "#fff", strokeWidth: 1.5 }}
+                      connectNulls={false}
+                    />
+                    {/* Forecast price line — solid emerald with gradient fill */}
+                    <Area
+                      type="monotone"
+                      dataKey="forecastPrice"
                       stroke={userPerspective === "seller" ? "#059669" : "#064E3B"}
                       strokeWidth={3}
-                      fill="url(#chartGrad)"
+                      strokeDasharray="8 4"
+                      fill="url(#chartGradForecast)"
                       activeDot={{ r: 6, fill: userPerspective === "seller" ? "#059669" : "#064E3B", stroke: "#FFFFFF", strokeWidth: 2 }}
+                      connectNulls={false}
                     />
+                    {/* Today's reference line */}
+                    {guidance?.today?.base && (
+                      <ReferenceLine
+                        y={guidance.today.base}
+                        stroke="#D97706"
+                        strokeDasharray="4 4"
+                        strokeWidth={1}
+                        label={{ value: `Today ₹${guidance.today.base}`, fill: "#D97706", fontSize: 10, position: "right" }}
+                      />
+                    )}
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
 
-              <div className="flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-100 pt-2.5">
+              {/* Chart Legend */}
+              <div className="flex flex-wrap items-center gap-4 text-[10px] sm:text-[11px] text-slate-500 border-t border-slate-100 pt-2.5">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-5 h-0.5 bg-slate-500 inline-block" /> Historical (Actual)
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-5 h-0.5 bg-emerald-600 inline-block" style={{ borderTop: "2px dashed #059669" }} /> Forecast (Holt-Winters)
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-4 h-3 bg-emerald-100 inline-block rounded-sm opacity-60" /> 95% CI Band
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-5 h-0 inline-block" style={{ borderTop: "1.5px dashed #D97706" }} /> Today's Price
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
                 <span className="flex items-center gap-1">
                   <Activity className="h-3 w-3 text-emerald-600" />
-                  <span>Algorithm: Holt-Winters Triple Exponential Smoothing (α=0.35, β=0.10, γ=0.20)</span>
+                  <span>Holt-Winters Triple Exponential Smoothing (α=0.35, β=0.10, γ=0.20)</span>
                 </span>
-                <span className="text-slate-400">{dataSource}</span>
+                <span className="text-slate-400 text-[10px]">{dataSource}</span>
               </div>
             </div>
           </div>
