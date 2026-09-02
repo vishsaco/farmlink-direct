@@ -242,7 +242,7 @@ class ApiClient {
     commodity: string,
     cluster = "Lucknow"
   ): Promise<PriceGuidance> {
-    return this.request<PriceGuidance>(
+    return this.requestWithRetry<PriceGuidance>(
       `/forecasts/${commodity}/?cluster=${cluster}`
     );
   }
@@ -274,6 +274,30 @@ class ApiClient {
       method: "POST",
       body: JSON.stringify({ api_key: apiKey }),
     });
+  }
+
+  async getAccuracyMetrics(commodity: string, cluster = "Lucknow"): Promise<any> {
+    return this.requestWithRetry(`/forecasts/${commodity}/accuracy/?cluster=${cluster}`);
+  }
+
+  async getWeatherData(): Promise<any> {
+    return this.requestWithRetry("/forecasts/weather/");
+  }
+
+  // Retry wrapper with exponential backoff for critical forecast calls
+  private async requestWithRetry<T>(path: string, options: RequestInit = {}, maxRetries = 2): Promise<T> {
+    let lastError: Error | null = null;
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        return await this.request<T>(path, options);
+      } catch (err: any) {
+        lastError = err;
+        if (attempt < maxRetries) {
+          await new Promise(r => setTimeout(r, 500 * Math.pow(2, attempt)));
+        }
+      }
+    }
+    throw lastError;
   }
 
   // ─── Routing ───

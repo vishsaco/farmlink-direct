@@ -1,4 +1,4 @@
-"""Views for price forecasts, revenue simulation, and real Lucknow mandi integration."""
+"""Views for price forecasts, revenue simulation, accuracy metrics, weather, and real Lucknow mandi integration."""
 
 import os
 from rest_framework.decorators import api_view, permission_classes
@@ -6,7 +6,14 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
-from .engine import get_price_guidance, generate_forecasts, fetch_real_lucknow_mandi_prices, simulate_crop_revenue
+from .engine import (
+    get_price_guidance,
+    generate_forecasts,
+    fetch_real_lucknow_mandi_prices,
+    simulate_crop_revenue,
+    get_accuracy_metrics,
+    fetch_lucknow_weather,
+)
 from .models import MarketPrice
 
 
@@ -16,7 +23,7 @@ def forecast_view(request, commodity):
     """
     GET /api/forecasts/<commodity>/?cluster=Lucknow
     Returns today's base price, suggested range, 7 & 14-day trend, hold vs sell timing advice,
-    market drivers, and Agmarknet source metadata.
+    market drivers, accuracy metrics, weather data, and Agmarknet source metadata.
     """
     cluster = request.query_params.get("cluster", "Lucknow")
     guidance = get_price_guidance(commodity, cluster)
@@ -57,6 +64,29 @@ def sync_mandi_view(request):
     # Regenerate 14-day forecast with newly fetched baseline
     generate_forecasts(commodity, "Lucknow", days=14)
     return Response(result)
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def accuracy_view(request, commodity):
+    """
+    GET /api/forecasts/<commodity>/accuracy/
+    Returns rolling MAPE, MAE, RMSE metrics for the given commodity.
+    """
+    cluster = request.query_params.get("cluster", "Lucknow")
+    metrics = get_accuracy_metrics(commodity, cluster)
+    return Response(metrics)
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def weather_view(request):
+    """
+    GET /api/forecasts/weather/
+    Returns current weather data for Lucknow with agricultural impact analysis.
+    """
+    weather = fetch_lucknow_weather()
+    return Response(weather)
 
 
 @api_view(["POST"])

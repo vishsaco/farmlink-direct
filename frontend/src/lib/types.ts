@@ -193,14 +193,21 @@ export interface PriceGuidance {
   today: ForecastDay;
   seven_day: ForecastDay[];
   fourteen_day?: ForecastDay[];
+  historical?: { date: string; day_name: string; price: number; min: number; max: number; source: string }[];
   trend: "rising" | "falling" | "stable";
   avg_price: number;
   avg_price_14?: number;
+  volatility_pct?: number;
   explanation: string;
   action_recommendation?: ActionRecommendation;
-  market_drivers?: MarketDrivers;
+  market_drivers?: MarketDrivers & {
+    weather_price_factor?: number;
+    festival?: { name: string; demand_boost: string } | null;
+  };
   price_breakdown?: PriceBreakdown;
   mandi_comparison?: MandiComparison[];
+  accuracy?: AccuracyMetrics;
+  weather?: WeatherData;
   source_version?: string;
   source_meta?: {
     source: string;
@@ -209,7 +216,47 @@ export interface PriceGuidance {
     arrival_date?: string;
     message?: string;
     base_price?: number;
+    model_version?: string;
+    historical_observations?: number;
+    last_sync?: string;
   };
+}
+
+// ─── Accuracy Metrics (v5.0 Ensemble ML Pipeline) ──────────────────
+
+export interface AccuracyHorizon {
+  mape: number;
+  mae: number;
+  rmse: number;
+  samples: number;
+  target_met: boolean;
+}
+
+export interface AccuracyMetrics {
+  commodity: string;
+  accuracy_score: number;
+  overall_mape: number;
+  target: string;
+  target_met: boolean;
+  horizons: {
+    short_term: AccuracyHorizon;
+    medium_term: AccuracyHorizon;
+    long_term: AccuracyHorizon;
+  };
+  model_version: string;
+  last_evaluated: string;
+}
+
+// ─── Weather Data ──────────────────────────────────────────────────
+
+export interface WeatherData {
+  temperature_c: number;
+  humidity_pct: number;
+  rainfall_mm: number;
+  condition: string;
+  wind_speed_kmh: number;
+  source: string;
+  date: string;
 }
 
 export interface SimulationDay {
