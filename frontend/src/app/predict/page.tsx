@@ -500,19 +500,19 @@ function generateClientForecast(cropId: Commodity): PriceGuidance {
       shelf_life_cold_days: crop.shelfLifeDays * 4,
     },
     price_breakdown: {
-      farmlink_recommended: todayPrice,
-      apmc_mandi_modal: Math.round(todayPrice * 0.95 * 10) / 10,
-      retail_consumer_price: Math.round(todayPrice * 1.35 * 10) / 10,
-      farmer_extra_margin_per_kg: Math.round(todayPrice * 0.18 * 10) / 10,
-      buyer_savings_per_kg: Math.round(todayPrice * 0.12 * 10) / 10,
+      farmlink_recommended: Math.round(todayPrice * 0.94 * 10) / 10,
+      apmc_mandi_modal: todayPrice,
+      retail_consumer_price: Math.round(todayPrice * 1.30 * 10) / 10,
+      farmer_extra_margin_per_kg: Math.round(todayPrice * 0.14 * 10) / 10,
+      buyer_savings_per_kg: Math.round(todayPrice * 0.20 * 10) / 10,
     },
     mandi_comparison: [
-      { market_name: "Dubagga APMC Wholesale Mandi", role: "Central Wholesale Terminal (Hardoi Rd)", price_per_kg: Math.round(todayPrice * 0.98 * 10) / 10, distance_km: 14, status: "Active Trading (2.5% Cess + 6% Aadhat)" },
-      { market_name: "Sitapur Road Naveen Mandi Sthal", role: "Central APMC Yard (Faizullaganj)", price_per_kg: Math.round(todayPrice * 0.96 * 10) / 10, distance_km: 18, status: "High Bulk Influx" },
-      { market_name: "Malihabad Fruit & Veg Mandi", role: "Specialized Producer Hub", price_per_kg: Math.round(todayPrice * 0.94 * 10) / 10, distance_km: 28, status: "Packhouse Yard" },
-      { market_name: "Mohanlalganj Krishi Upaj Mandi", role: "Southern Grain & Veg Depot", price_per_kg: Math.round(todayPrice * 0.93 * 10) / 10, distance_km: 24, status: "Moderate Supply" },
-      { market_name: "Bakshi Ka Talab Feeder Mandi (BKT)", role: "Northern Rural Feeder Yard", price_per_kg: Math.round(todayPrice * 0.91 * 10) / 10, distance_km: 16, status: "Early Morning Feeder" },
-      { market_name: "FarmLink Direct (Farm Gate)", role: "Direct Escrow Fair Trade", price_per_kg: todayPrice, distance_km: 0, status: "Highest In-Pocket Net (+22% Direct, 0% Cess)" },
+      { market_name: "Dubagga APMC Wholesale Mandi", role: "Central Wholesale Terminal (Hardoi Rd)", price_per_kg: Math.round(todayPrice * 1.04 * 10) / 10, distance_km: 14, status: "Active Trading (2.5% Cess + 6% Aadhat)" },
+      { market_name: "Sitapur Road Naveen Mandi Sthal", role: "Central APMC Yard (Faizullaganj)", price_per_kg: Math.round(todayPrice * 1.03 * 10) / 10, distance_km: 18, status: "High Bulk Influx (2.5% Cess + 6% Aadhat)" },
+      { market_name: "Malihabad Fruit & Veg Mandi", role: "Specialized Producer Hub", price_per_kg: Math.round(todayPrice * 1.02 * 10) / 10, distance_km: 28, status: "Packhouse Yard (2% Cess + 5% Aadhat)" },
+      { market_name: "Mohanlalganj Krishi Upaj Mandi", role: "Southern Grain & Veg Depot", price_per_kg: Math.round(todayPrice * 1.02 * 10) / 10, distance_km: 24, status: "Moderate Supply (2.5% Cess + 6% Aadhat)" },
+      { market_name: "Bakshi Ka Talab Feeder Mandi (BKT)", role: "Northern Rural Feeder Yard", price_per_kg: Math.round(todayPrice * 1.00 * 10) / 10, distance_km: 16, status: "Early Morning Feeder (2% Cess + 5% Aadhat)" },
+      { market_name: "FarmLink Direct (Farm Gate)", role: "Direct Producer Fair Trade", price_per_kg: Math.round(todayPrice * 0.94 * 10) / 10, distance_km: 0, status: "Direct Farm Gate (0% Cess, 0% Aadhat)" },
     ],
     source_meta: {
       source: "Ensemble (HW+ARIMA+EWMA) Client Forecast (Offline Mode)",
@@ -840,23 +840,23 @@ export default function MarketPredictorPage() {
         bm.market_name?.toLowerCase().includes(mandi.id === "bkt" ? "bakshi" : mandi.id === "sitapur_rd" ? "sitapur" : mandi.id === "mohanlalganj" ? "mohanla" : mandi.id)
       );
 
-      // Use backend price if available (reflects commodity-specific spread), else client fallback
+      // Wholesale terminal quoted rate includes transport into urban yard and aadhatia overhead:
+      // Dubagga: +4%, Sitapur Rd: +3%, Malihabad: +2%, Mohanlalganj: +2%, BKT: +0%
       let mandiQuoted = todayBase;
       if (backendMatch?.price_per_kg) {
         mandiQuoted = backendMatch.price_per_kg;
       } else {
-        // Client-side fallback spreads
-        if (mandi.id === "dubagga") mandiQuoted = Math.round(todayBase * 0.98 * 10) / 10;
-        else if (mandi.id === "sitapur_rd") mandiQuoted = Math.round(todayBase * 0.96 * 10) / 10;
-        else if (mandi.id === "malihabad") mandiQuoted = Math.round(todayBase * 0.94 * 10) / 10;
-        else if (mandi.id === "mohanlalganj") mandiQuoted = Math.round(todayBase * 0.93 * 10) / 10;
-        else if (mandi.id === "bkt") mandiQuoted = Math.round(todayBase * 0.92 * 10) / 10;
+        if (mandi.id === "dubagga") mandiQuoted = Math.round(todayBase * 1.04 * 10) / 10;
+        else if (mandi.id === "sitapur_rd") mandiQuoted = Math.round(todayBase * 1.03 * 10) / 10;
+        else if (mandi.id === "malihabad") mandiQuoted = Math.round(todayBase * 1.02 * 10) / 10;
+        else if (mandi.id === "mohanlalganj") mandiQuoted = Math.round(todayBase * 1.02 * 10) / 10;
+        else if (mandi.id === "bkt") mandiQuoted = Math.round(todayBase * 1.00 * 10) / 10;
       }
 
       // Use backend status text if available
-      const statusText = backendMatch?.status || "Active Trading";
+      const statusText = backendMatch?.status || "Active Trading (2.5% Cess + 6% Aadhat)";
 
-      // Farmer deductions (Cess + Adhatiya + Handling + Transit)
+      // Farmer deductions (Cess + Adhatiya + Handling + Transit to Mandi)
       const farmerDeductionsPerKg = Math.round((mandiQuoted * ((mandi.cessPct + mandi.aadhatPct) / 100) + mandi.handlingFeeKg + (mandi.distanceKm * 0.05)) * 10) / 10;
       const farmerNetRealization = Math.round((mandiQuoted - farmerDeductionsPerKg) * 10) / 10;
 
@@ -876,9 +876,17 @@ export default function MarketPredictorPage() {
 
   const farmlinkDirectStats = useMemo(() => {
     const todayBase = guidance?.today?.base || activeCropMeta.basePrice;
+    // FarmLink Direct Farm Gate price (6% direct fair-trade discount vs urban terminal quote)
+    const directFarmGatePrice = Math.round(todayBase * 0.94 * 10) / 10;
+    // Farmer net realization: 100% of Farm Gate price (0% cess, 0% aadhat, 0 handling extortion)
+    const farmerNetRealization = directFarmGatePrice;
+    // Buyer landed cost: Farm Gate price + direct pooled electric vehicle transit (₹0.80/kg)
+    const buyerLandedCost = Math.round((directFarmGatePrice + 0.8) * 10) / 10;
+
     return {
-      farmerNetRealization: Math.round(todayBase * 0.93 * 10) / 10,
-      buyerLandedCost: Math.round(todayBase * 1.05 * 10) / 10,
+      directPrice: directFarmGatePrice,
+      farmerNetRealization,
+      buyerLandedCost,
     };
   }, [guidance, activeCropMeta]);
 
@@ -1710,6 +1718,10 @@ export default function MarketPredictorPage() {
 
               <div className="border-t border-emerald-200/80 pt-2 space-y-1 text-xs">
                 <div className="flex justify-between text-slate-700">
+                  <span>Farm Gate Base Rate:</span>
+                  <strong className="text-emerald-700 font-bold font-mono">₹{farmlinkDirectStats.directPrice}/kg</strong>
+                </div>
+                <div className="flex justify-between text-slate-700">
                   <span>Mandi Cess / Tax:</span>
                   <strong className="text-emerald-700 font-bold">0.0% (₹0.00)</strong>
                 </div>
@@ -1723,6 +1735,11 @@ export default function MarketPredictorPage() {
                     ₹{userPerspective === "seller" ? farmlinkDirectStats.farmerNetRealization : farmlinkDirectStats.buyerLandedCost}/kg
                   </span>
                 </div>
+                <p className="text-[10px] font-bold text-emerald-700 pt-0.5">
+                  {userPerspective === "seller"
+                    ? "✨ Earns +12% to +16% more in-pocket vs selling at Mandi"
+                    : "✨ Saves 18% to 22% vs APMC Mandi total landed cost"}
+                </p>
               </div>
             </div>
 

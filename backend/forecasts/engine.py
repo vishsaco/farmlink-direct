@@ -1639,12 +1639,20 @@ def get_price_guidance(commodity, market_cluster="Lucknow"):
         )
 
     # ── Cross-Mandi Arbitrage for All 5 Lucknow Mandis ──
-    mandi_spreads = config.get("mandi_spreads", {})
+    # Terminal wholesale yards have urban transport & yard trader markups over farm gate
+    # Dubagga: +4%, Sitapur Rd: +3%, Malihabad: +2%, Mohanlalganj: +2%, BKT: +0%
+    MANDI_TERMINAL_PREMIUMS = {
+        "dubagga": 1.04,
+        "sitapur_rd": 1.03,
+        "malihabad": 1.02,
+        "mohanlalganj": 1.02,
+        "bkt": 1.00,
+    }
     mandi_comparison = []
 
     for mandi_id, mandi_info in LUCKNOW_MANDIS.items():
-        spread = mandi_spreads.get(mandi_id, 0.95)
-        mandi_price = round(today_price * spread, 1)
+        prem = MANDI_TERMINAL_PREMIUMS.get(mandi_id, 1.02)
+        mandi_price = round(today_price * prem, 1)
 
         dow = today.weekday()
         if dow in (0, 3):
@@ -1668,11 +1676,14 @@ def get_price_guidance(commodity, market_cluster="Lucknow"):
             "status": status_full,
         })
 
-    # Add FarmLink Direct
+    # FarmLink Direct (Farm Gate) Fair Trade Rate:
+    # 6% discount off urban mandi terminal quote, completely eliminating 8.5% middleman cess & aadhat
+    farmlink_direct_price = round(today_price * 0.94, 1)
+
     mandi_comparison.append({
         "market_name": "FarmLink Direct (Farm Gate)",
-        "role": "Direct Escrow Fair Trade",
-        "price_per_kg": today_price,
+        "role": "Direct Producer Fair Trade",
+        "price_per_kg": farmlink_direct_price,
         "distance_km": 0,
         "status": "Highest In-Pocket Net (+22% Direct, 0% Cess)",
     })
@@ -1716,14 +1727,24 @@ def get_price_guidance(commodity, market_cluster="Lucknow"):
         "festival": festival_info,
     }
 
-    # ── Price Breakdown ──
-    mandi_modal = float(live_meta.get("base_price", today_price * 0.92))
+    # ── Price Breakdown (Disintermediation Fair Trade Model) ──
+    mandi_modal = today_price
+    farmlink_rate = round(today_price * 0.94, 1)
     retail_price = round(today_price * config.get("retail_markup", 1.30), 1)
-    farmer_margin_gain = round(today_price - (mandi_modal * 0.82), 1)
-    buyer_savings_per_kg = round(retail_price - today_price, 1)
+
+    # Farmer net realization comparison:
+    # At Mandi: mandi_modal - (2.5% cess + 6% aadhat + handling + transit)
+    mandi_farmer_net = round(mandi_modal * 0.85 - 1.0, 1)
+    farmer_margin_gain = round(farmlink_rate - mandi_farmer_net, 1)
+
+    # Buyer landed cost comparison:
+    # At Mandi: mandi_modal * 1.18 (cess + commission + loading) + transit
+    mandi_buyer_landed = round(mandi_modal * 1.18 + 1.2, 1)
+    farmlink_buyer_landed = round(farmlink_rate + 0.8, 1)
+    buyer_savings_per_kg = round(mandi_buyer_landed - farmlink_buyer_landed, 1)
 
     price_breakdown = {
-        "farmlink_recommended": today_price,
+        "farmlink_recommended": farmlink_rate,
         "apmc_mandi_modal": mandi_modal,
         "retail_consumer_price": retail_price,
         "farmer_extra_margin_per_kg": farmer_margin_gain,
