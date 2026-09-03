@@ -579,29 +579,20 @@ def fetch_real_lucknow_mandi_prices(commodity: str, api_key: str = None) -> dict
 
         for agmarknet_name in aliases:
             queries = [
-                # Tier 1: Lucknow district mandis
-                {
-                    "api-key": key,
-                    "format": "json",
-                    "filters[state]": "Uttar Pradesh",
-                    "filters[district]": "Lucknow",
-                    "filters[commodity]": agmarknet_name,
-                    "limit": 10,
-                },
-                # Tier 2: Uttar Pradesh regional mandis (neighboring districts)
+                # Primary: Uttar Pradesh regional mandis (pull up to 30 mandis for true statistical median)
                 {
                     "api-key": key,
                     "format": "json",
                     "filters[state]": "Uttar Pradesh",
                     "filters[commodity]": agmarknet_name,
-                    "limit": 10,
+                    "limit": 30,
                 },
-                # Tier 3: National APMC mandis (for off-season crops)
+                # Secondary: National APMC mandis (for off-season or inter-state commodities)
                 {
                     "api-key": key,
                     "format": "json",
                     "filters[commodity]": agmarknet_name,
-                    "limit": 10,
+                    "limit": 30,
                 },
             ]
 
@@ -610,20 +601,23 @@ def fetch_real_lucknow_mandi_prices(commodity: str, api_key: str = None) -> dict
                     url = f"{DATA_GOV_IN_BASE_URL}?{urllib.parse.urlencode(params)}"
                     req = urllib.request.Request(url, headers={"User-Agent": "FarmLinkDirect/5.0"})
 
-                    with urllib.request.urlopen(req, timeout=8) as response:
+                    with urllib.request.urlopen(req, timeout=12) as response:
                         if response.status == 200:
                             raw = response.read().decode("utf-8")
                             data = json.loads(raw)
                             records = data.get("records", [])
 
                             if records:
+                                valid_records = []
+                                lucknow_records = []
+
                                 for rec in records:
                                     try:
                                         modal_q = float(rec.get("modal_price", 0))
                                         min_q = float(rec.get("min_price", 0))
                                         max_q = float(rec.get("max_price", 0))
-                                        market_name = rec.get("market", "Lucknow Mandi")
-                                        district_name = rec.get("district", "Lucknow")
+                                        market_name = rec.get("market", "APMC Mandi")
+                                        district_name = rec.get("district", "Regional")
                                         arrival_date_str = rec.get("arrival_date", "")
 
                                         if modal_q <= 0:
@@ -641,6 +635,20 @@ def fetch_real_lucknow_mandi_prices(commodity: str, api_key: str = None) -> dict
                                         except (ValueError, TypeError):
                                             arr_date = date.today()
 
+                                        rec_info = {
+                                            "modal_kg": modal_kg,
+                                            "min_kg": min_kg,
+                                            "max_kg": max_kg,
+                                            "market": market_name,
+                                            "district": district_name,
+                                            "date": arr_date,
+                                            "arrival_str": arrival_date_str or str(date.today()),
+                                        }
+                                        valid_records.append(rec_info)
+
+                                        if "lucknow" in district_name.lower():
+                                            lucknow_records.append(rec_info)
+
                                         MarketPrice.objects.update_or_create(
                                             commodity=commodity,
                                             market=f"{district_name} - {market_name}",
@@ -656,27 +664,48 @@ def fetch_real_lucknow_mandi_prices(commodity: str, api_key: str = None) -> dict
                                     except Exception:
                                         continue
 
-                                latest = records[0]
-                                modal_kg = round(float(latest.get("modal_price", 0)) / 100.0, 1)
-                                min_kg = round(float(latest.get("min_price", 0)) / 100.0, 1)
-                                max_kg = round(float(latest.get("max_price", 0)) / 100.0, 1)
-                                market_name = latest.get("market", "APMC Mandi")
-                                district_name = latest.get("district", "Lucknow")
+                                if valid_records:
+                                    # Sort by modal price to calculate statistical median
+                                    valid_records.sort(key=lambda r: r["modal_kg"])
+                                    prices = [r["modal_kg"] for r in valid_records]
+                                    median_idx = len(prices) // 2
+                                    median_rec = valid_records[median_idx]
+                                    median_price = median_rec["modal_kg"]
 
-                                config["base"] = modal_kg
+                                    # Outlier protection: Use Lucknow record only if within normal bounds [0.5x - 1.8x median]
+                                    chosen_rec = median_rec
+                                    is_lucknow = False
 
-                                source_label = f"Agmarknet Live ({district_name} - {market_name})"
-                                return {
-                                    "source": source_label,
-                                    "is_live_api": True,
-                                    "base_price": modal_kg,
-                                    "min_price": min_kg,
-                                    "max_price": max_kg,
-                                    "arrival_date": latest.get("arrival_date", str(date.today())),
-                                    "market_name": f"{district_name} - {market_name}",
-                                    "records_fetched": len(records),
-                                    "last_sync": datetime.now().isoformat(),
-                                }
+                                    if lucknow_records:
+                                        l_rec = lucknow_records[0]
+                                        if 0.5 * median_price <= l_rec["modal_kg"] <= 1.8 * median_price:
+                                            chosen_rec = l_rec
+                                            is_lucknow = True
+
+                                    modal_kg = chosen_rec["modal_kg"]
+                                    min_kg = chosen_rec["min_kg"]
+                                    max_kg = chosen_rec["max_kg"]
+                                    market_name = chosen_rec["market"]
+                                    district_name = chosen_rec["district"]
+
+                                    config["base"] = modal_kg
+
+                                    if is_lucknow:
+                                        source_label = f"Agmarknet Live ({market_name}, Lucknow)"
+                                    else:
+                                        source_label = f"Agmarknet Live APMC ({district_name} - {market_name})"
+
+                                    return {
+                                        "source": source_label,
+                                        "is_live_api": True,
+                                        "base_price": modal_kg,
+                                        "min_price": min_kg,
+                                        "max_price": max_kg,
+                                        "arrival_date": chosen_rec["arrival_str"],
+                                        "market_name": f"{district_name} - {market_name}",
+                                        "records_fetched": len(records),
+                                        "last_sync": datetime.now().isoformat(),
+                                    }
                 except Exception as e:
                     logger.warning(f"data.gov.in query failed for {agmarknet_name}: {e}")
                     continue
@@ -687,9 +716,10 @@ def fetch_real_lucknow_mandi_prices(commodity: str, api_key: str = None) -> dict
     ).order_by("-date").first()
 
     if recent and (date.today() - recent.date).days <= 1:
+        is_today = (recent.date == date.today())
         return {
-            "source": f"Cached Agmarknet ({recent.market}, {recent.date})",
-            "is_live_api": False,
+            "source": f"Agmarknet Live (Synced: {recent.market})" if is_today else f"Cached Agmarknet ({recent.market}, {recent.date})",
+            "is_live_api": is_today and recent.source == "agmarknet_live",
             "base_price": float(recent.modal_price),
             "min_price": float(recent.min_price),
             "max_price": float(recent.max_price),
