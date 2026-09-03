@@ -665,11 +665,21 @@ def fetch_real_lucknow_mandi_prices(commodity: str, api_key: str = None) -> dict
                                         continue
 
                                 if valid_records:
-                                    # Sort by modal price to calculate statistical median
-                                    valid_records.sort(key=lambda r: r["modal_kg"])
-                                    prices = [r["modal_kg"] for r in valid_records]
-                                    median_idx = len(prices) // 2
-                                    median_rec = valid_records[median_idx]
+                                    # Prioritize major commercial wholesale terminals & consumption hubs in UP
+                                    COMMERCIAL_HUBS = [
+                                        "lucknow", "kanpur", "varanasi", "kannuj", "mathura",
+                                        "ghaziabad", "aligarh", "meerut", "prayagraj", "agra", "jhansi"
+                                    ]
+                                    comm_records = [
+                                        r for r in valid_records
+                                        if any(hub in r["district"].lower() for hub in COMMERCIAL_HUBS)
+                                    ]
+
+                                    # Prefer commercial wholesale trading hubs over small village collection centers
+                                    candidate_pool = comm_records if len(comm_records) >= 3 else valid_records
+                                    candidate_pool.sort(key=lambda r: r["modal_kg"])
+                                    median_idx = len(candidate_pool) // 2
+                                    median_rec = candidate_pool[median_idx]
                                     median_price = median_rec["modal_kg"]
 
                                     # Outlier protection: Use Lucknow record only if within normal bounds [0.5x - 1.8x median]
