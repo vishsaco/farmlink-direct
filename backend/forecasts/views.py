@@ -13,6 +13,7 @@ from .engine import (
     simulate_crop_revenue,
     get_accuracy_metrics,
     fetch_lucknow_weather,
+    get_all_live_prices,
 )
 from .models import MarketPrice
 
@@ -87,6 +88,19 @@ def weather_view(request):
     """
     weather = fetch_lucknow_weather()
     return Response(weather)
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def live_prices_view(request):
+    """
+    GET /api/forecasts/live-prices/
+    Returns current live prices for ALL commodities in a single lightweight call.
+    Optimized for frequent polling (every 15 seconds) with 60s in-memory cache.
+    Response: { prices: { commodity: { price, min_price, max_price, source, is_live, ... } }, fetched_at, ... }
+    """
+    data = get_all_live_prices()
+    return Response(data)
 
 
 @api_view(["POST"])

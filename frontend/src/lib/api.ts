@@ -284,6 +284,25 @@ class ApiClient {
     return this.requestWithRetry("/forecasts/weather/");
   }
 
+  async getLivePrices(): Promise<{
+    prices: Record<string, {
+      commodity: string;
+      price: number;
+      min_price: number;
+      max_price: number;
+      source: string;
+      is_live: boolean;
+      market_name: string;
+      last_sync: string;
+      updated_at: string;
+    }>;
+    fetched_at: string;
+    cache_ttl_seconds: number;
+    commodity_count: number;
+  }> {
+    return this.requestWithRetry("/forecasts/live-prices/");
+  }
+
   // Retry wrapper with exponential backoff for critical forecast calls
   private async requestWithRetry<T>(path: string, options: RequestInit = {}, maxRetries = 2): Promise<T> {
     let lastError: Error | null = null;

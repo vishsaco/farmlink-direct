@@ -564,10 +564,22 @@ export default function MarketPredictorPage() {
   const [dataSource, setDataSource] = useState<string>("Initializing...");
   const [isLiveApi, setIsLiveApi] = useState(false);
 
-  // Active crop metadata
+  // ── NEW: Live prices state for real-time auto-refresh ──
+  const [livePrices, setLivePrices] = useState<Record<string, { price: number; min_price: number; max_price: number; source: string; is_live: boolean; market_name: string; updated_at: string }>>({});
+  const [refreshCountdown, setRefreshCountdown] = useState(15);
+  const [priceFlash, setPriceFlash] = useState(false);
+  const [lastFetchedAt, setLastFetchedAt] = useState<string>("");
+  const prevPriceRef = React.useRef<number>(0);
+
+  // Active crop metadata — NOW uses live prices when available
   const activeCropMeta = useMemo(() => {
-    return CROPS.find((c) => c.id === selectedCrop) || CROPS[0];
-  }, [selectedCrop]);
+    const base = CROPS.find((c) => c.id === selectedCrop) || CROPS[0];
+    const liveData = livePrices[selectedCrop];
+    if (liveData && liveData.price > 0) {
+      return { ...base, basePrice: liveData.price };
+    }
+    return base;
+  }, [selectedCrop, livePrices]);
 
   // Fetch forecast from backend, falling back gracefully
   const loadForecast = async (crop: Commodity, silent = false) => {
@@ -575,6 +587,14 @@ export default function MarketPredictorPage() {
     try {
       const data = await api.getForecast(crop, "Lucknow");
       if (data && data.today && data.seven_day?.length) {
+        // Check for price change — trigger flash animation
+        const newPrice = data.today.base;
+        if (prevPriceRef.current > 0 && Math.abs(newPrice - prevPriceRef.current) > 0.01) {
+          setPriceFlash(true);
+          setTimeout(() => setPriceFlash(false), 1500);
+        }
+        prevPriceRef.current = newPrice;
+
         setGuidance(data);
         setDataSource(data.source_meta?.source || "Backend API");
         setIsLiveApi(data.source_meta?.is_live_api || false);
@@ -589,17 +609,53 @@ export default function MarketPredictorPage() {
       setIsLiveApi(false);
     } finally {
       if (!silent) setLoading(false);
-      setLastSyncTime(new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }));
+      setLastSyncTime(new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit" }));
     }
   };
 
-  // Initial load + auto-refresh every 30 seconds for real-time feel
+  // ── NEW: Fetch live prices for ALL commodities (lightweight endpoint) ──
+  const fetchLivePrices = async () => {
+    try {
+      const data = await api.getLivePrices();
+      if (data && data.prices) {
+        setLivePrices(data.prices);
+        setLastFetchedAt(data.fetched_at || new Date().toISOString());
+
+        // Check if the current crop's price changed
+        const currentLive = data.prices[selectedCrop];
+        if (currentLive && currentLive.is_live) {
+          setIsLiveApi(true);
+          setDataSource(currentLive.source);
+        }
+      }
+    } catch {
+      // Silent fail — will retry on next poll
+    }
+  };
+
+  // ── Initial load + auto-refresh every 15 seconds ──
   useEffect(() => {
     loadForecast(selectedCrop);
-    const interval = setInterval(() => {
+    fetchLivePrices();
+
+    // Full forecast refresh every 15 seconds
+    const forecastInterval = setInterval(() => {
       loadForecast(selectedCrop, true);
-    }, 30000);
-    return () => clearInterval(interval);
+      fetchLivePrices();
+    }, 15000);
+
+    return () => {
+      clearInterval(forecastInterval);
+    };
+  }, [selectedCrop]);
+
+  // ── Countdown timer (visual indicator of next refresh) ──
+  useEffect(() => {
+    setRefreshCountdown(15);
+    const countdownInterval = setInterval(() => {
+      setRefreshCountdown((prev) => (prev <= 1 ? 15 : prev - 1));
+    }, 1000);
+    return () => clearInterval(countdownInterval);
   }, [selectedCrop]);
 
   // Sync with Agmarknet Mandi
@@ -839,7 +895,7 @@ export default function MarketPredictorPage() {
               <span>
                 {lang === "hi"
                   ? `${isLiveApi ? "लाइव" : "ऑफलाइन"} डेटा • लखनऊ की 5 प्रमुख मंडियां (अपडेट: ${lastSyncTime})`
-                  : `${isLiveApi ? "Live" : "Cached"} Data • All 5 Lucknow Mandis (${lastSyncTime})`}
+                  : `${isLiveApi ? "LIVE" : "Cached"} Data • All 5 Lucknow Mandis (${lastSyncTime})`}
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900">
@@ -854,7 +910,7 @@ export default function MarketPredictorPage() {
                     ? "खरीदार डोमेन: Holt-Winters मॉडल से न्यूनतम लागत पर थोक खरीद, आवक पूर्वानुमान और ऑर्डर लॉकिंग।"
                     : "Buyer Domain: Holt-Winters forecasts for supply arrival surges, procurement dips, and landed cost optimization.")}
             </p>
-            <div className="flex items-center gap-2 mt-2">
+            <div className="flex items-center gap-2 mt-2 flex-wrap">
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${isLiveApi ? "bg-emerald-50 text-emerald-800 border-emerald-200" : "bg-amber-50 text-amber-800 border-amber-200"}`}>
                 {isLiveApi ? "🟢 Agmarknet Live API" : "📊 Ensemble v5.0"}
               </span>
@@ -867,9 +923,20 @@ export default function MarketPredictorPage() {
                   🎯 MAPE: {guidance.accuracy.overall_mape || "6.5"}% | Score: {guidance.accuracy.accuracy_score || 92}/100
                 </span>
               )}
-              <span className="text-[10px] font-medium text-slate-500">
-                {lang === "hi" ? "हर 30 सेकंड ऑटो-अपडेट" : "Auto-refresh every 30s"}
+              {/* Live countdown to next refresh */}
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded border transition-all duration-300 ${
+                refreshCountdown <= 3
+                  ? "bg-blue-50 text-blue-800 border-blue-200 animate-pulse"
+                  : "bg-slate-50 text-slate-600 border-slate-200"
+              }`}>
+                🔄 {lang === "hi" ? `अगला अपडेट: ${refreshCountdown}s` : `Next refresh: ${refreshCountdown}s`}
               </span>
+              {/* Price flash indicator */}
+              {priceFlash && (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded border bg-yellow-50 text-yellow-800 border-yellow-300 animate-bounce">
+                  ⚡ {lang === "hi" ? "भाव अपडेट हुआ!" : "Price Updated!"}
+                </span>
+              )}
             </div>
           </div>
 
@@ -938,6 +1005,9 @@ export default function MarketPredictorPage() {
           <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
             {CROPS.map((crop) => {
               const isSelected = selectedCrop === crop.id;
+              const liveData = livePrices[crop.id];
+              const displayPrice = liveData && liveData.price > 0 ? liveData.price : crop.basePrice;
+              const isLive = liveData?.is_live || false;
               return (
                 <button
                   key={crop.id}
@@ -952,14 +1022,15 @@ export default function MarketPredictorPage() {
                 >
                   <span className="text-base">{crop.icon}</span>
                   <span>{lang === "hi" ? crop.labelHi.split(" ")[0] : crop.labelEn.split(" ")[0]}</span>
-                  <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${
+                  <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono flex items-center gap-1 ${
                     crop.trend === "rising"
                       ? "bg-emerald-100 text-emerald-800"
                       : crop.trend === "falling"
                       ? "bg-rose-100 text-rose-800"
                       : "bg-slate-100 text-slate-700"
                   }`}>
-                    ₹{crop.basePrice}/kg
+                    {isLive && <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />}
+                    ₹{displayPrice}/kg
                   </span>
                 </button>
               );

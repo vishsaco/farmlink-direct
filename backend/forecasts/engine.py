@@ -365,6 +365,78 @@ FESTIVAL_DEMAND_CALENDAR = [
 DATA_GOV_IN_RESOURCE_ID = "9ef84268-d588-465a-a308-a864a43d0070"
 DATA_GOV_IN_BASE_URL = f"https://api.data.gov.in/resource/{DATA_GOV_IN_RESOURCE_ID}"
 
+# ──────────────────────────────────────────────────────────────────────
+# IN-MEMORY PRICE CACHE — Prevents hammering API on every 15s poll
+# ──────────────────────────────────────────────────────────────────────
+import time as _time
+
+_LIVE_PRICE_CACHE = {}       # { commodity: { price, min, max, source, updated_at, ... } }
+_LIVE_PRICE_CACHE_TS = {}    # { commodity: timestamp_of_last_fetch }
+_LIVE_PRICE_CACHE_TTL = 60   # seconds — re-fetch from API only after this expires
+_ALL_PRICES_CACHE = None     # cached result of get_all_live_prices()
+_ALL_PRICES_CACHE_TS = 0.0   # timestamp
+
+
+def get_live_price_cached(commodity: str) -> dict:
+    """
+    Get live price for a single commodity with in-memory caching.
+    Returns cached result if within TTL, otherwise fetches fresh data.
+    """
+    now = _time.time()
+    cached_ts = _LIVE_PRICE_CACHE_TS.get(commodity, 0)
+
+    if commodity in _LIVE_PRICE_CACHE and (now - cached_ts) < _LIVE_PRICE_CACHE_TTL:
+        return _LIVE_PRICE_CACHE[commodity]
+
+    # Fetch fresh
+    result = fetch_real_lucknow_mandi_prices(commodity)
+    config = COMMODITIES.get(commodity, COMMODITIES["tomato"])
+
+    price_data = {
+        "commodity": commodity,
+        "price": float(result.get("base_price", config["base"])),
+        "min_price": float(result.get("min_price", round(config["base"] * 0.88, 1))),
+        "max_price": float(result.get("max_price", round(config["base"] * 1.12, 1))),
+        "source": result.get("source", "reference_benchmark"),
+        "is_live": result.get("is_live_api", False),
+        "market_name": result.get("market_name", config.get("market", "Lucknow Mandi")),
+        "last_sync": result.get("last_sync", datetime.now().isoformat()),
+        "updated_at": datetime.now().isoformat(),
+    }
+
+    _LIVE_PRICE_CACHE[commodity] = price_data
+    _LIVE_PRICE_CACHE_TS[commodity] = now
+    return price_data
+
+
+def get_all_live_prices() -> dict:
+    """
+    Returns current live prices for ALL commodities in a single call.
+    Uses in-memory cache with 60s TTL to avoid hammering APIs.
+    Optimized for the /live-prices/ endpoint polled every 15 seconds.
+    """
+    global _ALL_PRICES_CACHE, _ALL_PRICES_CACHE_TS
+
+    now = _time.time()
+    if _ALL_PRICES_CACHE and (now - _ALL_PRICES_CACHE_TS) < _LIVE_PRICE_CACHE_TTL:
+        return _ALL_PRICES_CACHE
+
+    prices = {}
+    for commodity in COMMODITIES:
+        prices[commodity] = get_live_price_cached(commodity)
+
+    result = {
+        "prices": prices,
+        "fetched_at": datetime.now().isoformat(),
+        "cache_ttl_seconds": _LIVE_PRICE_CACHE_TTL,
+        "commodity_count": len(prices),
+    }
+
+    _ALL_PRICES_CACHE = result
+    _ALL_PRICES_CACHE_TS = now
+    return result
+
+
 # Ensemble model weights (sum to 1.0)
 ENSEMBLE_WEIGHTS = {
     "holt_winters": 0.40,
@@ -575,7 +647,7 @@ def fetch_real_lucknow_mandi_prices(commodity: str, api_key: str = None) -> dict
         commodity=commodity,
     ).order_by("-date").first()
 
-    if recent and (date.today() - recent.date).days <= 3:
+    if recent and (date.today() - recent.date).days <= 1:
         return {
             "source": f"Cached Agmarknet ({recent.market}, {recent.date})",
             "is_live_api": False,

@@ -118,6 +118,27 @@
   animation: priceFlash 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
+/* Price Updated Flash — bright glow when live price changes */
+@keyframes priceUpdatedGlow {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); background-color: rgba(16, 185, 129, 0.15); }
+  50% { box-shadow: 0 0 12px 4px rgba(16, 185, 129, 0.3); background-color: rgba(16, 185, 129, 0.08); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); background-color: transparent; }
+}
+
+.animate-price-updated {
+  animation: priceUpdatedGlow 1.5s ease-out;
+}
+
+/* Calm reveal for new content */
+@keyframes calmReveal {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-calm-reveal {
+  animation: calmReveal 0.3s ease-out;
+}
+
 /* Audio Visualizer Wave (Voice Drawer) */
 @keyframes audioWave {
   0%, 100% { height: 6px; }

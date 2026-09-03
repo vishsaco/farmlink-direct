@@ -16,6 +16,9 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get("DJANGO_DEBUG", "True").lower() in ("true", "1", "yes")
 
+# data.gov.in Agmarknet API key (free) — enables live APMC mandi prices
+os.environ.setdefault("DATA_GOV_IN_API_KEY", "579b464db66ec23bdd000001154c67779ae44f07596666938a696d0c")
+
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "*").split(",")
 
 # Application definition
