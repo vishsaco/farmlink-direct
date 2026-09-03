@@ -544,7 +544,7 @@ export default function FPOAggregatorPage() {
               <div className="editorial-card p-12 text-center space-y-2 bg-white">
                 <Users className="h-10 w-10 text-slate-300 mx-auto" />
                 <p className="font-bold text-sm text-slate-900">No Member Farmers Registered Yet</p>
-                <p className="text-xs text-slate-500">Click '+ Add Member Farmer' to onboard local producers in Lucknow.</p>
+                <p className="text-xs text-slate-500">Click &apos;+ Add Member Farmer&apos; to onboard local producers in Lucknow.</p>
                 <button
                   onClick={() => setShowAddMemberModal(true)}
                   className="rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-700 transition"

@@ -1451,7 +1451,7 @@ export default function MarketPredictorPage() {
                   <span className="w-4 h-3 bg-emerald-100 inline-block rounded-sm opacity-60" /> 95% CI Band
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="w-5 h-0 inline-block" style={{ borderTop: "1.5px dashed #D97706" }} /> Today's Price
+                  <span className="w-5 h-0 inline-block" style={{ borderTop: "1.5px dashed #D97706" }} /> Today&apos;s Price
                 </span>
               </div>
 

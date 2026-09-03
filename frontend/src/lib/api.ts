@@ -17,7 +17,7 @@ const getApiBaseUrl = () => {
   if (typeof window !== "undefined") {
     const override = localStorage.getItem("farmlink_custom_api_url");
     if (override) {
-      let clean = override.trim().replace(/\/+$/, "");
+      const clean = override.trim().replace(/\/+$/, "");
       return clean.endsWith("/api") ? clean : `${clean}/api`;
     }
   }
