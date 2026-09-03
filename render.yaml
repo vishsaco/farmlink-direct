@@ -13,3 +13,5 @@ services:
         value: "*"
       - key: CORS_ALLOW_ALL_ORIGINS
         value: "True"
+      - key: DATA_GOV_IN_API_KEY
+        value: "579b464db66ec23bdd000001154c67779ae44f07596666938a696d0c"
