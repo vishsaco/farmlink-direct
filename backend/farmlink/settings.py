@@ -113,6 +113,17 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 ALLOWED_HOSTS = ["*"]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.vercel.app",
+    "https://*.onrender.com",
+    "http://localhost:3000",
+    "http://localhost:3008",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3008",
+]
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # Internationalization
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "Asia/Kolkata"

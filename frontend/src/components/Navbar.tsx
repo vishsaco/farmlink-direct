@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { useLanguage } from "@/lib/LanguageContext";
 import { AuthModal } from "@/components/AuthModal";
+import { api } from "@/lib/api";
 import {
   Globe,
   ChevronDown,
@@ -41,6 +42,11 @@ export function Navbar(props: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState<"login" | "register">("login");
+
+  useEffect(() => {
+    // Silently warm up backend on Render in case it's in cold-sleep
+    api.healthCheck().catch(() => {});
+  }, []);
 
   const openAuth = (mode: "login" | "register") => {
     setAuthModalMode(mode);

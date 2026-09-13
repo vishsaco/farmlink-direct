@@ -21,16 +21,20 @@ const getApiBaseUrl = () => {
       return clean.endsWith("/api") ? clean : `${clean}/api`;
     }
   }
-  let url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
-  url = url.trim().replace(/\/+$/, "");
 
-  // Auto-detect production environment (e.g. Vercel)
-  if (typeof window !== "undefined" && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
-    if (url.includes("localhost") || url.includes("127.0.0.1")) {
-      url = "https://farmlink-direct.onrender.com/api";
-    }
+  // Explicit production env var takes precedence if provided
+  const envUrl = process.env.NEXT_PUBLIC_API_URL?.trim().replace(/\/+$/, "");
+  if (envUrl && !envUrl.includes("localhost") && !envUrl.includes("127.0.0.1")) {
+    return envUrl.endsWith("/api") ? envUrl : `${envUrl}/api`;
   }
 
+  // In production (e.g. Vercel or custom domain), use relative "/api" proxied by Next.js rewrites
+  if (typeof window !== "undefined" && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
+    return "/api";
+  }
+
+  // Local development default
+  let url = envUrl || "http://localhost:8000/api";
   if (!url.endsWith("/api")) {
     url = `${url}/api`;
   }
@@ -356,6 +360,20 @@ class ApiClient {
     return this.request<{ count: number; exceptions: unknown[] }>(
       "/fulfillment/exceptions/"
     );
+  }
+
+  async healthCheck(): Promise<{ status: string; service?: string }> {
+    try {
+      const base = getApiBaseUrl();
+      const target = base.endsWith("/api") ? base : `${base}/api`;
+      const res = await fetch(`${target}/`, { method: "GET", cache: "no-store" });
+      if (res.ok) {
+        return res.json();
+      }
+      return { status: "degraded" };
+    } catch {
+      return { status: "offline" };
+    }
   }
 }
 
