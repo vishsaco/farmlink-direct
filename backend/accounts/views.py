@@ -191,3 +191,89 @@ def google_auth_view(request):
         "user": UserSerializer(user).data,
     }, status=status.HTTP_200_OK)
 
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def verify_farmer_id_view(request):
+    """
+    POST /api/auth/verify-farmer-id/
+    Body: { "farmer_id": "UP20248849201", "khasra_number": "142/2A", "district": "Lucknow" }
+    Verifies agrarian producer against Government AgriStack and UP Bhulekh database.
+    """
+    farmer_id = request.data.get("farmer_id", "").strip()
+    khasra_number = request.data.get("khasra_number", "").strip()
+    district = request.data.get("district", "Lucknow").strip()
+
+    from .farmer_verification import verify_farmer_with_government_database
+
+    res = verify_farmer_with_government_database(
+        farmer_id=farmer_id,
+        khasra_number=khasra_number,
+        district=district,
+    )
+
+    if res.get("verified"):
+        return Response({"success": True, "data": res}, status=status.HTTP_200_OK)
+    else:
+        return Response(
+            {
+                "success": False,
+                "error": res.get("error", "Government verification failed."),
+                "error_code": res.get("error_code", "VERIFICATION_FAILED"),
+                "telemetry": res.get("telemetry"),
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def verify_kisan_view(request):
+    """
+    POST /api/auth/verify-kisan/
+    Body: { "farmer_id": "UP20248849201", "khasra_number": "142/2A" }
+    Upgrades authenticated user to verified farmer upon government verification.
+    """
+    from django.utils import timezone
+    from .farmer_verification import verify_farmer_with_government_database
+
+    farmer_id = request.data.get("farmer_id") or request.data.get("pm_kisan_id", "")
+    khasra_number = request.data.get("khasra_number", "")
+
+    res = verify_farmer_with_government_database(
+        farmer_id=farmer_id,
+        khasra_number=khasra_number,
+        district="Lucknow",
+    )
+
+    if not res.get("verified"):
+        return Response(
+            {
+                "success": False,
+                "error": res.get("error", "Government verification failed."),
+                "error_code": res.get("error_code", "VERIFICATION_FAILED"),
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    user = request.user
+    user.is_verified = True
+    user.kisan_verification_status = "verified"
+    user.kisan_verified_at = timezone.now()
+    user.kisan_verified_by = res.get("verified_by", "UP Bhulekh & PM-KISAN Central Registry")
+    user.pm_kisan_id = res.get("pm_kisan_id", farmer_id)
+    user.khasra_number = res.get("khasra_number", khasra_number)
+    user.land_size_acres = res.get("land_size_acres", user.land_size_acres)
+    user.tehsil = res.get("tehsil", user.tehsil)
+    if user.role != "farmer":
+        user.role = "farmer"
+    user.save()
+
+    return Response({
+        "success": True,
+        "message": "Government AgriStack & UP Bhulekh verification successful.",
+        "user": UserSerializer(user).data,
+        "verification_details": res,
+    }, status=status.HTTP_200_OK)
+
+

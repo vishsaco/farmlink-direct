@@ -13,6 +13,35 @@ export interface Organization {
   phone: string;
 }
 
+export interface GovernmentFarmerRecord {
+  verified: boolean;
+  status: string;
+  beneficiary_name: string;
+  father_name?: string;
+  pm_kisan_id: string;
+  khasra_number: string;
+  land_size_acres: number;
+  land_size_hectares?: number;
+  state: string;
+  district: string;
+  tehsil: string;
+  village: string;
+  pfms_status?: string;
+  aadhaar_verified?: boolean;
+  aadhaar_masked?: string;
+  installments_credited?: number;
+  bhulekh_ror_id?: string;
+  government_seal?: string;
+  verified_at?: string;
+  verified_by?: string;
+  telemetry?: {
+    server_online: boolean;
+    status_code: number;
+    latency_ms: number;
+    government_host: string;
+  };
+}
+
 export interface User {
   id: number;
   username: string;
@@ -26,6 +55,16 @@ export interface User {
   language: Language;
   is_verified: boolean;
   avatar_url: string;
+  // Pillar 1: Government AgriStack & Land Records Fields
+  pm_kisan_id?: string;
+  khasra_number?: string;
+  land_size_acres?: number;
+  tehsil?: string;
+  village_lgd_code?: string;
+  kisan_verification_status?: "unverified" | "pending" | "verified" | "rejected";
+  kisan_verified_at?: string;
+  kisan_verified_by?: string;
+  is_verified_farmer?: boolean;
 }
 
 export interface AuthResponse {

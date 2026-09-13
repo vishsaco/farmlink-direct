@@ -117,6 +117,10 @@ class ApiClient {
     organization_name?: string;
     location?: string;
     language?: "en" | "hi";
+    pm_kisan_id?: string;
+    khasra_number?: string;
+    land_size_acres?: number;
+    tehsil?: string;
   }): Promise<AuthResponse> {
     const res = await this.request<AuthResponse>("/auth/register/", {
       method: "POST",
@@ -124,6 +128,28 @@ class ApiClient {
     });
     this.setToken(res.access);
     return res;
+  }
+
+  async verifyFarmerId(data: {
+    farmer_id: string;
+    khasra_number?: string;
+    district?: string;
+  }): Promise<{ success: boolean; data: any }> {
+    return this.request<{ success: boolean; data: any }>("/auth/verify-farmer-id/", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async verifyKisan(data: {
+    farmer_id?: string;
+    pm_kisan_id?: string;
+    khasra_number?: string;
+  }): Promise<{ success: boolean; message: string; user: User; verification_details: any }> {
+    return this.request<{ success: boolean; message: string; user: User; verification_details: any }>("/auth/verify-kisan/", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
   }
 
   async googleLogin(data: {

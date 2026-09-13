@@ -24,7 +24,16 @@ interface AuthContextType {
     organization_name?: string;
     location?: string;
     language?: "en" | "hi";
+    pm_kisan_id?: string;
+    khasra_number?: string;
+    land_size_acres?: number;
+    tehsil?: string;
   }) => Promise<void>;
+  verifyKisan: (data: {
+    farmer_id?: string;
+    pm_kisan_id?: string;
+    khasra_number?: string;
+  }) => Promise<any>;
   loginWithGoogle: (data: {
     email: string;
     name: string;
@@ -40,6 +49,7 @@ const AuthContext = createContext<AuthContextType>({
   loading: false,
   login: async () => {},
   register: async () => {},
+  verifyKisan: async () => {},
   loginWithGoogle: async () => {},
   logout: () => {},
   isRole: () => false,
@@ -82,6 +92,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       organization_name?: string;
       location?: string;
       language?: "en" | "hi";
+      pm_kisan_id?: string;
+      khasra_number?: string;
+      land_size_acres?: number;
+      tehsil?: string;
     }) => {
       const data = await api.register(regData);
       setUser(data.user);
@@ -89,6 +103,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         localStorage.setItem("farmlink_user", JSON.stringify(data.user));
         localStorage.setItem("farmlink_refresh", data.refresh);
       }
+    },
+    []
+  );
+
+  const verifyKisan = useCallback(
+    async (verifyData: {
+      farmer_id?: string;
+      pm_kisan_id?: string;
+      khasra_number?: string;
+    }) => {
+      const res = await api.verifyKisan(verifyData);
+      if (res.success && res.user) {
+        setUser(res.user);
+        if (typeof window !== "undefined") {
+          localStorage.setItem("farmlink_user", JSON.stringify(res.user));
+        }
+      }
+      return res;
     },
     []
   );
@@ -126,7 +158,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, loginWithGoogle, logout, isRole }}>
+    <AuthContext.Provider value={{ user, loading, login, register, verifyKisan, loginWithGoogle, logout, isRole }}>
       {children}
     </AuthContext.Provider>
   );

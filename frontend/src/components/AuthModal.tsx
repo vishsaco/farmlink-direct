@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
+import { api } from "@/lib/api";
 import {
   X,
   Sprout,
@@ -19,6 +20,8 @@ import {
   Sparkles,
   ShieldCheck,
   CloudSun,
+  RotateCw,
+  AlertCircle,
 } from "lucide-react";
 import { LocationPickerModal, LocationData } from "@/components/LocationPickerModal";
 
@@ -47,6 +50,7 @@ export function AuthModal({
 }: AuthModalProps) {
   const router = useRouter();
   const { login, register, loginWithGoogle } = useAuth();
+
   const [mode, setMode] = useState<"login" | "register">(defaultMode);
   const [role, setRole] = useState<"farmer" | "fpo" | "buyer" | "driver" | "ops">(defaultRole);
 
@@ -61,6 +65,15 @@ export function AuthModal({
   const [geoLat, setGeoLat] = useState<number>(26.9824);
   const [geoLng, setGeoLng] = useState<number>(80.9247);
   const [showLocationPicker, setShowLocationPicker] = useState(false);
+
+  // Pillar 1: Government Agrarian Verification State
+  const [pmKisanId, setPmKisanId] = useState("");
+  const [khasraNumber, setKhasraNumber] = useState("");
+  const [landSizeAcres, setLandSizeAcres] = useState<number>(0);
+  const [tehsil, setTehsil] = useState("");
+  const [govVerifying, setGovVerifying] = useState(false);
+  const [govVerifiedRecord, setGovVerifiedRecord] = useState<any>(null);
+  const [govError, setGovError] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -140,6 +153,44 @@ export function AuthModal({
 
   if (!isOpen) return null;
 
+  const handleLiveGovVerify = async () => {
+    if (!pmKisanId.trim() && !khasraNumber.trim()) {
+      setGovError("Please enter your PM-KISAN ID or Khasra Number to query the Government Registry.");
+      return;
+    }
+    setGovVerifying(true);
+    setGovError(null);
+    try {
+      const res = await api.verifyFarmerId({
+        farmer_id: pmKisanId.trim(),
+        khasra_number: khasraNumber.trim(),
+        district: "Lucknow",
+      });
+      if (res.success && res.data) {
+        setGovVerifiedRecord(res.data);
+        if (res.data.beneficiary_name && !firstName) {
+          const parts = res.data.beneficiary_name.split(" ");
+          setFirstName(parts[0]);
+          if (parts.length > 1) setLastName(parts.slice(1).join(" "));
+        }
+        if (res.data.village && res.data.tehsil) {
+          setLocation(`${res.data.village}, ${res.data.tehsil}, Lucknow`);
+        }
+        if (res.data.land_size_acres) {
+          setLandSizeAcres(res.data.land_size_acres);
+        }
+        if (res.data.tehsil) {
+          setTehsil(res.data.tehsil);
+        }
+      }
+    } catch (err: any) {
+      setGovVerifiedRecord(null);
+      setGovError(err.message || "Government verification failed: Record not found in UP Bhulekh or PM-KISAN database.");
+    } finally {
+      setGovVerifying(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -162,6 +213,10 @@ export function AuthModal({
           organization_name: orgName.trim(),
           location: location.trim() || "Bakshi Ka Talab, Lucknow",
           language: "en",
+          pm_kisan_id: pmKisanId.trim(),
+          khasra_number: khasraNumber.trim(),
+          land_size_acres: landSizeAcres,
+          tehsil: tehsil.trim(),
         });
       }
 
@@ -390,6 +445,136 @@ export function AuthModal({
                     className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none transition shadow-2xs"
                   />
                 </div>
+
+                {/* Pillar 1: Government AgriStack & Land Records Verification (Farmer Role Only) */}
+                {role === "farmer" && (
+                  <div className="rounded-2xl border-2 border-[#173D32]/25 bg-[#F7F5EF] p-3.5 space-y-3 shadow-xs">
+                    <div className="flex items-start justify-between gap-2 border-b border-[#E8E8E3] pb-2.5">
+                      <div>
+                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#173D32] uppercase tracking-wider">
+                          <span className="flex h-2 w-2 rounded-full bg-emerald-600 animate-pulse" />
+                          <span>Pillar 1: Govt. AgriStack Verification</span>
+                        </div>
+                        <p className="text-[10px] text-[#5C584E] mt-0.5 leading-snug">
+                          Live authentication against UP Bhulekh (राजस्व परिषद) & PM-KISAN Central Registry
+                        </p>
+                      </div>
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#DCE8DD] text-[#173D32] border border-[#173D32]/20 shrink-0">
+                        Mandatory
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      <div>
+                        <label className="block text-[11px] font-medium text-[#17201D] mb-1">
+                          PM-KISAN ID / Farmer ID *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={pmKisanId}
+                          onChange={(e) => {
+                            setPmKisanId(e.target.value);
+                            setGovVerifiedRecord(null);
+                            setGovError(null);
+                          }}
+                          placeholder="e.g. UP20248849201"
+                          className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-mono text-[#17201D] focus:border-[#173D32] focus:outline-none transition uppercase shadow-2xs"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-medium text-[#17201D] mb-1">
+                          Khasra Number (खसरा संख्या) *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={khasraNumber}
+                          onChange={(e) => {
+                            setKhasraNumber(e.target.value);
+                            setGovVerifiedRecord(null);
+                            setGovError(null);
+                          }}
+                          placeholder="e.g. 142/2A"
+                          className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-mono text-[#17201D] focus:border-[#173D32] focus:outline-none transition shadow-2xs"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Live Government Verification Action */}
+                    <div className="flex items-center gap-2 pt-1">
+                      <button
+                        type="button"
+                        onClick={handleLiveGovVerify}
+                        disabled={govVerifying || (!pmKisanId.trim() && !khasraNumber.trim())}
+                        className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-[#173D32] bg-[#173D32] px-3 py-2 text-xs font-semibold text-white hover:bg-[#122F27] transition shadow-xs disabled:opacity-50 cursor-pointer"
+                      >
+                        {govVerifying ? (
+                          <>
+                            <RotateCw className="h-3.5 w-3.5 animate-spin text-white" />
+                            <span>Connecting to UP Bhulekh & PM-KISAN...</span>
+                          </>
+                        ) : (
+                          <>
+                            <ShieldCheck className="h-3.5 w-3.5 text-[#C99B43]" />
+                            <span>Verify with Government Registry</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    {/* Government Verification Success Card */}
+                    {govVerifiedRecord && (
+                      <div className="rounded-xl border border-emerald-300 bg-emerald-50/80 p-3 text-xs space-y-1.5 animate-calm-reveal">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-emerald-900 flex items-center gap-1">
+                            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-700" />
+                            <span>Govt. Verified Producer: {govVerifiedRecord.beneficiary_name}</span>
+                          </span>
+                          <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-emerald-200/60 text-emerald-900">
+                            {govVerifiedRecord.pfms_status || "Aadhaar Seeded"}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 text-[11px] text-emerald-800 pt-1 border-t border-emerald-200/50">
+                          <div>
+                            <span className="text-emerald-950 font-medium">Village & Tehsil: </span>
+                            {govVerifiedRecord.village}, {govVerifiedRecord.tehsil}
+                          </div>
+                          <div>
+                            <span className="text-emerald-950 font-medium">Holding Area: </span>
+                            {govVerifiedRecord.land_size_acres} Acres
+                          </div>
+                          <div>
+                            <span className="text-emerald-950 font-medium">Khasra Parcel: </span>
+                            {govVerifiedRecord.khasra_number}
+                          </div>
+                          <div>
+                            <span className="text-emerald-950 font-medium">Registry: </span>
+                            UP Bhulekh RoR
+                          </div>
+                        </div>
+                        <div className="text-[9px] font-mono text-emerald-700 pt-0.5 flex items-center justify-between">
+                          <span>Seal: {govVerifiedRecord.government_seal}</span>
+                          <span>✓ Live Gov Response</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Government Verification Error Notice */}
+                    {govError && (
+                      <div className="rounded-xl border border-red-200 bg-red-50 p-2.5 text-xs text-red-800 flex items-start gap-2 animate-calm-reveal">
+                        <AlertCircle className="h-4 w-4 text-red-600 shrink-0 mt-0.5" />
+                        <div>
+                          <strong className="block font-semibold">Government Registry Check Failed</strong>
+                          <span className="text-[11px] leading-tight text-red-700 block mt-0.5">
+                            {govError}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Location Picker */}
                 <div className="rounded-xl border border-[#E8E8E3] bg-white p-3 space-y-1.5 shadow-2xs">

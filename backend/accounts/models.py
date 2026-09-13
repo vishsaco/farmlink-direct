@@ -60,6 +60,25 @@ class User(AbstractUser):
     is_verified = models.BooleanField(default=False)
     avatar_url = models.URLField(blank=True)
 
+    # Pillar 1: Government AgriStack & Land Records Verification
+    pm_kisan_id = models.CharField(max_length=50, blank=True, default="")
+    khasra_number = models.CharField(max_length=50, blank=True, default="")
+    land_size_acres = models.FloatField(default=0.0)
+    tehsil = models.CharField(max_length=100, blank=True, default="")
+    village_lgd_code = models.CharField(max_length=20, blank=True, default="")
+    kisan_verification_status = models.CharField(
+        max_length=20,
+        choices=[
+            ("unverified", "Unverified"),
+            ("pending", "Pending Verification"),
+            ("verified", "Govt. Verified"),
+            ("rejected", "Verification Rejected"),
+        ],
+        default="unverified",
+    )
+    kisan_verified_at = models.DateTimeField(null=True, blank=True)
+    kisan_verified_by = models.CharField(max_length=120, blank=True, default="")
+
     class Meta:
         db_table = "users"
 
@@ -85,3 +104,8 @@ class User(AbstractUser):
     @property
     def is_driver(self):
         return self.role == "driver"
+
+    @property
+    def is_verified_farmer(self):
+        return self.role == "farmer" and self.is_verified
+

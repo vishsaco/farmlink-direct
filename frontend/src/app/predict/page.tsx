@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/lib/LanguageContext";
+import { useAuth } from "@/lib/auth";
+import { AuthModal } from "@/components/AuthModal";
 import { api } from "@/lib/api";
 import { Commodity, PriceGuidance, ForecastDay, AccuracyMetrics, WeatherData } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
@@ -37,6 +39,9 @@ import {
   Clock,
   Check,
   ChevronRight,
+  Lock,
+  AlertCircle,
+  X,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -548,11 +553,68 @@ function generateClientForecast(cropId: Commodity): PriceGuidance {
 
 export default function MarketPredictorPage() {
   const { lang, t } = useLanguage();
+  const { user, verifyKisan } = useAuth();
 
-  // State
+  // Pillar 1: Verified Farmer check (only government-verified farmers can access seller perspective)
+  const isVerifiedFarmer = Boolean(user && user.role === "farmer" && user.is_verified);
+
+  // State - Defaults strictly to wholesale buyer perspective for public visitors & unverified users
+  const [userPerspective, setUserPerspective] = useState<"seller" | "buyer">(() => {
+    return isVerifiedFarmer ? "seller" : "buyer";
+  });
+
+  // Automatically update perspective if verified farmer state changes
+  useEffect(() => {
+    if (isVerifiedFarmer) {
+      setUserPerspective("seller");
+    } else {
+      setUserPerspective("buyer");
+    }
+  }, [isVerifiedFarmer]);
+
+  // Auth & Pillar 1 Verification Modal State
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<"login" | "register">("register");
+  const [authModalRole, setAuthModalRole] = useState<"farmer" | "fpo" | "buyer" | "driver" | "ops">("farmer");
+  const [showGateModal, setShowGateModal] = useState(false);
+
+  // Inline Verification State (for logged-in unverified farmers)
+  const [inlinePmId, setInlinePmId] = useState("");
+  const [inlineKhasra, setInlineKhasra] = useState("");
+  const [inlineVerifying, setInlineVerifying] = useState(false);
+  const [inlineError, setInlineError] = useState<string | null>(null);
+  const [inlineSuccess, setInlineSuccess] = useState<string | null>(null);
+
+  const handleInlineGovVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inlinePmId.trim() && !inlineKhasra.trim()) {
+      setInlineError("Please enter your PM-KISAN ID or Khasra Number.");
+      return;
+    }
+    setInlineVerifying(true);
+    setInlineError(null);
+    setInlineSuccess(null);
+    try {
+      const res = await verifyKisan({
+        pm_kisan_id: inlinePmId.trim(),
+        khasra_number: inlineKhasra.trim(),
+      });
+      if (res.success) {
+        setInlineSuccess("Government verification successful! Farmer intelligence unlocked.");
+        setUserPerspective("seller");
+        setTimeout(() => {
+          setShowGateModal(false);
+        }, 1200);
+      }
+    } catch (err: any) {
+      setInlineError(err.message || "Government verification check failed. ID not found in UP Bhulekh registry.");
+    } finally {
+      setInlineVerifying(false);
+    }
+  };
+
   const [selectedCrop, setSelectedCrop] = useState<Commodity>("tomato");
   const [horizon, setHorizon] = useState<"7day" | "14day" | "30day">("7day");
-  const [userPerspective, setUserPerspective] = useState<"seller" | "buyer">("seller");
   const [batchQty, setBatchQty] = useState<number>(2000);
   const [storageType, setStorageType] = useState<"ambient" | "cold">("ambient");
 
@@ -928,10 +990,10 @@ export default function MarketPredictorPage() {
               {lang === "hi" ? "बाज़ार मूल्य पूर्वानुमान व निर्णय इंजन" : "Market Price Predictor & Action Engine"}
             </h1>
             <p className="text-xs sm:text-sm text-[#5C584E] mt-1 max-w-2xl font-sans">
-              {userPerspective === "seller"
+              {userPerspective === "seller" && isVerifiedFarmer
                 ? (lang === "hi"
-                    ? "किसान डोमेन: 4-मॉडल ML एन्सेम्बल (HW+ARIMA+EWMA+Ridge) से अधिकतम शुद्ध मुनाफा, फसल बेचने का सही समय, और 8.5% मंडी कटौती से बचाव।"
-                    : "Farmer Domain: 4-model ML ensemble (HW+ARIMA+EWMA+Ridge) forecasts for optimal harvest timing and middleman-cut elimination.")
+                    ? "किसान डोमेन (सरकारी सत्यापित): 4-मॉडल ML एन्सेम्बल (HW+ARIMA+EWMA+Ridge) से अधिकतम शुद्ध मुनाफा, फसल बेचने का सही समय, और 8.5% मंडी कटौती से बचाव।"
+                    : "Farmer Domain (Govt. Verified): 4-model ML ensemble (HW+ARIMA+EWMA+Ridge) forecasts for optimal harvest timing and middleman-cut elimination.")
                 : (lang === "hi"
                     ? "खरीदार डोमेन: 4-मॉडल ML एन्सेम्बल से न्यूनतम लागत पर थोक खरीद, आवक पूर्वानुमान और ऑर्डर लॉकिंग।"
                     : "Buyer Domain: 4-model ML ensemble forecasts for supply arrival surges, procurement dips, and landed cost optimization.")}
@@ -970,18 +1032,7 @@ export default function MarketPredictorPage() {
           <div className="flex items-center gap-2">
             {/* Domain Switcher */}
             <div className="flex items-center bg-[#F0EDE4] p-1 rounded-2xl border border-[#E8E8E3] shadow-xs">
-              <button
-                type="button"
-                onClick={() => setUserPerspective("seller")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
-                  userPerspective === "seller"
-                    ? "bg-[#173D32] text-white shadow-xs"
-                    : "text-[#5C584E] hover:text-[#17201D]"
-                }`}
-              >
-                <Sprout className="h-3.5 w-3.5" />
-                <span>{lang === "hi" ? "🌾 किसान / FPO (विक्रेता)" : "🌾 Farmer / FPO"}</span>
-              </button>
+              {/* Wholesale Buyer (Default & Accessible to All) */}
               <button
                 type="button"
                 onClick={() => setUserPerspective("buyer")}
@@ -993,6 +1044,37 @@ export default function MarketPredictorPage() {
               >
                 <ShoppingBag className="h-3.5 w-3.5" />
                 <span>{lang === "hi" ? "🏢 थोक खरीदार (Buyer)" : "🏢 Bulk Buyer"}</span>
+              </button>
+
+              {/* Farmer / FPO (Gated for Government-Verified Farmers) */}
+              <button
+                type="button"
+                onClick={() => {
+                  if (isVerifiedFarmer) {
+                    setUserPerspective("seller");
+                  } else {
+                    setShowGateModal(true);
+                  }
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
+                  userPerspective === "seller"
+                    ? "bg-[#173D32] text-white shadow-xs"
+                    : isVerifiedFarmer
+                    ? "text-[#5C584E] hover:text-[#17201D]"
+                    : "text-[#8C651A] bg-[#C99B43]/15 hover:bg-[#C99B43]/25 border border-[#C99B43]/30"
+                }`}
+                title={isVerifiedFarmer ? "Switch to Farmer Domain" : "Government AgriStack Verification Required"}
+              >
+                {isVerifiedFarmer ? (
+                  <Sprout className="h-3.5 w-3.5" />
+                ) : (
+                  <Lock className="h-3.5 w-3.5 text-[#8C651A]" />
+                )}
+                <span>
+                  {isVerifiedFarmer
+                    ? (lang === "hi" ? "🌾 किसान / FPO (सत्यापित)" : "🌾 Farmer / FPO")
+                    : (lang === "hi" ? "🔒 किसान (सत्यापन आवश्यक)" : "🔒 Farmer (Verified Only)")}
+                </span>
               </button>
             </div>
 
@@ -1066,67 +1148,194 @@ export default function MarketPredictorPage() {
         {/* DOMAIN-SPECIFIC HERO ADVISORY CARD */}
         {/* ───────────────────────────────────────────────────────────── */}
         {userPerspective === "seller" ? (
-          /* FARMER HERO ADVISORY */
-          <div className="editorial-card p-5 sm:p-6 bg-white space-y-4 border border-[#E8E8E3] rounded-2xl shadow-xs">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E8E8E3] pb-4">
-              <div className="flex items-center gap-3.5">
-                <div className="flex h-13 w-13 items-center justify-center rounded-2xl bg-[#DCE8DD] text-[#173D32] font-bold text-2xl shadow-xs">
-                  {activeCropMeta.icon}
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-[#5C584E]">
-                      {lang === "hi" ? "किसान निर्णय इंजन (Farmer Advisory)" : "Farmer Optimal Selling Recommendation"}
+          isVerifiedFarmer ? (
+            /* VERIFIED FARMER HERO ADVISORY */
+            <div className="space-y-4">
+              {/* Government AgriStack Verified Producer Trust Ribbon */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl bg-[#DCE8DD] border border-[#173D32]/25 p-4 text-xs text-[#173D32] shadow-xs">
+                <div className="flex items-center gap-2.5 font-semibold">
+                  <ShieldCheck className="h-5 w-5 text-[#173D32] shrink-0" />
+                  <div>
+                    <span className="text-sm font-serif text-[#173D32] block">
+                      🏛️ Govt. AgriStack Verified Producer: {user?.first_name} {user?.last_name || ""}
                     </span>
-                    <span className="rounded-md bg-[#173D32] px-2 py-0.5 text-[10px] font-semibold text-white uppercase">
-                      {activeCropMeta.trend === "rising" ? `HOLD FOR PEAK PRICE (Day ${activeCropMeta.sellerPeakDay})` : "HARVEST & SELL TODAY"}
+                    <span className="text-[11px] font-sans font-normal text-[#173D32]/80">
+                      Authenticated against UP Bhulekh (Board of Revenue UP) & PM-KISAN Central Registry
                     </span>
                   </div>
-                  <h3 className="font-serif text-2xl text-[#17201D] font-normal mt-0.5">
-                    {lang === "hi" ? activeCropMeta.labelHi : activeCropMeta.labelEn} • {activeCropMeta.primaryMandi}
-                  </h3>
+                </div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {user?.pm_kisan_id && (
+                    <span className="text-[10px] font-mono font-semibold px-2.5 py-1 rounded-md bg-[#173D32] text-white">
+                      PM-KISAN: {user.pm_kisan_id}
+                    </span>
+                  )}
+                  {user?.khasra_number && (
+                    <span className="text-[10px] font-semibold px-2 py-1 rounded-md bg-white border border-[#173D32]/20 text-[#173D32]">
+                      Khasra: {user.khasra_number}
+                    </span>
+                  )}
+                  {user?.land_size_acres ? (
+                    <span className="text-[10px] font-semibold px-2 py-1 rounded-md bg-white border border-[#173D32]/20 text-[#173D32]">
+                      {user.land_size_acres} Acres
+                    </span>
+                  ) : null}
+                  {user?.tehsil && (
+                    <span className="text-[10px] font-semibold px-2 py-1 rounded-md bg-white border border-[#173D32]/20 text-[#173D32]">
+                      Tehsil: {user.tehsil}
+                    </span>
+                  )}
+                  <span className="text-[10px] font-bold px-2 py-1 rounded-md bg-emerald-700 text-white flex items-center gap-1">
+                    <CheckCircle2 className="h-3 w-3" />
+                    Verified Farmer
+                  </span>
                 </div>
               </div>
 
-              {/* Farmer Realization Stat */}
-              <div className="flex items-baseline gap-3 bg-[#DCE8DD]/40 border border-[#173D32]/20 px-4 py-2.5 rounded-2xl sm:text-right">
-                <div>
-                  <p className="text-[10px] uppercase font-semibold text-[#173D32]">
-                    {lang === "hi" ? "संभावित अतिरिक्त मुनाफा" : "Max Realization Gain"}
-                  </p>
-                  <p className="text-xl font-serif text-[#173D32]">
-                    +{activeCropMeta.gainPct}% <span className="text-xs font-sans font-normal text-[#5C584E]">vs Today</span>
-                  </p>
+              {/* FARMER HERO ADVISORY CARD */}
+              <div className="editorial-card p-5 sm:p-6 bg-white space-y-4 border border-[#E8E8E3] rounded-2xl shadow-xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E8E8E3] pb-4">
+                  <div className="flex items-center gap-3.5">
+                    <div className="flex h-13 w-13 items-center justify-center rounded-2xl bg-[#DCE8DD] text-[#173D32] font-bold text-2xl shadow-xs">
+                      {activeCropMeta.icon}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-[#5C584E]">
+                          {lang === "hi" ? "किसान निर्णय इंजन (Farmer Advisory)" : "Farmer Optimal Selling Recommendation"}
+                        </span>
+                        <span className="rounded-md bg-[#173D32] px-2 py-0.5 text-[10px] font-semibold text-white uppercase">
+                          {activeCropMeta.trend === "rising" ? `HOLD FOR PEAK PRICE (Day ${activeCropMeta.sellerPeakDay})` : "HARVEST & SELL TODAY"}
+                        </span>
+                      </div>
+                      <h3 className="font-serif text-2xl text-[#17201D] font-normal mt-0.5">
+                        {lang === "hi" ? activeCropMeta.labelHi : activeCropMeta.labelEn} • {activeCropMeta.primaryMandi}
+                      </h3>
+                    </div>
+                  </div>
+
+                  {/* Farmer Realization Stat */}
+                  <div className="flex items-baseline gap-3 bg-[#DCE8DD]/40 border border-[#173D32]/20 px-4 py-2.5 rounded-2xl sm:text-right">
+                    <div>
+                      <p className="text-[10px] uppercase font-semibold text-[#173D32]">
+                        {lang === "hi" ? "संभावित अतिरिक्त मुनाफा" : "Max Realization Gain"}
+                      </p>
+                      <p className="text-xl font-serif text-[#173D32]">
+                        +{activeCropMeta.gainPct}% <span className="text-xs font-sans font-normal text-[#5C584E]">vs Today</span>
+                      </p>
+                    </div>
+                    <TrendingUp className="h-5 w-5 text-[#173D32]" />
+                  </div>
                 </div>
-                <TrendingUp className="h-5 w-5 text-[#173D32]" />
+
+                {/* Natural Advice Box */}
+                <div className="rounded-2xl bg-[#F7F5EF] p-4 sm:p-5 border border-[#E8E8E3] flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="space-y-1 text-xs">
+                    <p className="font-semibold text-[#17201D] text-sm">
+                      {lang === "hi"
+                        ? `सलाह: ${activeCropMeta.labelHi.split(" ")[0]} को ${bestSellDay?.date} (${bestSellDay?.dayName}) तक रोकें। संभावित भाव ₹${bestSellDay?.price}/किलो तक पहुंचने का अनुमान है (+₹${(maxFarmerGainRupees).toLocaleString()} अतिरिक्त लाभ)।`
+                        : `Recommendation: Hold harvest until ${bestSellDay?.date} (${bestSellDay?.dayName}). Expected modal rate ₹${bestSellDay?.price}/kg (+₹${(maxFarmerGainRupees).toLocaleString()} incremental profit).`}
+                    </p>
+                    <p className="text-[#5C584E] font-normal">
+                      {lang === "hi"
+                        ? `भंडारण सुरक्षा: फार्म गेट पर शेल्फ लाइफ लगभग ${activeCropMeta.shelfLifeDays} दिन है। कोल्ड स्टोरेज में रखने पर नुकसान 80% कम हो जाता है।`
+                        : `Shelf Life: ~${activeCropMeta.shelfLifeDays} days in ambient farm gate. Cold packhouse reduces decay loss by 80%.`}
+                    </p>
+                  </div>
+
+                  {/* Direct Farmer CTA */}
+                  <Link
+                    href="/farmer"
+                    className="shrink-0 flex items-center gap-1.5 rounded-xl bg-[#173D32] px-5 py-3 text-xs font-semibold text-white hover:bg-[#122e26] transition shadow-xs cursor-pointer"
+                  >
+                    <span>{lang === "hi" ? "🌾 बोलकर उपज लिस्ट करें" : "🌾 List Produce Lot"}</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
               </div>
             </div>
+          ) : (
+            /* UNVERIFIED / GATED FARMER VIEW */
+            <div className="editorial-card p-6 sm:p-8 bg-white space-y-5 border-2 border-[#173D32]/25 rounded-3xl shadow-sm text-center max-w-3xl mx-auto my-4 animate-calm-reveal">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-[#173D32]/10 text-[#173D32]">
+                <Lock className="h-8 w-8 text-[#173D32]" />
+              </div>
 
-            {/* Natural Advice Box */}
-            <div className="rounded-2xl bg-[#F7F5EF] p-4 sm:p-5 border border-[#E8E8E3] flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="space-y-1 text-xs">
-                <p className="font-semibold text-[#17201D] text-sm">
-                  {lang === "hi"
-                    ? `सलाह: ${activeCropMeta.labelHi.split(" ")[0]} को ${bestSellDay?.date} (${bestSellDay?.dayName}) तक रोकें। संभावित भाव ₹${bestSellDay?.price}/किलो तक पहुंचने का अनुमान है (+₹${(maxFarmerGainRupees).toLocaleString()} अतिरिक्त लाभ)।`
-                    : `Recommendation: Hold harvest until ${bestSellDay?.date} (${bestSellDay?.dayName}). Expected modal rate ₹${bestSellDay?.price}/kg (+₹${(maxFarmerGainRupees).toLocaleString()} incremental profit).`}
-                </p>
-                <p className="text-[#5C584E] font-normal">
-                  {lang === "hi"
-                    ? `भंडारण सुरक्षा: फार्म गेट पर शेल्फ लाइफ लगभग ${activeCropMeta.shelfLifeDays} दिन है। कोल्ड स्टोरेज में रखने पर नुकसान 80% कम हो जाता है।`
-                    : `Shelf Life: ~${activeCropMeta.shelfLifeDays} days in ambient farm gate. Cold packhouse reduces decay loss by 80%.`}
+              <div className="space-y-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[#DCE8DD] text-[#173D32] border border-[#173D32]/20">
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  <span>Pillar 1: Government AgriStack Gated Domain</span>
+                </span>
+                <h3 className="font-serif text-2xl sm:text-3xl text-[#17201D] font-normal">
+                  Farmer Price Guidance is Protected
+                </h3>
+                <p className="text-xs sm:text-sm text-[#5C584E] max-w-xl mx-auto leading-relaxed">
+                  To protect agricultural producers from predatory middleman price suppression and unauthorized commercial arbitrage, harvest hold-vs-sell recommendations, mandi cess bypass calculations, and net in-pocket cash analytics are reserved exclusively for government-verified farmers.
                 </p>
               </div>
 
-              {/* Direct Farmer CTA */}
-              <Link
-                href="/farmer"
-                className="shrink-0 flex items-center gap-1.5 rounded-xl bg-[#173D32] px-5 py-3 text-xs font-semibold text-white hover:bg-[#122e26] transition shadow-xs cursor-pointer"
-              >
-                <span>{lang === "hi" ? "🌾 बोलकर उपज लिस्ट करें" : "🌾 List Produce Lot"}</span>
-                <ArrowRight className="h-4 w-4" />
-              </Link>
+              <div className="rounded-2xl bg-[#F7F5EF] p-4 border border-[#E8E8E3] text-left max-w-lg mx-auto space-y-2 text-xs">
+                <div className="flex items-center justify-between text-[#17201D] font-semibold border-b border-[#E8E8E3] pb-2">
+                  <span className="flex items-center gap-1.5 text-[#173D32]">
+                    <span className="flex h-2 w-2 rounded-full bg-emerald-600 animate-pulse" />
+                    <span>Real-Time Government Verification</span>
+                  </span>
+                  <span className="text-[10px] font-mono text-[#5C584E]">UP Bhulekh & PM-KISAN</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-[11px] text-[#5C584E]">
+                  <div>✓ PM-KISAN Beneficiary Check</div>
+                  <div>✓ UP Bhulekh Cadastral Parcel</div>
+                  <div>✓ PFMS Aadhaar Seeded Account</div>
+                  <div>✓ Verified Cultivation Acreage</div>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+                {!user ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAuthModalMode("register");
+                        setAuthModalRole("farmer");
+                        setShowAuthModal(true);
+                      }}
+                      className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-2xl bg-[#173D32] px-6 py-3 text-xs font-semibold text-white hover:bg-[#122F27] transition shadow-xs cursor-pointer"
+                    >
+                      <span>Register as Verified Farmer (Pillar 1)</span>
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAuthModalMode("login");
+                        setShowAuthModal(true);
+                      }}
+                      className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-2xl border border-[#E8E8E3] bg-white px-5 py-3 text-xs font-semibold text-[#17201D] hover:bg-[#F7F5EF] transition shadow-xs cursor-pointer"
+                    >
+                      <span>Sign In with Verified Account</span>
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setShowGateModal(true)}
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-2xl bg-[#173D32] px-6 py-3 text-xs font-semibold text-white hover:bg-[#122F27] transition shadow-xs cursor-pointer"
+                  >
+                    <span>Verify PM-KISAN & Khasra Credentials Now</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setUserPerspective("buyer")}
+                  className="w-full sm:w-auto text-xs text-[#5C584E] hover:text-[#17201D] underline font-medium py-2 px-3 cursor-pointer"
+                >
+                  View Wholesale Buyer Domain &rarr;
+                </button>
+              </div>
             </div>
-          </div>
+          )
         ) : (
           /* BUYER HERO ADVISORY */
           <div className="editorial-card p-5 sm:p-6 bg-white space-y-4 border border-[#E8E8E3] rounded-2xl shadow-xs">
@@ -1971,6 +2180,173 @@ export default function MarketPredictorPage() {
             )}
           </div>
         </div>
+
+        {/* ───────────────────────────────────────────────────────────── */}
+        {/* PILLAR 1: FARMER VERIFICATION GATE MODAL */}
+        {/* ───────────────────────────────────────────────────────────── */}
+        {showGateModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#17201D]/70 p-4 backdrop-blur-xs">
+            <div className="relative w-full max-w-lg rounded-3xl border border-[#E8E8E3] bg-white p-6 sm:p-7 shadow-2xl space-y-5 animate-calm-reveal">
+              <button
+                type="button"
+                onClick={() => setShowGateModal(false)}
+                className="absolute top-5 right-5 h-8 w-8 rounded-full border border-[#E8E8E3] flex items-center justify-center text-[#5C584E] hover:text-[#17201D] hover:bg-[#F7F5EF] transition cursor-pointer"
+              >
+                <X className="h-4 w-4" />
+              </button>
+
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#173D32]/10 text-[#173D32]">
+                  <Lock className="h-6 w-6 text-[#173D32]" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold text-[#173D32] uppercase tracking-wider block">
+                    Pillar 1: AgriStack Gated Area
+                  </span>
+                  <h3 className="font-serif text-xl text-[#17201D]">
+                    Government Farmer Verification
+                  </h3>
+                </div>
+              </div>
+
+              <p className="text-xs text-[#5C584E] leading-relaxed">
+                Farmer harvest realization forecasting and mandi cess bypass calculations are protected by Government AgriStack credentials to prevent trader price suppression.
+              </p>
+
+              {user ? (
+                /* Authenticated User: Inline Land Records Verification */
+                <form onSubmit={handleInlineGovVerify} className="space-y-3 pt-1">
+                  <div className="rounded-2xl bg-[#F7F5EF] p-4 border border-[#E8E8E3] space-y-3">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-[#17201D]">Verify Your Farm Credentials</span>
+                      <span className="text-[10px] font-mono text-[#173D32]">UP Bhulekh Live</span>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-medium text-[#17201D] mb-1">
+                        PM-KISAN ID / Farmer ID *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={inlinePmId}
+                        onChange={(e) => setInlinePmId(e.target.value)}
+                        placeholder="e.g. UP20248849201"
+                        className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-mono text-[#17201D] uppercase focus:border-[#173D32] focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-medium text-[#17201D] mb-1">
+                        Khasra Number (खसरा संख्या) *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={inlineKhasra}
+                        onChange={(e) => setInlineKhasra(e.target.value)}
+                        placeholder="e.g. 142/2A"
+                        className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-mono text-[#17201D] focus:border-[#173D32] focus:outline-none"
+                      />
+                    </div>
+
+                    {inlineError && (
+                      <div className="rounded-xl border border-red-200 bg-red-50 p-2.5 text-xs text-red-800 flex items-start gap-2">
+                        <AlertCircle className="h-4 w-4 text-red-600 shrink-0 mt-0.5" />
+                        <span className="text-[11px] leading-tight">{inlineError}</span>
+                      </div>
+                    )}
+
+                    {inlineSuccess && (
+                      <div className="rounded-xl border border-emerald-300 bg-emerald-50 p-2.5 text-xs text-emerald-800 flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                        <span className="text-[11px] font-semibold">{inlineSuccess}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-1">
+                    <button
+                      type="submit"
+                      disabled={inlineVerifying}
+                      className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-[#173D32] px-4 py-2.5 text-xs font-semibold text-white hover:bg-[#122F27] transition shadow-xs disabled:opacity-50 cursor-pointer"
+                    >
+                      {inlineVerifying ? (
+                        <>
+                          <RotateCw className="h-3.5 w-3.5 animate-spin" />
+                          <span>Checking Government Registry...</span>
+                        </>
+                      ) : (
+                        <>
+                          <ShieldCheck className="h-3.5 w-3.5 text-[#C99B43]" />
+                          <span>Verify with UP Bhulekh & Unlock</span>
+                        </>
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowGateModal(false)}
+                      className="px-4 py-2.5 text-xs font-semibold text-[#5C584E] hover:text-[#17201D] cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                /* Unauthenticated Visitor: Register or Login Options */
+                <div className="space-y-3 pt-2">
+                  <div className="rounded-2xl bg-[#F7F5EF] p-4 border border-[#E8E8E3] text-xs space-y-1.5">
+                    <span className="font-semibold text-[#17201D] block">How to access Farmer Market Predictor:</span>
+                    <p className="text-[11px] text-[#5C584E]">
+                      1. Register as a <strong>Farmer / Kisan</strong> using your official PM-KISAN ID and UP Bhulekh Khasra land record parcel.
+                    </p>
+                    <p className="text-[11px] text-[#5C584E]">
+                      2. Our system verifies your agrarian credentials in real time against the Board of Revenue UP.
+                    </p>
+                    <p className="text-[11px] text-[#5C584E]">
+                      3. Instant access is granted to the proprietary hold-vs-sell forecast and net cash-in-pocket engine.
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowGateModal(false);
+                        setAuthModalMode("register");
+                        setAuthModalRole("farmer");
+                        setShowAuthModal(true);
+                      }}
+                      className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#173D32] px-4 py-3 text-xs font-semibold text-white hover:bg-[#122F27] transition shadow-xs cursor-pointer"
+                    >
+                      <span>Register as Verified Farmer (Pillar 1)</span>
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowGateModal(false);
+                        setAuthModalMode("login");
+                        setShowAuthModal(true);
+                      }}
+                      className="w-full flex items-center justify-center gap-2 rounded-xl border border-[#E8E8E3] bg-white px-4 py-2.5 text-xs font-semibold text-[#17201D] hover:bg-[#F7F5EF] transition shadow-xs cursor-pointer"
+                    >
+                      <span>Sign In with Existing Account</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Global Auth Modal for Farmer Registration / Sign In */}
+        <AuthModal
+          isOpen={showAuthModal}
+          onClose={() => setShowAuthModal(false)}
+          defaultMode={authModalMode}
+          defaultRole={authModalRole}
+        />
       </main>
     </div>
   );
