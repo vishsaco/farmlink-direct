@@ -189,8 +189,8 @@ export function AuthModal({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#17201D]/75 p-3 sm:p-5 backdrop-blur-sm animate-calm-reveal">
-      <div className="relative w-full max-w-4xl rounded-3xl border border-[#E8E8E3] bg-white shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[92vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#17201D]/75 p-3 sm:p-5 backdrop-blur-sm transition-opacity duration-200">
+      <div className="relative w-full max-w-4xl rounded-3xl border border-[#E8E8E3] bg-white shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[92vh] animate-fade-in-up">
         {/* Left Panel: Authentic Indian Agriculture Photography & Editorial Brand Ethos */}
         <div className="hidden md:flex md:w-5/12 bg-[#173D32] relative flex-col justify-between p-8 text-white overflow-hidden">
           {/* Background Photography with Natural Light and Earth Tones */}

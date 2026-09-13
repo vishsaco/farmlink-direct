@@ -392,7 +392,7 @@ export default function BuyerMarketplacePage() {
                       return (
                         <div
                           key={lot.id}
-                          className="editorial-card group flex flex-col justify-between overflow-hidden cursor-pointer bg-white rounded-2xl border border-[#E8E8E3] transition-all hover:shadow-md"
+                          className="editorial-card-interactive group flex flex-col justify-between overflow-hidden cursor-pointer bg-white rounded-2xl border border-[#E8E8E3]"
                           onClick={() => handleOpenDetail(lot)}
                         >
                           <div>
@@ -401,7 +401,7 @@ export default function BuyerMarketplacePage() {
                               <img
                                 src={img}
                                 alt={lot.commodity}
-                                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-102"
+                                className="photo-zoom h-full w-full object-cover"
                               />
                               <div className="absolute top-3 left-3">
                                 <span className="rounded-md bg-[#173D32] px-2 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider shadow-xs">

@@ -150,7 +150,7 @@ export function OrderTimelineCard({ order, onRefresh }: OrderTimelineCardProps) 
         <div className="relative flex items-center justify-between">
           <div className="absolute left-0 top-1/2 h-0.5 w-full -translate-y-1/2 bg-[#E8E8E3]" />
           <div
-            className="absolute left-0 top-1/2 h-0.5 -translate-y-1/2 bg-[#173D32] transition-all duration-500"
+            className="absolute left-0 top-1/2 h-0.5 -translate-y-1/2 bg-[#173D32] transition-all duration-700 ease-out"
             style={{
               width: `${Math.max(
                 0,
@@ -166,15 +166,15 @@ export function OrderTimelineCard({ order, onRefresh }: OrderTimelineCardProps) 
             return (
               <div key={step.status} className="relative z-10 flex flex-col items-center">
                 <div
-                  className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold transition-all ${
+                  className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold transition-all duration-300 ${
                     isCurrent
-                      ? "bg-[#173D32] text-white ring-4 ring-[#DCE8DD] scale-110"
+                      ? "bg-[#173D32] text-white ring-4 ring-[#DCE8DD] animate-active-halo scale-105"
                       : isCompleted
                       ? "bg-[#173D32] text-white"
                       : "bg-white text-[#5C584E] border border-[#E8E8E3]"
                   }`}
                 >
-                  {isCompleted ? <CheckCircle2 className="h-4 w-4" /> : idx + 1}
+                  {isCompleted ? <CheckCircle2 className="h-4 w-4 animate-line-draw" /> : idx + 1}
                 </div>
                 <span
                   className={`mt-2 text-[10px] font-semibold transition text-center max-w-[65px] leading-tight ${

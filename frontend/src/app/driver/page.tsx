@@ -241,7 +241,7 @@ export default function DriverDispatchPage() {
                 return (
                   <div
                     key={ord.id}
-                    className="editorial-card p-5 space-y-4 bg-white rounded-2xl border border-[#E8E8E3]"
+                    className="editorial-card-interactive p-5 space-y-4 bg-white rounded-2xl border border-[#E8E8E3]"
                   >
                     {/* Header */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E8E8E3] pb-3">

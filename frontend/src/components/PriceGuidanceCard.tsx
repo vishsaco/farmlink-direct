@@ -257,7 +257,16 @@ export function PriceGuidanceCard({
                   return null;
                 }}
               />
-              <Area type="monotone" dataKey="base" stroke="#173D32" strokeWidth={2} fill="url(#editorialPriceGrad)" />
+              <Area
+                type="monotone"
+                dataKey="base"
+                stroke="#173D32"
+                strokeWidth={2}
+                fill="url(#editorialPriceGrad)"
+                isAnimationActive={true}
+                animationDuration={600}
+                animationEasing="ease-out"
+              />
             </AreaChart>
           </ResponsiveContainer>
         </div>

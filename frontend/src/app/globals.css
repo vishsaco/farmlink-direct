@@ -212,3 +212,204 @@
   border-radius: 12px !important;
   box-shadow: 0 10px 25px -5px rgba(23, 32, 29, 0.08) !important;
 }
+
+/* ───────────────────────────────────────────────────────────── */
+/* PURPOSEFUL & REFINED EDITORIAL MOTION DESIGN TOKENS */
+/* ───────────────────────────────────────────────────────────── */
+
+/* 1. Subtle Upward Fade Entrance (Hero, Cards, Modals) */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 2. SVG Line Draw Animation (Checkmarks, Route Paths, Timeline) */
+@keyframes lineDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-line-draw {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: lineDraw 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 3. Hero Produce Moisture Shimmer (Single Restrained Pass on Load) */
+@keyframes shimmerPassOnce {
+  0% {
+    transform: translateX(-150%) rotate(25deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.15;
+  }
+  100% {
+    transform: translateX(250%) rotate(25deg);
+    opacity: 0;
+  }
+}
+
+.animate-shimmer-once {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.25) 50%,
+    transparent 100%
+  );
+  animation: shimmerPassOnce 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s 1 forwards;
+  pointer-events: none;
+}
+
+/* 4. Active Step Quiet Green Halo Pulse */
+@keyframes quietHaloPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(23, 61, 50, 0.22);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(23, 61, 50, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(23, 61, 50, 0);
+  }
+}
+
+.animate-active-halo {
+  animation: quietHaloPulse 2.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* 5. Underline Draw on Hero Keywords */
+@keyframes underlineDraw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.animate-underline-draw {
+  display: inline-block;
+  position: relative;
+}
+
+.animate-underline-draw::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 3px;
+  background-color: #173D32;
+  transform-origin: left;
+  animation: underlineDraw 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+  transform: scaleX(0);
+  border-radius: 2px;
+}
+
+/* 6. Weather Icon Mount Accents (Sun Flare & Rain Drops) */
+@keyframes sunFlareOnce {
+  0% { transform: scale(0.9) rotate(-10deg); opacity: 0.6; }
+  50% { transform: scale(1.08) rotate(5deg); opacity: 1; filter: drop-shadow(0 0 4px rgba(201, 155, 67, 0.4)); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; filter: none; }
+}
+
+.animate-sun-flare {
+  animation: sunFlareOnce 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1 forwards;
+}
+
+@keyframes dropFallOnce {
+  0% { transform: translateY(-4px); opacity: 0; }
+  50% { opacity: 0.8; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.animate-drop-fall {
+  animation: dropFallOnce 0.6s ease-out 1 forwards;
+}
+
+/* 7. Subtle Badge Pulse Once */
+@keyframes badgePulseOnce {
+  0% { transform: scale(0.96); opacity: 0; }
+  60% { transform: scale(1.02); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-badge-entrance {
+  animation: badgePulseOnce 0.4s cubic-bezier(0.16, 1, 0.3, 1) 1 forwards;
+}
+
+/* 8. Interactive Card Physics (2px-3px lift, thin green border, photo zoom) */
+.editorial-card-interactive {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.editorial-card-interactive:hover {
+  transform: translateY(-3px);
+  border-color: rgba(23, 61, 50, 0.28);
+  box-shadow: 0 4px 12px -2px rgba(23, 32, 29, 0.06), 0 1px 3px rgba(23, 32, 29, 0.04);
+}
+
+.editorial-card-interactive .photo-zoom {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.editorial-card-interactive:hover .photo-zoom {
+  transform: scale(1.02);
+}
+
+/* 9. Faint Topographic Contour Background Line Drift (3% opacity) */
+@keyframes contourDrift {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(4px, 6px); }
+  100% { transform: translate(0, 0); }
+}
+
+.hero-contour-drift {
+  animation: contourDrift 30s ease-in-out infinite;
+}
+
+/* 10. Strict Accessibility: Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-ticker-smooth {
+    animation: none !important;
+    transform: none !important;
+    overflow-x: auto;
+  }
+  .animate-active-halo {
+    animation: none !important;
+  }
+  .hero-contour-drift {
+    animation: none !important;
+  }
+  .animate-shimmer-once {
+    display: none !important;
+  }
+}
+

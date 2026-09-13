@@ -254,8 +254,8 @@ export function Navbar(props: NavbarProps) {
             </div>
 
             {/* Weather Intelligence Micro-Chip */}
-            <div className="hidden lg:flex items-center gap-1.5 px-3 py-1 text-[11px] font-sans font-medium text-[#173D32] bg-[#DCE8DD]/50 border border-[#DCE8DD] rounded-full">
-              <CloudSun className="h-3.5 w-3.5 text-[#173D32]" />
+            <div className="hidden lg:flex items-center gap-1.5 px-3 py-1 text-[11px] font-sans font-medium text-[#173D32] bg-[#DCE8DD]/50 border border-[#DCE8DD] rounded-full transition-colors hover:bg-[#DCE8DD]/80">
+              <CloudSun className="h-3.5 w-3.5 text-[#173D32] animate-sun-flare" />
               <span>Malihabad: 26°C · Clear harvest window</span>
             </div>
           </nav>

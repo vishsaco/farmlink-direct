@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
@@ -29,6 +29,21 @@ import {
 
 export default function HomePage() {
   const { lang, t } = useLanguage();
+  const [countTemp, setCountTemp] = useState(0);
+
+  useEffect(() => {
+    let cur = 0;
+    const interval = setInterval(() => {
+      cur += 2;
+      if (cur >= 24) {
+        setCountTemp(24);
+        clearInterval(interval);
+      } else {
+        setCountTemp(cur);
+      }
+    }, 28);
+    return () => clearInterval(interval);
+  }, []);
   const { user } = useAuth();
   const router = useRouter();
 
@@ -115,30 +130,31 @@ export default function HomePage() {
             
             {/* Left Column: High-Contrast Editorial Messaging & Primary CTAs */}
             <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#173D32]/20 bg-[#DCE8DD]/70 px-3.5 py-1 text-xs font-semibold text-[#173D32]">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#173D32]/20 bg-[#DCE8DD]/70 px-3.5 py-1 text-xs font-semibold text-[#173D32] animate-badge-entrance">
                 <Compass className="h-3.5 w-3.5 text-[#173D32]" />
                 <span>{lang === "hi" ? "लखनऊ का सीधा कृषि नेटवर्क" : "Lucknow's Direct Produce Network"}</span>
               </div>
 
               <div className="space-y-3">
                 <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-[#17201D] leading-[1.12]">
-                  {t.heroTitleLine1 || "Better markets"}{" "}
-                  <span className="italic text-[#173D32]">
+                  <span className="block animate-fade-in-up" style={{ animationDelay: "0ms" }}>
+                    {t.heroTitleLine1 || "Better markets"}
+                  </span>
+                  <span className="block animate-fade-in-up italic text-[#173D32]" style={{ animationDelay: "120ms" }}>
                     {t.heroTitleLine2 || "for every harvest."}
                   </span>
                 </h1>
 
-                <p className="text-sm sm:text-base text-[#576561] font-sans font-normal leading-relaxed max-w-xl">
-                  {t.heroSubtitle ||
-                    "FarmLink connects verified farmers, FPOs, and institutional buyers with transparent prices, weather-aware harvest planning, and reliable fulfillment across Lucknow."}
+                <p className="text-sm sm:text-base text-[#576561] font-sans font-normal leading-relaxed max-w-xl animate-fade-in-up" style={{ animationDelay: "220ms" }}>
+                  FarmLink connects verified farmers, FPOs, and institutional buyers with transparent prices, weather-aware harvest planning, and <span className="animate-underline-draw font-semibold text-[#173D32]">verifiable</span> fulfillment across Lucknow.
                 </p>
               </div>
 
               {/* Primary Call To Actions */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1 animate-fade-in-up" style={{ animationDelay: "300ms" }}>
                 <Link
                   href="/predict"
-                  className="flex items-center justify-center gap-2 rounded-xl bg-[#173D32] px-6 py-3.5 text-xs font-semibold text-white hover:bg-[#0F2820] transition-all shadow-xs active:scale-98"
+                  className="flex items-center justify-center gap-2 rounded-xl bg-[#173D32] px-6 py-3.5 text-xs font-semibold text-white hover:bg-[#0F2820] hover:-translate-y-[1px] hover:shadow-md transition-all duration-200 shadow-xs active:scale-98"
                 >
                   <Sparkles className="h-4 w-4 text-[#C99B43]" />
                   <span>{lang === "hi" ? "फसल भाव का सही अनुमान लगाएं 🔮" : "Produce Market Predictor 🔮"}</span>
@@ -146,7 +162,7 @@ export default function HomePage() {
 
                 <Link
                   href="/buyer"
-                  className="flex items-center justify-center gap-2 rounded-xl border border-[#E8E8E3] bg-white px-5 py-3.5 text-xs font-semibold text-[#17201D] hover:bg-[#F7F5EF] transition-all shadow-2xs"
+                  className="flex items-center justify-center gap-2 rounded-xl border border-[#E8E8E3] bg-white px-5 py-3.5 text-xs font-semibold text-[#17201D] hover:bg-white hover:border-[#173D32]/35 hover:-translate-y-[1px] hover:shadow-xs transition-all duration-200 shadow-2xs"
                 >
                   <ShoppingBag className="h-4 w-4 text-[#173D32]" />
                   <span>{lang === "hi" ? "ताज़ी फसलें खरीदें" : "Browse Fresh Marketplace"}</span>
@@ -154,17 +170,17 @@ export default function HomePage() {
               </div>
 
               {/* Trust Credentials Strip */}
-              <div className="pt-5 border-t border-[#E8E8E3] flex flex-wrap items-center gap-6 text-xs text-[#576561] font-medium font-mono">
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-[#173D32]" />
+              <div className="pt-5 border-t border-[#E8E8E3] flex flex-wrap items-center gap-6 text-xs text-[#576561] font-medium font-mono animate-fade-in-up" style={{ animationDelay: "360ms" }}>
+                <span className="flex items-center gap-1.5 group cursor-default">
+                  <CheckCircle2 className="h-4 w-4 text-[#173D32] transition-transform duration-200 group-hover:scale-110" />
                   <span>Verified FPOs</span>
                 </span>
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-[#173D32]" />
+                <span className="flex items-center gap-1.5 group cursor-default">
+                  <CheckCircle2 className="h-4 w-4 text-[#173D32] transition-transform duration-200 group-hover:scale-110" />
                   <span>Weather-aware planning</span>
                 </span>
-                <span className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-[#173D32]" />
+                <span className="flex items-center gap-1.5 group cursor-default">
+                  <CheckCircle2 className="h-4 w-4 text-[#173D32] transition-transform duration-200 group-hover:scale-110" />
                   <span>Traceable fulfillment</span>
                 </span>
               </div>
@@ -172,13 +188,24 @@ export default function HomePage() {
 
             {/* Right Column: Authentic Agriculture Photography Frame + Weather Insight Card */}
             <div className="lg:col-span-5 relative">
+              {/* Faint Animated Topographic Background Lines */}
+              <div className="absolute -inset-4 opacity-[0.04] pointer-events-none hero-contour-drift overflow-hidden">
+                <svg className="w-full h-full text-[#173D32]" viewBox="0 0 400 400" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M-50,200 Q100,50 250,220 T500,180" />
+                  <path d="M-30,240 Q120,90 270,260 T520,220" />
+                  <path d="M-10,280 Q140,130 290,300 T540,260" />
+                </svg>
+              </div>
+
               <div className="relative rounded-3xl overflow-hidden border border-[#E8E8E3] bg-white shadow-xl group">
-                <div className="relative h-80 sm:h-96 w-full">
+                <div className="relative h-80 sm:h-96 w-full overflow-hidden">
                   <img
                     src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=1200&auto=format&fit=crop&q=85"
                     alt="Authentic Indian fresh produce sorting in Lucknow"
-                    className="h-full w-full object-cover group-hover:scale-102 transition-transform duration-500"
+                    className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-102"
                   />
+                  {/* Subtle One-Time Shimmer across tomato photography */}
+                  <div className="animate-shimmer-once" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#17201D]/75 via-transparent to-transparent" />
                 </div>
 
@@ -190,17 +217,17 @@ export default function HomePage() {
                 </div>
 
                 {/* Floating Weather Insight Card */}
-                <div className="absolute bottom-4 left-4 right-4 rounded-2xl border border-[#E8E8E3] bg-white/95 backdrop-blur-md p-4 shadow-lg text-xs text-[#17201D] space-y-2">
+                <div className="absolute bottom-4 left-4 right-4 rounded-2xl border border-[#E8E8E3] bg-white/95 backdrop-blur-md p-4 shadow-lg text-xs text-[#17201D] space-y-2 animate-fade-in-up" style={{ animationDelay: "280ms" }}>
                   <div className="flex items-center justify-between">
                     <span className="flex items-center gap-1.5 font-semibold text-[#173D32]">
-                      <CloudSun className="h-4 w-4 text-[#C99B43]" />
+                      <CloudSun className="h-4 w-4 text-[#C99B43] animate-sun-flare" />
                       <span>Tomorrow's Farm Outlook</span>
                     </span>
-                    <span className="font-mono text-[11px] font-semibold text-[#173D32] bg-[#DCE8DD] px-2 py-0.5 rounded-md">
-                      24°C · Light rain after 2 PM
+                    <span className="font-mono text-[11px] font-semibold text-[#173D32] bg-[#DCE8DD] px-2 py-0.5 rounded-md transition-all">
+                      {countTemp}°C · Light rain after 2 PM
                     </span>
                   </div>
-                  <p className="text-[11px] text-[#576561] leading-relaxed">
+                  <p className="text-[11px] text-[#576561] leading-relaxed animate-fade-in-up" style={{ animationDelay: "450ms" }}>
                     <strong>Recommended:</strong> Schedule tomato pickup from Malihabad before noon to avoid transit moisture delays.
                   </p>
                 </div>
@@ -212,15 +239,51 @@ export default function HomePage() {
       </section>
 
       {/* 2. HOW IT WORKS: 5-STEP REFINED WORKFLOW */}
-      <section className="py-12 bg-white border-b border-[#E8E8E3]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6">
-          <div className="max-w-xl">
-            <span className="text-xs font-mono uppercase tracking-wider text-[#173D32] font-semibold">
-              The FarmLink Sequence
+      <section className="py-14 bg-white border-b border-[#E8E8E3] relative overflow-hidden">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+            <div className="max-w-xl">
+              <span className="text-xs font-mono uppercase tracking-wider text-[#173D32] font-semibold">
+                The FarmLink Sequence
+              </span>
+              <h2 className="font-serif text-2xl sm:text-3xl text-[#17201D] font-normal tracking-tight mt-1">
+                How produce moves from soil to market
+              </h2>
+            </div>
+            <span className="text-xs font-mono text-[#576561] flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-[#173D32]" />
+              Farmer → FPO → Buyer → Delivery → Settlement
             </span>
-            <h2 className="font-serif text-2xl sm:text-3xl text-[#17201D] font-normal tracking-tight mt-1">
-              How produce moves from soil to market
-            </h2>
+          </div>
+
+          {/* Sequential Route Connection Line on Desktop */}
+          <div className="relative hidden lg:block px-8 py-2">
+            <svg className="w-full h-4 overflow-visible" viewBox="0 0 1000 16" fill="none">
+              {/* Background Guideline */}
+              <line x1="20" y1="8" x2="980" y2="8" stroke="#E8E8E3" strokeWidth="2" strokeDasharray="4 4" />
+              {/* Animated Progress Line */}
+              <line
+                x1="20"
+                y1="8"
+                x2="980"
+                y2="8"
+                stroke="#173D32"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                className="animate-line-draw"
+                style={{ strokeDasharray: "960", strokeDashoffset: "960" }}
+              />
+              {/* Waypoint Nodes */}
+              {[20, 260, 500, 740, 980].map((cx, idx) => (
+                <circle
+                  key={idx}
+                  cx={cx}
+                  cy="8"
+                  r="5"
+                  className="fill-[#F7F5EF] stroke-[#173D32] stroke-2"
+                />
+              ))}
+            </svg>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -230,14 +293,18 @@ export default function HomePage() {
               { num: "03", title: "Plan by Weather", desc: "Harvest-window and rainfall forecasts reduce spoilage risk." },
               { num: "04", title: "Pickup & Deliver", desc: "GPS-optimized fleet dispatches with live proof of loading." },
               { num: "05", title: "Settlement Ready", desc: "Instant escrow disbursement directly to bank accounts." },
-            ].map((step) => (
+            ].map((step, idx) => (
               <div
                 key={step.num}
-                className="p-4 rounded-2xl bg-[#F7F5EF]/60 border border-[#E8E8E3] space-y-2 hover:border-[#173D32]/30 transition"
+                className="p-5 rounded-2xl bg-[#F7F5EF]/60 border border-[#E8E8E3] space-y-2.5 editorial-card-interactive transition-all"
+                style={{ animationDelay: `${idx * 80}ms` }}
               >
-                <span className="font-serif text-2xl text-[#C99B43] block leading-none font-normal">
-                  {step.num}
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="font-serif text-2xl text-[#C99B43] block leading-none font-normal">
+                    {step.num}
+                  </span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#173D32]/30" />
+                </div>
                 <h3 className="font-semibold text-xs text-[#17201D]">{step.title}</h3>
                 <p className="text-[11px] text-[#576561] leading-relaxed font-sans">{step.desc}</p>
               </div>
@@ -269,7 +336,7 @@ export default function HomePage() {
               return (
                 <div
                   key={portal.id}
-                  className="editorial-card p-5 flex flex-col justify-between space-y-4 group bg-white rounded-2xl border border-[#E8E8E3]"
+                  className="editorial-card-interactive p-5 flex flex-col justify-between space-y-4 group bg-white rounded-2xl border border-[#E8E8E3]"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
@@ -285,7 +352,7 @@ export default function HomePage() {
                       <img
                         src={portal.image}
                         alt={portal.title}
-                        className="h-full w-full object-cover group-hover:scale-102 transition-transform duration-300"
+                        className="photo-zoom h-full w-full object-cover"
                       />
                     </div>
 

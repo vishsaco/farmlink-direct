@@ -312,7 +312,7 @@ export default function FarmerDashboardPage() {
               <div className="w-full rounded-2xl bg-white/10 backdrop-blur-md p-4 border border-white/15 space-y-1.5 text-xs text-[#DCE8DD]">
                 <div className="flex items-center justify-between text-white font-semibold">
                   <span className="flex items-center gap-1.5">
-                    <CloudSun className="h-4 w-4 text-[#C99B43]" />
+                    <CloudSun className="h-4 w-4 text-[#C99B43] animate-sun-flare" />
                     <span>Farm Weather — Malihabad</span>
                   </span>
                   <span className="font-mono text-[11px] bg-[#DCE8DD]/20 px-2 py-0.5 rounded text-[#DCE8DD]">
@@ -451,7 +451,7 @@ export default function FarmerDashboardPage() {
                   {lots.map((lot) => (
                     <div
                       key={lot.id}
-                      className="editorial-card p-5 flex flex-col justify-between space-y-3 bg-white rounded-2xl border border-[#E8E8E3]"
+                      className="editorial-card-interactive p-5 flex flex-col justify-between space-y-3 bg-white rounded-2xl border border-[#E8E8E3]"
                     >
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
