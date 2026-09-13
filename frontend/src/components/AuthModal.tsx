@@ -17,8 +17,8 @@ import {
   Building,
   MapPin,
   Sparkles,
-  Navigation,
-  ExternalLink,
+  ShieldCheck,
+  CloudSun,
 } from "lucide-react";
 import { LocationPickerModal, LocationData } from "@/components/LocationPickerModal";
 
@@ -184,279 +184,312 @@ export function AuthModal({
     { id: "farmer", label: "Farmer / Kisan", icon: Sprout, desc: "List produce directly" },
     { id: "fpo", label: "FPO Aggregator", icon: Building, desc: "Manage member farms" },
     { id: "buyer", label: "Bulk Buyer", icon: ShoppingBag, desc: "Kitchens & retailers" },
-    { id: "driver", label: "Fleet Driver", icon: Truck, desc: "Tata Ace fulfillment" },
+    { id: "driver", label: "Fleet Driver", icon: Truck, desc: "Direct farm dispatch" },
     { id: "ops", label: "Ops Coordinator", icon: ShieldAlert, desc: "Control tower" },
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs animate-calm-reveal">
-      <div className="relative w-full max-w-lg rounded-xl border border-slate-200 bg-white p-6 sm:p-7 shadow-2xl space-y-5 text-slate-800 max-h-[90vh] overflow-y-auto">
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-800 transition"
-        >
-          <X className="h-5 w-5" />
-        </button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#17201D]/75 p-3 sm:p-5 backdrop-blur-sm animate-calm-reveal">
+      <div className="relative w-full max-w-4xl rounded-3xl border border-[#E8E8E3] bg-white shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[92vh]">
+        {/* Left Panel: Authentic Indian Agriculture Photography & Editorial Brand Ethos */}
+        <div className="hidden md:flex md:w-5/12 bg-[#173D32] relative flex-col justify-between p-8 text-white overflow-hidden">
+          {/* Background Photography with Natural Light and Earth Tones */}
+          <div
+            className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-103 opacity-40 mix-blend-overlay"
+            style={{
+              backgroundImage:
+                "url('https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=1000&auto=format&fit=crop&q=80')",
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0F2820] via-[#173D32]/90 to-[#173D32]/80" />
 
-        {/* Header & Mode Switch */}
-        <div>
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center bg-slate-50 p-1 rounded-md border border-slate-200">
-              <img
-                src="/logo.png"
-                alt="FarmLink Direct"
-                className="h-7 w-auto object-contain"
-              />
+          {/* Top Branding in Left Panel */}
+          <div className="relative z-10 space-y-3">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-medium text-[#DCE8DD]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#C99B43]" />
+              <span>Lucknow Regional Cluster</span>
             </div>
-            <span className="text-[10px] uppercase tracking-wider font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200">
-              Verified B2B Direct
-            </span>
-          </div>
-
-          <h3 className="text-2xl font-bold tracking-tight text-slate-900">
-            {mode === "register" ? "Join the Agricultural Network" : "Welcome Back"}
-          </h3>
-          <p className="text-xs text-slate-500 mt-0.5">
-            {mode === "register"
-              ? "Create your verified account for the Lucknow Regional Cluster."
-              : "Sign in with your registered account credentials."}
-          </p>
-
-          <div className="mt-3.5 flex rounded-lg bg-slate-100 p-1 border border-slate-200">
-            <button
-              type="button"
-              onClick={() => {
-                setMode("register");
-                setError(null);
-              }}
-              className={`flex-1 rounded-md py-1.5 text-xs font-bold transition ${
-                mode === "register"
-                  ? "bg-white text-slate-900 shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              Create Account
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setMode("login");
-                setError(null);
-              }}
-              className={`flex-1 rounded-md py-1.5 text-xs font-bold transition ${
-                mode === "login"
-                  ? "bg-white text-slate-900 shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              Sign In
-            </button>
-          </div>
-        </div>
-
-        {error && (
-          <div className="rounded-lg bg-rose-50 p-3 border border-rose-200 text-xs font-semibold text-rose-700">
-            {error}
-          </div>
-        )}
-
-        {/* Role Selector Card */}
-        <div>
-          <label className="block text-xs font-bold text-slate-800 mb-1.5 uppercase tracking-wide">
-            Select Your Role / खाता प्रकार
-          </label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {roleConfigs.map((cfg) => {
-              const Icon = cfg.icon;
-              const isSelected = role === cfg.id;
-              return (
-                <button
-                  key={cfg.id}
-                  type="button"
-                  onClick={() => setRole(cfg.id as any)}
-                  className={`rounded-xl border p-2.5 text-left text-xs transition flex flex-col justify-between ${
-                    isSelected
-                      ? "border-emerald-600 bg-emerald-50 text-emerald-800 ring-1 ring-emerald-600 shadow-xs"
-                      : "border-slate-200 bg-slate-50 text-slate-800 hover:border-slate-300 hover:bg-white"
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <Icon className="h-4 w-4 text-emerald-700" />
-                    {isSelected && <CheckCircle2 className="h-3.5 w-3.5 text-emerald-700" />}
-                  </div>
-                  <span className="font-bold">{cfg.label}</span>
-                  <span className="text-[9px] text-slate-500 line-clamp-1">{cfg.desc}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Real Official Google Authentication */}
-        <div className="space-y-2.5 pt-0.5">
-          <div className="flex justify-center min-h-[40px]" ref={googleBtnContainerRef} />
-
-          {googleLoading && (
-            <p className="text-center text-xs text-slate-500 animate-pulse font-medium">
-              Verifying Google credentials...
+            <h2 className="font-serif text-2xl lg:text-3xl font-normal leading-tight text-white">
+              Direct markets built for better harvest decisions.
+            </h2>
+            <p className="text-xs text-[#DCE8DD]/90 leading-relaxed font-sans">
+              Connecting 1,200+ verified farmers and FPOs with transparent APMC benchmarks and weather-aware fulfillment.
             </p>
+          </div>
+
+          {/* Bottom Trust Micro-Cards */}
+          <div className="relative z-10 space-y-2 pt-6 border-t border-white/15">
+            <div className="flex items-center gap-2 text-xs text-[#DCE8DD]">
+              <ShieldCheck className="h-4 w-4 text-[#C99B43] shrink-0" />
+              <span>Zero broker cut · Farm-gate escrow</span>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-[#DCE8DD]">
+              <CloudSun className="h-4 w-4 text-[#BFD8E5] shrink-0" />
+              <span>Weather-synchronized dispatch routing</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Panel: Clean Form Experience */}
+        <div className="w-full md:w-7/12 p-6 sm:p-8 overflow-y-auto bg-[#F7F5EF]/40 relative">
+          {/* Close Button */}
+          <button
+            onClick={onClose}
+            className="absolute right-5 top-5 rounded-full p-2 text-[#576561] hover:bg-[#E8E8E3]/60 hover:text-[#17201D] transition cursor-pointer"
+            aria-label="Close modal"
+          >
+            <X className="h-4 w-4" />
+          </button>
+
+          {/* Modal Header */}
+          <div className="pr-8">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-[#DCE8DD]/70 text-[#173D32] text-[10px] font-mono uppercase font-semibold mb-2">
+              FarmLink Verification
+            </div>
+            <h3 className="font-serif text-2xl sm:text-3xl text-[#17201D] font-normal tracking-tight">
+              {mode === "register" ? "Welcome to FarmLink" : "Welcome Back"}
+            </h3>
+            <p className="text-xs text-[#576561] mt-1 font-sans">
+              {mode === "register"
+                ? "Join a direct market built for transparent prices and harvest planning."
+                : "Sign in to access your farm, market orders, and logistics terminal."}
+            </p>
+
+            {/* Mode Switch Pills */}
+            <div className="mt-4 flex rounded-xl bg-[#E8E8E3]/60 p-1 border border-[#E8E8E3]">
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("register");
+                  setError(null);
+                }}
+                className={`flex-1 rounded-lg py-1.5 text-xs font-semibold transition cursor-pointer ${
+                  mode === "register"
+                    ? "bg-white text-[#173D32] shadow-2xs"
+                    : "text-[#576561] hover:text-[#17201D]"
+                }`}
+              >
+                Create Account
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("login");
+                  setError(null);
+                }}
+                className={`flex-1 rounded-lg py-1.5 text-xs font-semibold transition cursor-pointer ${
+                  mode === "login"
+                    ? "bg-white text-[#173D32] shadow-2xs"
+                    : "text-[#576561] hover:text-[#17201D]"
+                }`}
+              >
+                Sign In
+              </button>
+            </div>
+          </div>
+
+          {error && (
+            <div className="mt-3.5 rounded-xl bg-[#F8ECE8] p-3 border border-[#C86B4A]/30 text-xs font-medium text-[#C86B4A]">
+              {error}
+            </div>
           )}
 
-          <div className="relative flex items-center justify-center text-[10px] uppercase font-bold text-slate-400">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-200" />
+          {/* Role Selector */}
+          <div className="mt-4">
+            <label className="block text-[11px] font-mono uppercase tracking-wider text-[#576561] mb-1.5">
+              Select Stakeholder Role / खाता प्रकार
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {roleConfigs.map((cfg) => {
+                const Icon = cfg.icon;
+                const isSelected = role === cfg.id;
+                return (
+                  <button
+                    key={cfg.id}
+                    type="button"
+                    onClick={() => setRole(cfg.id as any)}
+                    className={`rounded-xl border p-2 text-left text-xs transition flex flex-col justify-between cursor-pointer ${
+                      isSelected
+                        ? "border-[#173D32] bg-[#DCE8DD]/40 text-[#173D32] ring-1 ring-[#173D32]/30 shadow-2xs"
+                        : "border-[#E8E8E3] bg-white text-[#17201D] hover:border-[#D4D4CE]"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <Icon className="h-3.5 w-3.5 text-[#173D32]" />
+                      {isSelected && <CheckCircle2 className="h-3 w-3 text-[#173D32]" />}
+                    </div>
+                    <span className="font-semibold text-[11px] leading-tight">{cfg.label}</span>
+                    <span className="text-[9px] text-[#576561] line-clamp-1 mt-0.5">{cfg.desc}</span>
+                  </button>
+                );
+              })}
             </div>
-            <span className="relative bg-white px-3">or continue with password</span>
           </div>
-        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-3.5">
-          {/* Name & Phone for Register */}
-          {mode === "register" && (
-            <>
-              <div className="grid grid-cols-2 gap-2.5">
+          {/* Google SSO Container */}
+          <div className="space-y-2 pt-3">
+            <div className="flex justify-center min-h-[40px]" ref={googleBtnContainerRef} />
+
+            {googleLoading && (
+              <p className="text-center text-xs text-[#576561] animate-pulse font-medium">
+                Verifying Google credentials...
+              </p>
+            )}
+
+            <div className="relative flex items-center justify-center text-[10px] uppercase font-mono tracking-wider text-[#576561]/80">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-[#E8E8E3]" />
+              </div>
+              <span className="relative bg-[#FAF9F5] px-3">or continue with credentials</span>
+            </div>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-3 pt-2">
+            {/* Name & Phone for Register */}
+            {mode === "register" && (
+              <>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-[11px] font-medium text-[#17201D] mb-1">
+                      First Name
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      placeholder="e.g. Ramesh"
+                      className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none transition shadow-2xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-medium text-[#17201D] mb-1">
+                      Last Name
+                    </label>
+                    <input
+                      type="text"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      placeholder="e.g. Yadav"
+                      className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none transition shadow-2xs"
+                    />
+                  </div>
+                </div>
+
                 <div>
-                  <label className="block text-xs font-bold text-slate-800 mb-1">
-                    First Name
+                  <label className="block text-[11px] font-medium text-[#17201D] mb-1">
+                    Phone Number (OTP verification)
                   </label>
+                  <input
+                    type="tel"
+                    required
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="9876543210"
+                    className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none transition shadow-2xs"
+                  />
+                </div>
+
+                {/* Location Picker */}
+                <div className="rounded-xl border border-[#E8E8E3] bg-white p-3 space-y-1.5 shadow-2xs">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[11px] font-medium text-[#17201D] flex items-center gap-1">
+                      <MapPin className="h-3.5 w-3.5 text-[#173D32]" />
+                      <span>{role === "buyer" ? "Delivery Receiving Dock" : "Farm Gate Location"}</span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setShowLocationPicker(true)}
+                      className="text-[11px] font-semibold text-[#173D32] hover:underline flex items-center gap-1 bg-[#DCE8DD]/40 px-2 py-0.5 rounded-lg border border-[#DCE8DD] cursor-pointer"
+                    >
+                      <span>🗺️ Set on Map</span>
+                    </button>
+                  </div>
+
                   <input
                     type="text"
                     required
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="e.g. Vikas"
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium focus:border-emerald-500 focus:outline-none"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    placeholder="e.g. Bakshi Ka Talab, Lucknow"
+                    className="w-full rounded-lg border border-[#E8E8E3] bg-[#F7F5EF]/50 px-2.5 py-1.5 text-xs font-semibold text-[#17201D] focus:border-[#173D32] focus:outline-none"
                   />
+
+                  <div className="flex items-center justify-between text-[10px] text-[#576561] pt-0.5">
+                    <span className="font-mono">
+                      📍 GPS: <strong className="text-[#17201D]">{geoLat.toFixed(4)}, {geoLng.toFixed(4)}</strong>
+                    </span>
+                    <a
+                      href={`https://www.google.com/maps/search/?api=1&query=${geoLat},${geoLng}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-[#173D32] hover:underline"
+                    >
+                      Verify on Maps &rarr;
+                    </a>
+                  </div>
                 </div>
+
                 <div>
-                  <label className="block text-xs font-bold text-slate-800 mb-1">
-                    Last Name
+                  <label className="block text-[11px] font-medium text-[#17201D] mb-1">
+                    {role === "buyer" ? "Organization Name (Optional)" : "Farm / FPO Name (Optional)"}
                   </label>
                   <input
                     type="text"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    placeholder="e.g. Yadav"
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium focus:border-emerald-500 focus:outline-none"
+                    value={orgName}
+                    onChange={(e) => setOrgName(e.target.value)}
+                    placeholder={role === "buyer" ? "e.g. Green Valley Kitchens" : "e.g. Malihabad Mango Growers FPO"}
+                    className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none transition shadow-2xs"
                   />
                 </div>
-              </div>
+              </>
+            )}
 
-              <div>
-                <label className="block text-xs font-bold text-slate-800 mb-1">
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  required
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="9876543210"
-                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium focus:border-emerald-500 focus:outline-none"
-                />
-              </div>
+            {/* Username & Password */}
+            <div>
+              <label className="block text-[11px] font-medium text-[#17201D] mb-1">
+                Username
+              </label>
+              <input
+                type="text"
+                required
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder={mode === "login" ? "Enter your username" : "Choose username (e.g. ramesh_kisan)"}
+                className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none transition shadow-2xs"
+              />
+            </div>
 
-              {/* Interactive Google Maps & GPS Location Picker */}
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="block text-xs font-bold text-slate-800 flex items-center gap-1">
-                    <MapPin className="h-3.5 w-3.5 text-emerald-600" />
-                    <span>
-                      {role === "buyer" ? "Delivery Receiving Dock" : "Farm Gate Location"}
-                    </span>
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => setShowLocationPicker(true)}
-                    className="text-[11px] font-bold text-emerald-700 hover:underline flex items-center gap-1 bg-white px-2 py-0.5 rounded-md border border-slate-200 shadow-xs"
-                  >
-                    <span>🗺️ Choose on Map</span>
-                  </button>
-                </div>
+            <div>
+              <label className="block text-[11px] font-medium text-[#17201D] mb-1">
+                Password
+              </label>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none transition shadow-2xs"
+              />
+            </div>
 
-                <input
-                  type="text"
-                  required
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  placeholder="e.g. Bakshi Ka Talab, Lucknow"
-                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-900 focus:border-emerald-500 focus:outline-none"
-                />
+            {/* Submit Action */}
+            <div className="pt-2">
+              <button
+                type="submit"
+                disabled={loading || googleLoading}
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#173D32] py-2.5 text-xs font-semibold text-white hover:bg-[#0F2820] transition-all shadow-xs disabled:opacity-50 cursor-pointer active:scale-99"
+              >
+                <span>{loading ? "Processing..." : mode === "register" ? "Join FarmLink Network" : "Sign In to Terminal"}</span>
+                <ArrowRight className="h-3.5 w-3.5 text-[#C99B43]" />
+              </button>
+            </div>
+          </form>
+        </div>
 
-                <div className="flex items-center justify-between text-[11px] text-slate-500 pt-0.5">
-                  <span className="font-mono">
-                    📍 GPS: <strong className="text-slate-800">{geoLat}, {geoLng}</strong>
-                  </span>
-                  <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${geoLat},${geoLng}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-bold text-emerald-700 hover:underline inline-flex items-center gap-0.5"
-                  >
-                    <span>Check Maps &rarr;</span>
-                  </a>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-800 mb-1">
-                  {role === "buyer" ? "Business / Organization (Optional)" : "Farm Name (Optional)"}
-                </label>
-                <input
-                  type="text"
-                  value={orgName}
-                  onChange={(e) => setOrgName(e.target.value)}
-                  placeholder={role === "buyer" ? "e.g. Lucknow Fresh Mart" : "e.g. Vikas Organic Produce Farm"}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium focus:border-emerald-500 focus:outline-none"
-                />
-              </div>
-            </>
-          )}
-
-          {/* Username & Password */}
-          <div>
-            <label className="block text-xs font-bold text-slate-800 mb-1">
-              Username
-            </label>
-            <input
-              type="text"
-              required
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder={mode === "login" ? "Enter your username" : "Choose username (e.g. vikas_kisan)"}
-              className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-medium focus:border-emerald-500 focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold text-slate-800 mb-1">
-              Password
-            </label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-medium focus:border-emerald-500 focus:outline-none"
-            />
-          </div>
-
-          {/* Submit CTA */}
-          <div className="pt-1.5">
-            <button
-              type="submit"
-              disabled={loading || googleLoading}
-              className="w-full flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 py-3 text-xs font-bold text-white hover:bg-emerald-700 transition-all shadow-xs disabled:opacity-50 cursor-pointer"
-            >
-              <span>{loading ? "Processing..." : mode === "register" ? "Register & Enter Portal" : "Sign In"}</span>
-              <ArrowRight className="h-4 w-4" />
-            </button>
-          </div>
-        </form>
-
-        {/* Real Location Confirmation Modal */}
+        {/* Location Confirmation Modal */}
         <LocationPickerModal
           isOpen={showLocationPicker}
           onClose={() => setShowLocationPicker(false)}

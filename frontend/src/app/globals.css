@@ -2,22 +2,41 @@
 
 @layer base {
   :root {
-    --color-primary: #064E3B; /* Deep Forest Green */
-    --color-primary-dark: #022C22;
-    --color-accent: #10B981; /* Crisp Emerald */
-    --color-accent-hover: #059669;
-    --color-gold: #C5A880; /* Antique Brass / Gold */
-    --color-gold-muted: #EADBC8;
-    --color-surface: #FAFAF8; /* Warm Linen Canvas */
+    --forest-green: #173D32;
+    --forest-green-dark: #0F2820;
+    --forest-green-light: #235445;
+    --deep-ink: #17201D;
+    --warm-ivory: #F7F5EF;
+    --warm-ivory-surface: #F2EFE8;
+    --soft-sage: #DCE8DD;
+    --soft-sage-light: #EDF3EE;
+    --weather-blue: #BFD8E5;
+    --weather-blue-light: #E4EEF3;
+    --mist-border: #E8E8E3;
+    --mist-border-dark: #D4D4CE;
+    --harvest-gold: #C99B43;
+    --harvest-gold-light: #F7F0E2;
+    --clay-alert: #C86B4A;
+    --clay-alert-light: #F8ECE8;
+    --card-white: #FFFFFF;
+    
+    /* Legacy aliases mapped to the refined palette */
+    --color-primary: #173D32;
+    --color-primary-dark: #0F2820;
+    --color-accent: #173D32;
+    --color-accent-hover: #235445;
+    --color-gold: #C99B43;
+    --color-gold-muted: #F7F0E2;
+    --color-surface: #F7F5EF;
     --color-card: #FFFFFF;
-    --color-text-main: #0F172A; /* Deep Slate Ink */
-    --color-text-muted: #475569; /* Slate 600 */
-    --color-border: #E2E8F0; /* Slate 200 */
+    --color-text-main: #17201D;
+    --color-text-muted: #576561;
+    --color-border: #E8E8E3;
   }
 
   body {
-    background-color: var(--color-surface);
-    color: var(--color-text-main);
+    background-color: var(--warm-ivory);
+    color: var(--deep-ink);
     font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -25,9 +44,8 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, sans-serif;
-    letter-spacing: -0.025em;
-    color: #0F172A;
+    letter-spacing: -0.02em;
+    color: var(--deep-ink);
   }
 
   /* Fixed-width tabular numerals for all financial and metric displays */
@@ -35,6 +53,15 @@
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     font-feature-settings: "tnum" 1, "zero" 1;
   }
+}
+
+/* Typography font classes */
+.font-serif {
+  font-family: var(--font-serif), "Playfair Display", Georgia, serif;
+}
+
+.font-sans {
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 /* Handwritten Font Utility for Human Annotations */
@@ -48,15 +75,15 @@
 
 .editorial-card {
   background-color: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  border-radius: 14px;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03), 0 6px 16px -4px rgba(15, 23, 42, 0.02);
+  border: 1px solid #E8E8E3;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(23, 32, 29, 0.03), 0 8px 20px -4px rgba(23, 32, 29, 0.03);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .editorial-card:hover {
-  border-color: #CBD5E1;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 12px 28px -6px rgba(15, 23, 42, 0.05);
+  border-color: #DCE8DD;
+  box-shadow: 0 2px 6px rgba(23, 32, 29, 0.04), 0 14px 28px -6px rgba(23, 32, 29, 0.06);
 }
 
 /* Physical Wooden Crate Stamp */
@@ -70,14 +97,14 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   padding: 0.2rem 0.55rem;
-  border-radius: 4px;
-  border: 1.5px solid currentColor;
+  border-radius: 6px;
+  border: 1px solid currentColor;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
 /* Antique Gold Contour Border */
 .gold-contour-border {
-  border-color: rgba(197, 168, 128, 0.35) !important;
+  border-color: rgba(201, 155, 67, 0.35) !important;
 }
 
 /* Authentic APMC Trading Ledger Row */
@@ -85,7 +112,7 @@
   transition: background-color 0.15s ease;
 }
 .mandi-ledger-row:hover {
-  background-color: rgba(241, 245, 249, 0.7);
+  background-color: rgba(220, 232, 221, 0.35);
 }
 
 /* ───────────────────────────────────────────────────────────── */
@@ -101,7 +128,7 @@
 .animate-ticker-smooth {
   display: flex;
   width: max-content;
-  animation: continuousTicker 48s linear infinite;
+  animation: continuousTicker 52s linear infinite;
 }
 
 .animate-ticker-smooth:hover {
@@ -115,14 +142,14 @@
 }
 
 .animate-price-pulse {
-  animation: priceFlash 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: priceFlash 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* Price Updated Flash — bright glow when live price changes */
+/* Price Updated Flash — gentle glow */
 @keyframes priceUpdatedGlow {
-  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); background-color: rgba(16, 185, 129, 0.15); }
-  50% { box-shadow: 0 0 12px 4px rgba(16, 185, 129, 0.3); background-color: rgba(16, 185, 129, 0.08); }
-  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); background-color: transparent; }
+  0% { box-shadow: 0 0 0 0 rgba(23, 61, 50, 0.4); background-color: rgba(220, 232, 221, 0.4); }
+  50% { box-shadow: 0 0 10px 2px rgba(23, 61, 50, 0.2); background-color: rgba(220, 232, 221, 0.2); }
+  100% { box-shadow: 0 0 0 0 rgba(23, 61, 50, 0); background-color: transparent; }
 }
 
 .animate-price-updated {
@@ -136,7 +163,7 @@
 }
 
 .animate-calm-reveal {
-  animation: calmReveal 0.3s ease-out;
+  animation: calmReveal 0.25s ease-out;
 }
 
 /* Audio Visualizer Wave (Voice Drawer) */
@@ -151,16 +178,6 @@
 .animate-audio-bar-4 { animation: audioWave 0.9s ease-in-out infinite 0.45s; }
 .animate-audio-bar-5 { animation: audioWave 1.2s ease-in-out infinite 0.2s; }
 
-/* Subtle Hand-Drawn Arrow Pulse */
-@keyframes arrowWiggle {
-  0%, 100% { transform: rotate(0deg) scale(1); }
-  50% { transform: rotate(-3deg) scale(1.04); }
-}
-
-.animate-hand-arrow {
-  animation: arrowWiggle 3.5s ease-in-out infinite;
-}
-
 /* Custom Clean Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
@@ -168,30 +185,30 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #FAFAF8;
+  background: #F7F5EF;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
+  background: #D4D4CE;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
+  background: #576561;
 }
 
-/* Leaflet Map overrides for Clean Flat Palette */
+/* Leaflet Map overrides for Clean Warm Palette */
 .leaflet-container {
   width: 100%;
   height: 100%;
-  border-radius: 12px;
-  background-color: #FAFAF8 !important;
+  border-radius: 14px;
+  background-color: #F7F5EF !important;
 }
 
 .leaflet-popup-content-wrapper {
   background: #FFFFFF !important;
-  color: #0F172A !important;
-  border: 1px solid #E2E8F0 !important;
-  border-radius: 10px !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08) !important;
+  color: #17201D !important;
+  border: 1px solid #E8E8E3 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 25px -5px rgba(23, 32, 29, 0.08) !important;
 }

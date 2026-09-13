@@ -24,6 +24,8 @@ import {
   ExternalLink,
   Navigation2,
   Compass,
+  CloudRain,
+  AlertTriangle,
 } from "lucide-react";
 
 export default function DriverDispatchPage() {
@@ -100,95 +102,111 @@ export default function DriverDispatchPage() {
   const activeOrders = orders.filter((o) => o.status !== "settled" && o.status !== "cancelled");
 
   return (
-    <div className="min-h-screen bg-[#FAFAF9] text-slate-800 flex flex-col selection:bg-emerald-100 selection:text-emerald-900">
+    <div className="min-h-screen bg-[#F7F5EF] text-[#17201D] flex flex-col selection:bg-[#DCE8DD] selection:text-[#173D32]">
       <Navbar />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 w-full space-y-6">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 pb-5">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#E8E8E3] pb-5">
           <div>
-            <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1">
-              <Truck className="h-4 w-4 text-emerald-600" />
+            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-[#173D32] uppercase tracking-wider mb-1">
+              <Truck className="h-3.5 w-3.5 text-[#173D32]" />
               <span>
                 Assigned Vehicle: Tata Ace Gold • Driver: {user?.first_name ? `${user.first_name} ${user.last_name || ""}` : "Logistics Fleet Member"}
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900">
+            <h1 className="font-serif text-3xl sm:text-4xl text-[#17201D] font-normal tracking-tight">
               {t.driverTitle}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 mt-0.5 max-w-2xl">
+            <p className="text-xs sm:text-sm text-[#576561] font-sans mt-0.5 max-w-2xl">
               {t.driverDesc}
             </p>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="rounded-md bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs font-bold text-emerald-800 flex items-center gap-1.5">
-              <Compass className="h-3.5 w-3.5 text-emerald-600" />
+            <span className="rounded-xl bg-[#DCE8DD] border border-[#173D32]/20 px-3 py-1.5 text-xs font-mono font-semibold text-[#173D32] flex items-center gap-1.5">
+              <Compass className="h-3.5 w-3.5 text-[#173D32]" />
               <span>{t.lucknowCluster}</span>
             </span>
           </div>
         </div>
 
         {actionSuccess && (
-          <div className="rounded-xl bg-emerald-50 p-3.5 border border-emerald-200 text-xs font-bold text-emerald-900 flex items-center gap-2 animate-calm-reveal">
-            <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+          <div className="rounded-2xl bg-[#DCE8DD]/60 p-3.5 border border-[#DCE8DD] text-xs font-semibold text-[#173D32] flex items-center gap-2 animate-calm-reveal">
+            <CheckCircle2 className="h-4 w-4 text-[#173D32]" />
             <span>{actionSuccess}</span>
           </div>
         )}
 
-        {/* Route Summary & Interactive Map */}
+        {/* Route Summary & Weather-Aware Route Card */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-8 space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-bold tracking-tight text-slate-900">
+              <h3 className="font-serif text-xl text-[#17201D]">
                 Turn-by-Turn Route Map
               </h3>
-              <span className="text-xs text-slate-500">Farm Gates &rarr; Buyer Docks</span>
+              <span className="text-xs text-[#576561] font-mono">Farm Gates &rarr; Buyer Docks</span>
             </div>
 
-            <div className="editorial-card p-1.5 bg-white overflow-hidden h-[400px]">
+            <div className="editorial-card p-1.5 bg-white overflow-hidden h-[400px] rounded-2xl border border-[#E8E8E3]">
               <LeafletMap center={[26.88, 80.92]} height="100%" />
             </div>
           </div>
 
           <div className="lg:col-span-4 space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-bold tracking-tight text-slate-900">
+              <h3 className="font-serif text-xl text-[#17201D]">
                 Fleet Run Summary
               </h3>
             </div>
 
-            <div className="editorial-card p-5 space-y-3.5 bg-white">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-700">
+            <div className="editorial-card p-5 space-y-4 bg-white rounded-2xl border border-[#E8E8E3]">
+              {/* Weather-Aware Route Guidance Card */}
+              <div className="rounded-xl bg-[#F7F0E2] p-3.5 border border-[#C99B43]/30 space-y-1.5 text-xs">
+                <div className="flex items-center justify-between font-semibold text-[#17201D]">
+                  <span className="flex items-center gap-1.5">
+                    <CloudRain className="h-4 w-4 text-[#C99B43]" />
+                    <span>Route 07 — Malihabad to Hazratganj</span>
+                  </span>
+                  <span className="font-mono text-[10px] bg-white px-2 py-0.5 rounded text-[#17201D]">
+                    ETA: 1 hr 20 min
+                  </span>
+                </div>
+                <p className="text-[11px] text-[#576561]">
+                  Rain expected near city entry after 2:30 PM. <strong>Recommended dispatch: 11:40 AM</strong>.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3 pt-1">
+                <div className="w-9 h-9 rounded-xl bg-[#DCE8DD] flex items-center justify-center text-[#173D32]">
                   <Navigation className="h-4.5 w-4.5" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-sm text-slate-900">Optimized Milk Run</h4>
-                  <p className="text-xs text-slate-500">24-Hour Farm-to-Dock Schedule</p>
+                  <h4 className="font-serif text-base text-[#17201D]">Optimized Milk Run</h4>
+                  <p className="text-xs text-[#576561] font-sans">24-Hour Farm-to-Dock Schedule</p>
                 </div>
               </div>
 
               <div className="space-y-2 text-xs">
-                <div className="flex justify-between border-b border-slate-100 pb-1.5">
-                  <span className="text-slate-500">Active Waypoints:</span>
-                  <span className="font-bold text-slate-900">{activeOrders.length * 2} Stops</span>
+                <div className="flex justify-between border-b border-[#E8E8E3] pb-1.5">
+                  <span className="text-[#576561]">Active Waypoints:</span>
+                  <span className="font-semibold text-[#17201D]">{activeOrders.length * 2} Stops</span>
                 </div>
-                <div className="flex justify-between border-b border-slate-100 pb-1.5">
-                  <span className="text-slate-500">Vehicle Capacity:</span>
-                  <span className="font-bold text-slate-900">2,000 kg (Tata Ace Gold)</span>
+                <div className="flex justify-between border-b border-[#E8E8E3] pb-1.5">
+                  <span className="text-[#576561]">Vehicle Capacity:</span>
+                  <span className="font-semibold text-[#17201D]">2,000 kg (Tata Ace Gold)</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Fulfillment Corridor:</span>
-                  <span className="font-bold text-emerald-700">Bakshi Ka Talab &rarr; Hazratganj</span>
+                  <span className="text-[#576561]">Fulfillment Corridor:</span>
+                  <span className="font-semibold text-[#173D32]">Bakshi Ka Talab &rarr; Hazratganj</span>
                 </div>
               </div>
 
               <button
                 onClick={() => openGoogleMapsDirections(26.9124, 80.8947, 26.8467, 80.9462)}
-                className="w-full flex items-center justify-center gap-2 rounded-xl bg-emerald-600 py-2.5 text-xs font-bold text-white hover:bg-emerald-700 transition shadow-xs cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#173D32] py-2.5 text-xs font-semibold text-white hover:bg-[#0F2820] transition shadow-xs cursor-pointer active:scale-98"
               >
-                <Navigation2 className="h-4 w-4" />
+                <Navigation2 className="h-4 w-4 text-[#C99B43]" />
                 <span>Navigate Full Route in Google Maps</span>
               </button>
             </div>
@@ -198,17 +216,17 @@ export default function DriverDispatchPage() {
         {/* Turn-by-Turn Manifest List */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold tracking-tight text-slate-900">
+            <h3 className="font-serif text-xl text-[#17201D]">
               Fulfillment Manifest ({activeOrders.length} Orders)
             </h3>
-            <span className="text-xs text-slate-500">Execute in sequential order</span>
+            <span className="text-xs text-[#576561] font-mono">Execute in sequential order</span>
           </div>
 
           {activeOrders.length === 0 ? (
-            <div className="editorial-card p-12 text-center space-y-2 bg-white">
-              <Package className="h-10 w-10 text-slate-300 mx-auto" />
-              <p className="font-bold text-sm text-slate-900">All Dispatches Completed!</p>
-              <p className="text-xs text-slate-500">New buyer orders will appear here automatically.</p>
+            <div className="editorial-card p-12 text-center space-y-2 bg-white rounded-2xl border border-[#E8E8E3]">
+              <Package className="h-10 w-10 text-[#576561]/40 mx-auto" />
+              <p className="font-serif text-base text-[#17201D]">All Dispatches Completed!</p>
+              <p className="text-xs text-[#576561]">New buyer orders will appear here automatically.</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -223,28 +241,28 @@ export default function DriverDispatchPage() {
                 return (
                   <div
                     key={ord.id}
-                    className="editorial-card p-5 space-y-4 bg-white"
+                    className="editorial-card p-5 space-y-4 bg-white rounded-2xl border border-[#E8E8E3]"
                   >
                     {/* Header */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E8E8E3] pb-3">
                       <div className="flex items-center gap-2">
-                        <span className="flex h-6 w-6 items-center justify-center rounded-md bg-emerald-600 text-white font-bold text-xs">
+                        <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#173D32] text-white font-bold text-xs">
                           {idx + 1}
                         </span>
-                        <span className="font-bold text-base text-slate-900 capitalize">
+                        <span className="font-serif text-base text-[#17201D] capitalize">
                           Order #{ord.id} • {ord.requested_qty} kg {ord.lot_detail?.commodity} (Grade {ord.lot_detail?.grade})
                         </span>
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <span className="rounded-md bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800 uppercase">
+                        <span className="rounded-md bg-[#DCE8DD] px-2.5 py-0.5 text-[10px] font-bold text-[#173D32] uppercase">
                           Status: {ord.status_display}
                         </span>
                         <button
                           onClick={() => openGoogleMapsDirections(originLat, originLng, destLat, destLng)}
-                          className="flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition"
+                          className="flex items-center gap-1 rounded-lg border border-[#E8E8E3] bg-[#F7F5EF] px-2.5 py-1 text-xs font-semibold text-[#17201D] hover:bg-[#E8E8E3] transition cursor-pointer"
                         >
-                          <ExternalLink className="h-3 w-3 text-emerald-600" />
+                          <ExternalLink className="h-3 w-3 text-[#173D32]" />
                           <span>Google Maps</span>
                         </button>
                       </div>
@@ -253,26 +271,26 @@ export default function DriverDispatchPage() {
                     {/* Step 1: PICKUP ORIGIN & Step 2: DROP-OFF DESTINATION */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {/* Left: Where to Pick Up */}
-                      <div className="rounded-xl bg-slate-50 p-4 border border-slate-200 space-y-2.5">
+                      <div className="rounded-xl bg-[#F7F5EF] p-4 border border-[#E8E8E3] space-y-2.5">
                         <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
-                            <Sprout className="h-4 w-4 text-emerald-600" />
+                          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#173D32] flex items-center gap-1.5">
+                            <Sprout className="h-4 w-4 text-[#173D32]" />
                             <span>1. Farm Gate Pickup Location</span>
                           </span>
-                          <span className="text-[10px] text-slate-500">7:00 – 10:00 AM</span>
+                          <span className="text-[10px] text-[#576561] font-mono">7:00 – 10:00 AM</span>
                         </div>
 
-                        <div className="text-xs space-y-1 text-slate-800">
-                          <p className="font-bold text-sm text-slate-900">
+                        <div className="text-xs space-y-1 text-[#17201D]">
+                          <p className="font-semibold text-sm text-[#17201D]">
                             {ord.farmer_name || ord.lot_detail?.created_by_name || "Verified Farmer (Kisan)"}
                           </p>
-                          <p className="flex items-center gap-1 text-slate-500">
-                            <MapPin className="h-3.5 w-3.5 text-emerald-600" />
+                          <p className="flex items-center gap-1 text-[#576561]">
+                            <MapPin className="h-3.5 w-3.5 text-[#173D32]" />
                             <span>{ord.farmer_village || ord.lot_detail?.farm_detail?.village || "Bakshi Ka Talab"}, Lucknow</span>
                           </p>
-                          <p className="flex items-center gap-1 text-slate-500">
-                            <Phone className="h-3.5 w-3.5 text-emerald-600" />
-                            <a href={`tel:${ord.farmer_phone || "+919876543211"}`} className="font-bold text-emerald-700 hover:underline">
+                          <p className="flex items-center gap-1 text-[#576561]">
+                            <Phone className="h-3.5 w-3.5 text-[#173D32]" />
+                            <a href={`tel:${ord.farmer_phone || "+919876543211"}`} className="font-semibold text-[#173D32] hover:underline">
                               {ord.farmer_phone || "+91-9876543211"} (Tap to Call)
                             </a>
                           </p>
@@ -281,22 +299,22 @@ export default function DriverDispatchPage() {
                         <div className="pt-2 flex gap-2">
                           <button
                             onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${originLat},${originLng}`, "_blank")}
-                            className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-slate-200 bg-white py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50"
+                            className="flex-1 flex items-center justify-center gap-1 rounded-xl border border-[#E8E8E3] bg-white py-1.5 text-xs font-semibold text-[#17201D] hover:bg-[#F7F5EF] cursor-pointer"
                           >
-                            <MapPin className="h-3.5 w-3.5 text-emerald-600" />
+                            <MapPin className="h-3.5 w-3.5 text-[#173D32]" />
                             <span>Navigate to Farm</span>
                           </button>
 
                           {!isPickedUp ? (
                             <button
                               onClick={() => handleMarkPickup(ord.id)}
-                              className="flex-1 flex items-center justify-center gap-1.5 rounded-lg bg-emerald-600 py-1.5 text-xs font-bold text-white hover:bg-emerald-700 transition shadow-xs"
+                              className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-[#173D32] py-1.5 text-xs font-semibold text-white hover:bg-[#0F2820] transition shadow-xs cursor-pointer active:scale-98"
                             >
                               <CheckCircle2 className="h-4 w-4" />
                               <span>Confirm Picked Up</span>
                             </button>
                           ) : (
-                            <span className="flex-1 flex items-center justify-center gap-1 text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 py-1.5 rounded-lg">
+                            <span className="flex-1 flex items-center justify-center gap-1 text-xs font-semibold text-[#173D32] bg-[#DCE8DD] border border-[#173D32]/20 py-1.5 rounded-xl">
                               <CheckCircle2 className="h-3.5 w-3.5" />
                               <span>Loaded on Vehicle</span>
                             </span>
@@ -305,26 +323,26 @@ export default function DriverDispatchPage() {
                       </div>
 
                       {/* Right: Where to Drop Off */}
-                      <div className="rounded-xl bg-slate-50 p-4 border border-slate-200 space-y-2.5">
+                      <div className="rounded-xl bg-[#F7F5EF] p-4 border border-[#E8E8E3] space-y-2.5">
                         <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
-                            <ShoppingBag className="h-4 w-4 text-emerald-600" />
+                          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#173D32] flex items-center gap-1.5">
+                            <ShoppingBag className="h-4 w-4 text-[#173D32]" />
                             <span>2. Buyer Drop-Off Destination</span>
                           </span>
-                          <span className="text-[10px] text-slate-500">ETA: ~4:30 PM</span>
+                          <span className="text-[10px] text-[#576561] font-mono">ETA: ~4:30 PM</span>
                         </div>
 
-                        <div className="text-xs space-y-1 text-slate-800">
-                          <p className="font-bold text-sm text-slate-900">
+                        <div className="text-xs space-y-1 text-[#17201D]">
+                          <p className="font-semibold text-sm text-[#17201D]">
                             {ord.buyer_org || "Commercial Procurement Kitchen"} ({ord.buyer_name || "Buyer"})
                           </p>
-                          <p className="flex items-center gap-1 text-slate-500">
-                            <MapPin className="h-3.5 w-3.5 text-emerald-600" />
+                          <p className="flex items-center gap-1 text-[#576561]">
+                            <MapPin className="h-3.5 w-3.5 text-[#173D32]" />
                             <span>{ord.delivery_address || "Hazratganj Central Receiving Station, Lucknow"}</span>
                           </p>
-                          <p className="flex items-center gap-1 text-slate-500">
-                            <Phone className="h-3.5 w-3.5 text-emerald-600" />
-                            <a href={`tel:${ord.buyer_phone || "+919876543210"}`} className="font-bold text-emerald-700 hover:underline">
+                          <p className="flex items-center gap-1 text-[#576561]">
+                            <Phone className="h-3.5 w-3.5 text-[#173D32]" />
+                            <a href={`tel:${ord.buyer_phone || "+919876543210"}`} className="font-semibold text-[#173D32] hover:underline">
                               {ord.buyer_phone || "+91-9876543210"} (Tap to Call)
                             </a>
                           </p>
@@ -333,9 +351,9 @@ export default function DriverDispatchPage() {
                         <div className="pt-2 flex gap-2">
                           <button
                             onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${destLat},${destLng}`, "_blank")}
-                            className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-slate-200 bg-white py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50"
+                            className="flex-1 flex items-center justify-center gap-1 rounded-xl border border-[#E8E8E3] bg-white py-1.5 text-xs font-semibold text-[#17201D] hover:bg-[#F7F5EF] cursor-pointer"
                           >
-                            <MapPin className="h-3.5 w-3.5 text-emerald-600" />
+                            <MapPin className="h-3.5 w-3.5 text-[#173D32]" />
                             <span>Navigate to Dock</span>
                           </button>
 
@@ -343,13 +361,13 @@ export default function DriverDispatchPage() {
                             <button
                               onClick={() => handleOpenProof(ord.id)}
                               disabled={!isPickedUp}
-                              className="flex-1 flex items-center justify-center gap-1.5 rounded-lg bg-emerald-600 py-1.5 text-xs font-bold text-white hover:bg-emerald-700 transition shadow-xs disabled:opacity-50"
+                              className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-[#C99B43] py-1.5 text-xs font-semibold text-white hover:bg-[#B88B35] transition shadow-xs disabled:opacity-50 cursor-pointer active:scale-98"
                             >
                               <ShieldCheck className="h-4 w-4" />
                               <span>Verify Delivery OTP</span>
                             </button>
                           ) : (
-                            <span className="flex-1 flex items-center justify-center gap-1 text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 py-1.5 rounded-lg">
+                            <span className="flex-1 flex items-center justify-center gap-1 text-xs font-semibold text-[#173D32] bg-[#DCE8DD] border border-[#173D32]/20 py-1.5 rounded-xl">
                               <CheckCircle2 className="h-3.5 w-3.5" />
                               <span>Delivered & Verified</span>
                             </span>

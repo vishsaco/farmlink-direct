@@ -29,6 +29,7 @@ import {
   Warehouse,
   Coins,
   AlertCircle,
+  X,
 } from "lucide-react";
 import confetti from "canvas-confetti";
 
@@ -219,29 +220,29 @@ export default function FPOAggregatorPage() {
   const fpoCommission = Math.round(totalSalesRevenue * 0.03);
 
   return (
-    <div className="min-h-screen bg-[#FAFAF9] text-slate-800 flex flex-col selection:bg-emerald-100 selection:text-emerald-900">
+    <div className="min-h-screen bg-[#F7F5EF] text-[#17201D] flex flex-col selection:bg-[#DCE8DD] selection:text-[#173D32]">
       <Navbar />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 w-full space-y-6">
         {/* Header Banner */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 pb-5">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#E8E8E3] pb-5">
           <div>
-            <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1">
-              <Building className="h-4 w-4 text-emerald-600" />
+            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-[#173D32] uppercase tracking-wider mb-1">
+              <Building className="h-3.5 w-3.5 text-[#173D32]" />
               <span>
                 {user?.organization_detail?.name || "Lucknow Krishi Utpadak Sahakari Samiti"} • {t.fpoRole}
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900">
+            <h1 className="font-serif text-3xl sm:text-4xl text-[#17201D] font-normal tracking-tight">
               {t.fpoTitle}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 mt-0.5 max-w-2xl">
+            <p className="text-xs sm:text-sm text-[#576561] font-sans mt-0.5 max-w-2xl">
               {t.fpoDesc}
             </p>
           </div>
 
           {/* Tab Navigation Buttons */}
-          <div className="flex items-center gap-1.5 bg-white p-1 rounded-lg border border-slate-200 shadow-xs overflow-x-auto">
+          <div className="flex items-center gap-1.5 bg-white p-1 rounded-xl border border-[#E8E8E3] shadow-2xs overflow-x-auto">
             {[
               { id: "overview", label: t.aggregationHubTab, icon: Layers },
               { id: "pool", label: t.poolBulkLotTab, icon: Package },
@@ -254,10 +255,10 @@ export default function FPOAggregatorPage() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold whitespace-nowrap transition ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
                     activeTab === tab.id
-                      ? "bg-emerald-600 text-white shadow-xs"
-                      : "text-slate-600 hover:text-slate-900"
+                      ? "bg-[#173D32] text-white shadow-xs"
+                      : "text-[#576561] hover:text-[#17201D]"
                   }`}
                 >
                   <Icon className="h-3.5 w-3.5" />
@@ -273,42 +274,42 @@ export default function FPOAggregatorPage() {
           <div className="space-y-6">
             {/* KPI Metric Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="editorial-card p-4 space-y-1 bg-white">
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
-                  <Users className="h-3.5 w-3.5 text-emerald-600" />
+              <div className="editorial-card p-4 space-y-1 bg-white rounded-2xl border border-[#E8E8E3]">
+                <span className="text-[10px] font-mono font-semibold text-[#576561] uppercase tracking-wider flex items-center gap-1">
+                  <Users className="h-3.5 w-3.5 text-[#173D32]" />
                   <span>{t.activeMembersCount}</span>
                 </span>
-                <p className="text-2xl font-bold text-slate-900">{members.length} Farmers</p>
-                <p className="text-[11px] text-slate-500 font-normal">Whole-Lucknow cooperative registry</p>
+                <p className="font-serif text-2xl text-[#17201D]">{members.length} Farmers</p>
+                <p className="text-[11px] text-[#576561] font-sans">Whole-Lucknow cooperative registry</p>
               </div>
 
-              <div className="editorial-card p-4 space-y-1 bg-white">
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
-                  <Package className="h-3.5 w-3.5 text-emerald-600" />
+              <div className="editorial-card p-4 space-y-1 bg-white rounded-2xl border border-[#E8E8E3]">
+                <span className="text-[10px] font-mono font-semibold text-[#576561] uppercase tracking-wider flex items-center gap-1">
+                  <Package className="h-3.5 w-3.5 text-[#173D32]" />
                   <span>{t.pooledVolumeQuintals}</span>
                 </span>
-                <p className="text-2xl font-bold text-slate-900">
-                  {(totalPooledKg / 100).toFixed(0)} <span className="text-sm font-normal text-slate-500">Quintals</span>
+                <p className="font-serif text-2xl text-[#17201D]">
+                  {(totalPooledKg / 100).toFixed(0)} <span className="text-xs font-normal text-[#576561] font-sans">Quintals</span>
                 </p>
-                <p className="text-[11px] text-slate-500 font-normal">Real active commercial inventory</p>
+                <p className="text-[11px] text-[#576561] font-sans">Real active commercial inventory</p>
               </div>
 
-              <div className="editorial-card p-4 space-y-1 bg-white">
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
-                  <TrendingUp className="h-3.5 w-3.5 text-emerald-600" />
+              <div className="editorial-card p-4 space-y-1 bg-white rounded-2xl border border-[#E8E8E3]">
+                <span className="text-[10px] font-mono font-semibold text-[#576561] uppercase tracking-wider flex items-center gap-1">
+                  <TrendingUp className="h-3.5 w-3.5 text-[#173D32]" />
                   <span>{t.grossSalesTrade}</span>
                 </span>
-                <p className="text-2xl font-bold text-slate-900">{formatCurrency(totalSalesRevenue)}</p>
-                <p className="text-[11px] text-slate-500 font-normal">Direct B2B buyer commitments</p>
+                <p className="font-serif text-2xl text-[#17201D]">{formatCurrency(totalSalesRevenue)}</p>
+                <p className="text-[11px] text-[#576561] font-sans">Direct B2B buyer commitments</p>
               </div>
 
-              <div className="editorial-card p-4 space-y-1 bg-white">
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
-                  <Coins className="h-3.5 w-3.5 text-emerald-600" />
+              <div className="editorial-card p-4 space-y-1 bg-white rounded-2xl border border-[#E8E8E3]">
+                <span className="text-[10px] font-mono font-semibold text-[#576561] uppercase tracking-wider flex items-center gap-1">
+                  <Coins className="h-3.5 w-3.5 text-[#173D32]" />
                   <span>{t.fpoSurplusFund}</span>
                 </span>
-                <p className="text-2xl font-bold text-slate-900">{formatCurrency(fpoCommission)}</p>
-                <p className="text-[11px] text-slate-500 font-normal">3% cooperative handling retained</p>
+                <p className="font-serif text-2xl text-[#C99B43]">{formatCurrency(fpoCommission)}</p>
+                <p className="text-[11px] text-[#576561] font-sans">3% cooperative handling retained</p>
               </div>
             </div>
 
@@ -316,24 +317,24 @@ export default function FPOAggregatorPage() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               <div className="lg:col-span-7 space-y-3">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-bold tracking-tight text-slate-900">
+                  <h3 className="font-serif text-xl text-[#17201D]">
                     Whole Lucknow Cooperative Network Map
                   </h3>
-                  <span className="text-xs text-slate-500">12 Active Regional Zones</span>
+                  <span className="text-xs text-[#576561] font-mono">12 Active Regional Zones</span>
                 </div>
-                <div className="editorial-card p-1.5 bg-white overflow-hidden h-[420px]">
+                <div className="editorial-card p-1.5 bg-white overflow-hidden h-[420px] rounded-2xl border border-[#E8E8E3]">
                   <LeafletMap lots={lots} center={[26.89, 80.91]} height="100%" />
                 </div>
               </div>
 
               <div className="lg:col-span-5 space-y-3">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-bold tracking-tight text-slate-900">
+                  <h3 className="font-serif text-xl text-[#17201D]">
                     Active Pooled Lots ({lots.length})
                   </h3>
                   <button
                     onClick={() => setActiveTab("pool")}
-                    className="text-xs font-bold text-emerald-700 hover:underline flex items-center gap-1"
+                    className="text-xs font-semibold text-[#173D32] hover:underline flex items-center gap-1 cursor-pointer"
                   >
                     <span>+ Pool New</span>
                     <ArrowRight className="h-3.5 w-3.5" />
@@ -341,15 +342,15 @@ export default function FPOAggregatorPage() {
                 </div>
 
                 {lots.length === 0 ? (
-                  <div className="editorial-card p-8 text-center space-y-2 bg-white">
-                    <Package className="h-10 w-10 text-slate-300 mx-auto" />
-                    <p className="text-sm font-bold text-slate-900">No Pooled Bulk Lots Active</p>
-                    <p className="text-xs text-slate-500">
-                      Aggregate harvest batches from registered farmers into high-tonnage lots to command higher wholesale prices.
+                  <div className="editorial-card p-8 text-center space-y-2 bg-white rounded-2xl border border-[#E8E8E3]">
+                    <Package className="h-10 w-10 text-[#576561]/40 mx-auto" />
+                    <p className="font-serif text-base text-[#17201D]">No Pooled Bulk Lots Active</p>
+                    <p className="text-xs text-[#576561] font-sans">
+                      Aggregate harvest batches from registered farmers into standardized quintal lots.
                     </p>
                     <button
                       onClick={() => setActiveTab("pool")}
-                      className="rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-700 transition"
+                      className="rounded-xl bg-[#173D32] px-4 py-2 text-xs font-semibold text-white hover:bg-[#0F2820] transition cursor-pointer"
                     >
                       Create First Bulk Lot
                     </button>
@@ -359,24 +360,24 @@ export default function FPOAggregatorPage() {
                     {lots.map((lot) => (
                       <div
                         key={lot.id}
-                        className="editorial-card p-3.5 flex items-center justify-between gap-3 bg-white"
+                        className="editorial-card p-3.5 flex items-center justify-between gap-3 bg-white rounded-2xl border border-[#E8E8E3]"
                       >
                         <div className="flex items-center gap-3">
                           <img
                             src={lot.photo_url || "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&auto=format&fit=crop&q=80"}
                             alt={lot.commodity}
-                            className="h-11 w-11 rounded-lg object-cover border border-slate-200"
+                            className="h-11 w-11 rounded-xl object-cover border border-[#E8E8E3]"
                           />
                           <div>
-                            <p className="font-bold text-sm text-slate-900 capitalize">
+                            <p className="font-semibold text-xs text-[#17201D] capitalize">
                               {lot.available_qty} kg {lot.commodity} (Grade {lot.grade})
                             </p>
-                            <p className="text-xs text-slate-500">
+                            <p className="text-[11px] text-[#576561]">
                               ₹{lot.asking_price}/kg • {lot.farm_detail?.village || "Lucknow Intake Hub"}
                             </p>
                           </div>
                         </div>
-                        <span className="rounded-md bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold text-emerald-800 capitalize">
+                        <span className="rounded-md bg-[#DCE8DD] px-2 py-0.5 text-[10px] font-bold text-[#173D32] capitalize">
                           {lot.status.replace("_", " ")}
                         </span>
                       </div>
@@ -392,19 +393,19 @@ export default function FPOAggregatorPage() {
         {activeTab === "pool" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div className="lg:col-span-7 space-y-4">
-              <div className="editorial-card p-6 sm:p-7 space-y-5 bg-white">
+              <div className="editorial-card p-6 sm:p-7 space-y-5 bg-white rounded-2xl border border-[#E8E8E3]">
                 <div>
-                  <h3 className="text-xl font-bold tracking-tight text-slate-900">
+                  <h3 className="font-serif text-2xl text-[#17201D]">
                     {t.poolBulkLotTab}
                   </h3>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-xs text-[#576561] font-sans mt-0.5">
                     Combine harvests from registered farmers into standardized quintal truckloads for enterprise buyers.
                   </p>
                 </div>
 
                 {publishSuccess && (
-                  <div className="rounded-lg bg-emerald-50 p-3.5 border border-emerald-200 text-xs font-bold text-emerald-900 flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                  <div className="rounded-xl bg-[#DCE8DD]/50 p-3.5 border border-[#DCE8DD] text-xs font-semibold text-[#173D32] flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#173D32]" />
                     <span>Bulk Lot Published to Live Marketplace! Buyers can now place orders.</span>
                   </div>
                 )}
@@ -412,7 +413,7 @@ export default function FPOAggregatorPage() {
                 <form onSubmit={handlePublishBulkLot} className="space-y-4">
                   {/* Select Commodity */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-800 mb-1.5 uppercase tracking-wide">
+                    <label className="block text-[11px] font-mono uppercase tracking-wider text-[#576561] mb-1.5">
                       Select Bulk Produce Commodity
                     </label>
                     <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
@@ -421,10 +422,10 @@ export default function FPOAggregatorPage() {
                           key={item.id}
                           type="button"
                           onClick={() => selectCommodity(item.id)}
-                          className={`rounded-xl border p-2.5 text-xs font-bold transition flex items-center gap-1.5 ${
+                          className={`rounded-xl border p-2.5 text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer ${
                             commodity === item.id
-                              ? "border-emerald-600 bg-emerald-50 text-emerald-800 shadow-xs"
-                              : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                              ? "border-[#173D32] bg-[#DCE8DD] text-[#173D32] shadow-2xs"
+                              : "border-[#E8E8E3] bg-white text-[#17201D] hover:border-[#D4D4CE]"
                           }`}
                         >
                           <span className="text-base">{item.icon}</span>
@@ -437,7 +438,7 @@ export default function FPOAggregatorPage() {
                   {/* Quantity & Asking Price */}
                   <div className="grid grid-cols-2 gap-3.5">
                     <div>
-                      <label className="block text-xs font-bold text-slate-800 mb-1">
+                      <label className="block text-[11px] font-medium text-[#17201D] mb-1">
                         Total Pooled Quantity (kg)
                       </label>
                       <input
@@ -446,11 +447,11 @@ export default function FPOAggregatorPage() {
                         max={100000}
                         value={availableQty}
                         onChange={(e) => setAvailableQty(Number(e.target.value))}
-                        className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-bold text-slate-900 focus:border-emerald-500 focus:outline-none"
+                        className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3.5 py-2 text-sm font-bold text-[#17201D] focus:border-[#173D32] focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-800 mb-1">
+                      <label className="block text-[11px] font-medium text-[#17201D] mb-1">
                         Wholesale Asking Price (₹/kg)
                       </label>
                       <input
@@ -459,20 +460,20 @@ export default function FPOAggregatorPage() {
                         max={500}
                         value={askingPrice}
                         onChange={(e) => setAskingPrice(Number(e.target.value))}
-                        className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-bold text-emerald-700 focus:border-emerald-500 focus:outline-none"
+                        className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3.5 py-2 text-sm font-bold text-[#C99B43] focus:border-[#173D32] focus:outline-none"
                       />
                     </div>
                   </div>
 
                   {/* Collection Hub */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-800 mb-1">
+                    <label className="block text-[11px] font-medium text-[#17201D] mb-1">
                       FPO Collection & Dispatch Hub (Lucknow Cluster)
                     </label>
                     <select
                       value={collectionHub}
                       onChange={(e) => setCollectionHub(e.target.value)}
-                      className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-medium text-slate-800 focus:border-emerald-500 focus:outline-none"
+                      className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3.5 py-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none"
                     >
                       <option value="Bakshi Ka Talab Central Hub, Lucknow">Bakshi Ka Talab Central Intake Hub</option>
                       <option value="Malihabad Mango Packhouse, Lucknow">Malihabad Mango Packhouse & Cold Storage</option>
@@ -485,21 +486,21 @@ export default function FPOAggregatorPage() {
 
                   {/* Quality Specification */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-800 mb-1">
+                    <label className="block text-[11px] font-medium text-[#17201D] mb-1">
                       FPO Quality Certification & Grade Notes
                     </label>
                     <input
                       type="text"
                       value={qualityNotes}
                       onChange={(e) => setQualityNotes(e.target.value)}
-                      className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-800 focus:border-emerald-500 focus:outline-none"
+                      className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs text-[#17201D] focus:border-[#173D32] focus:outline-none"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={publishing}
-                    className="w-full rounded-xl bg-emerald-600 py-3.5 text-sm font-bold text-white hover:bg-emerald-700 transition shadow-xs disabled:opacity-50 cursor-pointer"
+                    className="w-full rounded-xl bg-[#173D32] py-3 text-xs font-semibold text-white hover:bg-[#0F2820] transition shadow-xs disabled:opacity-50 cursor-pointer active:scale-99"
                   >
                     {publishing ? "Publishing Bulk Pooled Lot..." : t.publishToMarketplace}
                   </button>
@@ -523,31 +524,31 @@ export default function FPOAggregatorPage() {
           <div className="space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <h3 className="text-xl font-bold tracking-tight text-slate-900">
+                <h3 className="font-serif text-xl text-[#17201D]">
                   {t.memberFarmersTab} ({members.length})
                 </h3>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-[#576561]">
                   Real registered farmers in the Lucknow cooperative cluster.
                 </p>
               </div>
 
               <button
                 onClick={() => setShowAddMemberModal(true)}
-                className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-700 transition shadow-xs cursor-pointer"
+                className="flex items-center gap-1.5 rounded-xl bg-[#173D32] px-4 py-2 text-xs font-semibold text-white hover:bg-[#0F2820] transition shadow-xs cursor-pointer"
               >
-                <Plus className="h-4 w-4" />
+                <Plus className="h-4 w-4 text-[#C99B43]" />
                 <span>{t.addMemberFarmer}</span>
               </button>
             </div>
 
             {members.length === 0 ? (
-              <div className="editorial-card p-12 text-center space-y-2 bg-white">
-                <Users className="h-10 w-10 text-slate-300 mx-auto" />
-                <p className="font-bold text-sm text-slate-900">No Member Farmers Registered Yet</p>
-                <p className="text-xs text-slate-500">Click &apos;+ Add Member Farmer&apos; to onboard local producers in Lucknow.</p>
+              <div className="editorial-card p-12 text-center space-y-2 bg-white rounded-2xl border border-[#E8E8E3]">
+                <Users className="h-10 w-10 text-[#576561]/40 mx-auto" />
+                <p className="font-serif text-base text-[#17201D]">No Member Farmers Registered Yet</p>
+                <p className="text-xs text-[#576561]">Click &apos;+ Add Member Farmer&apos; to onboard local producers in Lucknow.</p>
                 <button
                   onClick={() => setShowAddMemberModal(true)}
-                  className="rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-700 transition"
+                  className="rounded-xl bg-[#173D32] px-4 py-2 text-xs font-semibold text-white hover:bg-[#0F2820] transition cursor-pointer"
                 >
                   {t.addMemberFarmer}
                 </button>
@@ -557,36 +558,36 @@ export default function FPOAggregatorPage() {
                 {members.map((m) => (
                   <div
                     key={m.id}
-                    className="editorial-card p-4 space-y-3 bg-white"
+                    className="editorial-card p-4 space-y-3 bg-white rounded-2xl border border-[#E8E8E3]"
                   >
                     <div className="flex items-start justify-between">
                       <div>
-                        <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider block">
+                        <span className="text-[10px] font-mono font-semibold text-[#173D32] uppercase tracking-wider block">
                           {m.id}
                         </span>
-                        <h4 className="font-bold text-base text-slate-900 mt-0.5">{m.name}</h4>
+                        <h4 className="font-serif text-base text-[#17201D] mt-0.5">{m.name}</h4>
                       </div>
-                      <span className="rounded-md bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold text-emerald-800 flex items-center gap-1">
+                      <span className="rounded-md bg-[#DCE8DD] px-2 py-0.5 text-[10px] font-bold text-[#173D32] flex items-center gap-1">
                         <ShieldCheck className="h-3 w-3" />
                         <span>Verified</span>
                       </span>
                     </div>
 
-                    <div className="space-y-1 text-xs text-slate-600">
-                      <p className="flex items-center gap-1.5 text-slate-900 font-medium">
-                        <MapPin className="h-3.5 w-3.5 text-emerald-600" />
+                    <div className="space-y-1 text-xs text-[#576561]">
+                      <p className="flex items-center gap-1.5 text-[#17201D] font-medium">
+                        <MapPin className="h-3.5 w-3.5 text-[#173D32]" />
                         <span>{m.village}, Lucknow ({m.acres} Acres)</span>
                       </p>
                       <p className="flex items-center gap-1.5">
-                        <Phone className="h-3.5 w-3.5 text-emerald-600" />
+                        <Phone className="h-3.5 w-3.5 text-[#173D32]" />
                         <span>{m.phone}</span>
                       </p>
                       <p className="flex items-center gap-1.5">
-                        <Sprout className="h-3.5 w-3.5 text-emerald-600" />
+                        <Sprout className="h-3.5 w-3.5 text-[#173D32]" />
                         <span>Crops: {m.crops.join(", ")}</span>
                       </p>
-                      <p className="flex items-center gap-1.5 text-[11px] font-mono text-slate-500">
-                        <Receipt className="h-3.5 w-3.5 text-slate-400" />
+                      <p className="flex items-center gap-1.5 text-[11px] font-mono text-[#576561]">
+                        <Receipt className="h-3.5 w-3.5 text-[#576561]/60" />
                         <span>Payout: {m.bankAccount}</span>
                       </p>
                     </div>
@@ -601,10 +602,10 @@ export default function FPOAggregatorPage() {
         {activeTab === "intake" && (
           <div className="space-y-4">
             <div>
-              <h3 className="text-xl font-bold tracking-tight text-slate-900">
+              <h3 className="font-serif text-xl text-[#17201D]">
                 {t.collectionIntakeTab} (Lucknow Regional Hubs)
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-[#576561]">
                 Real-time harvest intake, sorting, and holding capacity across whole Lucknow cluster.
               </p>
             </div>
@@ -636,24 +637,24 @@ export default function FPOAggregatorPage() {
                   status: "Active Intake",
                 },
               ].map((hub, idx) => (
-                <div key={idx} className="editorial-card p-5 space-y-3 bg-white">
+                <div key={idx} className="editorial-card p-5 space-y-3 bg-white rounded-2xl border border-[#E8E8E3]">
                   <div className="flex items-center justify-between">
-                    <span className="rounded-md bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-xs font-bold text-emerald-800">
+                    <span className="rounded-md bg-[#DCE8DD] px-2.5 py-0.5 text-xs font-bold text-[#173D32]">
                       {hub.status}
                     </span>
-                    <span className="text-xs text-slate-500 font-mono">{hub.temp}</span>
+                    <span className="text-xs text-[#576561] font-mono">{hub.temp}</span>
                   </div>
                   <div>
-                    <h4 className="text-lg font-bold tracking-tight text-slate-900">{hub.name}</h4>
-                    <p className="text-xs text-slate-500 mt-0.5">
-                      Current Storage: <span className="font-bold text-slate-900">{hub.current}</span> / {hub.capacity}
+                    <h4 className="font-serif text-lg text-[#17201D]">{hub.name}</h4>
+                    <p className="text-xs text-[#576561] mt-0.5 font-sans">
+                      Current Storage: <span className="font-bold text-[#17201D]">{hub.current}</span> / {hub.capacity}
                     </p>
                   </div>
                   <div className="space-y-1 text-xs">
-                    <span className="text-slate-500 font-medium">Handling Produce:</span>
+                    <span className="text-[#576561] font-medium">Handling Produce:</span>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {hub.activeCrops.map((c, i) => (
-                        <span key={i} className="rounded-md bg-slate-50 border border-slate-200 px-2 py-0.5 text-[11px] font-medium text-slate-700">
+                        <span key={i} className="rounded-md bg-[#F7F5EF] border border-[#E8E8E3] px-2 py-0.5 text-[11px] font-medium text-[#17201D]">
                           {c}
                         </span>
                       ))}
@@ -669,23 +670,23 @@ export default function FPOAggregatorPage() {
         {activeTab === "settlements" && (
           <div className="space-y-4">
             <div>
-              <h3 className="text-xl font-bold tracking-tight text-slate-900">
+              <h3 className="font-serif text-xl text-[#17201D]">
                 {t.memberPayoutsTab}
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-[#576561]">
                 Transparent sales proceeds credited to registered member farmer bank accounts after 3% handling fee.
               </p>
             </div>
 
             {members.length === 0 ? (
-              <div className="editorial-card p-12 text-center text-xs text-slate-500 bg-white">
+              <div className="editorial-card p-12 text-center text-xs text-[#576561] bg-white rounded-2xl border border-[#E8E8E3]">
                 No member payout history recorded yet.
               </div>
             ) : (
-              <div className="editorial-card overflow-hidden bg-white">
+              <div className="editorial-card overflow-hidden bg-white rounded-2xl border border-[#E8E8E3]">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs border-collapse">
-                    <thead className="bg-slate-50 text-slate-600 uppercase font-bold text-[10px] tracking-wider border-b border-slate-200">
+                    <thead className="bg-[#F7F5EF] text-[#576561] uppercase font-mono font-semibold text-[10px] tracking-wider border-b border-[#E8E8E3]">
                       <tr>
                         <th className="py-3 px-4">Member Farmer</th>
                         <th className="py-3 px-4">Village</th>
@@ -694,15 +695,15 @@ export default function FPOAggregatorPage() {
                         <th className="py-3 px-4">Status</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 text-slate-800">
+                    <tbody className="divide-y divide-[#E8E8E3] text-[#17201D]">
                       {members.map((m) => (
-                        <tr key={m.id} className="hover:bg-slate-50/70 transition">
-                          <td className="py-3 px-4 font-bold text-slate-900">{m.name}</td>
-                          <td className="py-3 px-4 text-slate-500">{m.village}</td>
+                        <tr key={m.id} className="hover:bg-[#DCE8DD]/20 transition">
+                          <td className="py-3 px-4 font-semibold text-[#17201D]">{m.name}</td>
+                          <td className="py-3 px-4 text-[#576561]">{m.village}</td>
                           <td className="py-3 px-4">{m.crops.join(", ")}</td>
-                          <td className="py-3 px-4 font-mono font-bold text-emerald-700">{m.bankAccount}</td>
+                          <td className="py-3 px-4 font-mono font-bold text-[#173D32]">{m.bankAccount}</td>
                           <td className="py-3 px-4">
-                            <span className="rounded-md bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[11px] font-bold text-emerald-800 flex items-center gap-1 w-fit">
+                            <span className="rounded-md bg-[#DCE8DD] px-2 py-0.5 text-[11px] font-bold text-[#173D32] flex items-center gap-1 w-fit">
                               <CheckCircle2 className="h-3 w-3" />
                               <span>{t.directBankTransfer}</span>
                             </span>
@@ -719,76 +720,85 @@ export default function FPOAggregatorPage() {
 
         {/* Add Member Farmer Modal */}
         {showAddMemberModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs animate-calm-reveal">
-            <div className="relative w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 shadow-xl space-y-4 text-slate-800">
-              <h3 className="text-xl font-bold tracking-tight text-slate-900">{t.addMemberFarmer}</h3>
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#17201D]/75 p-4 backdrop-blur-sm animate-calm-reveal">
+            <div className="relative w-full max-w-md rounded-3xl border border-[#E8E8E3] bg-white p-6 shadow-2xl space-y-4 text-[#17201D]">
+              <div className="flex items-center justify-between">
+                <h3 className="font-serif text-xl text-[#17201D]">{t.addMemberFarmer}</h3>
+                <button
+                  onClick={() => setShowAddMemberModal(false)}
+                  className="rounded-full p-1 text-[#576561] hover:bg-[#E8E8E3] transition cursor-pointer"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
               <form onSubmit={handleAddMember} className="space-y-3 text-xs">
                 <div>
-                  <label className="block font-bold text-slate-800 mb-1">Farmer Full Name</label>
+                  <label className="block font-medium text-[#17201D] mb-1">Farmer Full Name</label>
                   <input
                     type="text"
                     required
                     value={newMemberName}
                     onChange={(e) => setNewMemberName(e.target.value)}
                     placeholder="e.g. Ram Prasad Verma"
-                    className="w-full rounded-lg border border-slate-300 bg-white p-2 text-xs font-medium text-slate-900 focus:border-emerald-500 focus:outline-none"
+                    className="w-full rounded-xl border border-[#E8E8E3] bg-white p-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block font-bold text-slate-800 mb-1">Village / Tehsil</label>
+                    <label className="block font-medium text-[#17201D] mb-1">Village / Tehsil</label>
                     <input
                       type="text"
                       required
                       value={newMemberVillage}
                       onChange={(e) => setNewMemberVillage(e.target.value)}
                       placeholder="e.g. Bakshi Ka Talab"
-                      className="w-full rounded-lg border border-slate-300 bg-white p-2 text-xs font-medium text-slate-900 focus:border-emerald-500 focus:outline-none"
+                      className="w-full rounded-xl border border-[#E8E8E3] bg-white p-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block font-bold text-slate-800 mb-1">Land (Acres)</label>
+                    <label className="block font-medium text-[#17201D] mb-1">Land (Acres)</label>
                     <input
                       type="number"
                       step="0.5"
                       value={newMemberAcres}
                       onChange={(e) => setNewMemberAcres(Number(e.target.value))}
-                      className="w-full rounded-lg border border-slate-300 bg-white p-2 text-xs font-medium text-slate-900 focus:border-emerald-500 focus:outline-none"
+                      className="w-full rounded-xl border border-[#E8E8E3] bg-white p-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block font-bold text-slate-800 mb-1">Phone Number</label>
+                  <label className="block font-medium text-[#17201D] mb-1">Phone Number</label>
                   <input
                     type="tel"
                     required
                     value={newMemberPhone}
                     onChange={(e) => setNewMemberPhone(e.target.value)}
                     placeholder="+91-9876543210"
-                    className="w-full rounded-lg border border-slate-300 bg-white p-2 text-xs font-medium text-slate-900 focus:border-emerald-500 focus:outline-none"
+                    className="w-full rounded-xl border border-[#E8E8E3] bg-white p-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block font-bold text-slate-800 mb-1">Bank Account / IFSC</label>
+                  <label className="block font-medium text-[#17201D] mb-1">Bank Account / IFSC</label>
                   <input
                     type="text"
                     value={newMemberBank}
                     onChange={(e) => setNewMemberBank(e.target.value)}
                     placeholder="SBI •••• 4512"
-                    className="w-full rounded-lg border border-slate-300 bg-white p-2 text-xs font-medium text-slate-900 focus:border-emerald-500 focus:outline-none"
+                    className="w-full rounded-xl border border-[#E8E8E3] bg-white p-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none"
                   />
                 </div>
                 <div className="flex gap-2 pt-2">
                   <button
                     type="button"
                     onClick={() => setShowAddMemberModal(false)}
-                    className="flex-1 rounded-lg border border-slate-300 py-2 font-bold text-slate-600 hover:bg-slate-50"
+                    className="flex-1 rounded-xl border border-[#E8E8E3] py-2 font-semibold text-[#576561] hover:bg-[#F7F5EF] cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 rounded-lg bg-emerald-600 py-2 font-bold text-white hover:bg-emerald-700 shadow-xs cursor-pointer"
+                    className="flex-1 rounded-xl bg-[#173D32] py-2 font-semibold text-white hover:bg-[#0F2820] shadow-xs cursor-pointer active:scale-98"
                   >
                     {t.addMemberFarmer}
                   </button>

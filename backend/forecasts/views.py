@@ -14,6 +14,7 @@ from .engine import (
     get_accuracy_metrics,
     fetch_lucknow_weather,
     get_all_live_prices,
+    invalidate_price_cache,
 )
 from .models import MarketPrice
 
@@ -61,6 +62,7 @@ def sync_mandi_view(request):
     commodity = request.data.get("commodity", "tomato")
     api_key = request.data.get("api_key")
 
+    invalidate_price_cache(commodity)
     result = fetch_real_lucknow_mandi_prices(commodity, api_key)
     # Regenerate 14-day forecast with newly fetched baseline
     generate_forecasts(commodity, "Lucknow", days=14)
@@ -99,7 +101,8 @@ def live_prices_view(request):
     Optimized for frequent polling (every 15 seconds) with 60s in-memory cache.
     Response: { prices: { commodity: { price, min_price, max_price, source, is_live, ... } }, fetched_at, ... }
     """
-    data = get_all_live_prices()
+    force_refresh = request.query_params.get("refresh", "").lower() in ("true", "1")
+    data = get_all_live_prices(force_refresh=force_refresh)
     return Response(data)
 
 

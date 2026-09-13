@@ -73,51 +73,51 @@ const CROPS: CropMeta[] = [
     labelEn: "Tomato (Tamatar)",
     labelHi: "टमाटर (Tamatar)",
     icon: "🍅",
-    basePrice: 20.0,
+    basePrice: 38.0,
     trend: "rising",
-    gainPct: 18.2,
+    gainPct: 15.2,
     sellerPeakDay: 4,
     buyerDipDay: 1,
     shelfLifeDays: 6,
     spoilageRateDaily: 0.02,
-    primaryMandi: "Agra APMC / Dubagga Yard",
+    primaryMandi: "Dubagga APMC Wholesale Terminal",
   },
   {
     id: "onion",
     labelEn: "Onion (Pyaaz)",
     labelHi: "प्याज (Pyaaz)",
     icon: "🧅",
-    basePrice: 31.5,
+    basePrice: 42.5,
     trend: "rising",
-    gainPct: 8.5,
+    gainPct: 9.5,
     sellerPeakDay: 4,
     buyerDipDay: 1,
     shelfLifeDays: 30,
     spoilageRateDaily: 0.003,
-    primaryMandi: "Aligarh APMC / Sitapur Road Mandi",
+    primaryMandi: "Sitapur Road Naveen Mandi Sthal",
   },
   {
     id: "potato",
     labelEn: "Potato (Aaloo)",
     labelHi: "आलू (Aaloo)",
     icon: "🥔",
-    basePrice: 6.0,
-    trend: "rising",
-    gainPct: 14.3,
+    basePrice: 26.0,
+    trend: "stable",
+    gainPct: 7.2,
     sellerPeakDay: 5,
     buyerDipDay: 1,
     shelfLifeDays: 45,
     spoilageRateDaily: 0.002,
-    primaryMandi: "Babrala APMC / Lucknow Mandi",
+    primaryMandi: "Naveen Mandi Sthal, Lucknow",
   },
   {
     id: "mango",
     labelEn: "Mango (Dussehri)",
     labelHi: "दशहरी आम (Mango)",
     icon: "🥭",
-    basePrice: 225.0,
+    basePrice: 95.0,
     trend: "rising",
-    gainPct: 10.0,
+    gainPct: 12.0,
     sellerPeakDay: 5,
     buyerDipDay: 0,
     shelfLifeDays: 7,
@@ -129,84 +129,84 @@ const CROPS: CropMeta[] = [
     labelEn: "Green Chilli (Mirch)",
     labelHi: "हरी मिर्च (Chilli)",
     icon: "🌶️",
-    basePrice: 24.7,
+    basePrice: 52.0,
     trend: "rising",
-    gainPct: 12.5,
+    gainPct: 11.5,
     sellerPeakDay: 3,
     buyerDipDay: 1,
     shelfLifeDays: 8,
     spoilageRateDaily: 0.025,
-    primaryMandi: "Saharanpur / Dubagga Wholesale",
+    primaryMandi: "Dubagga APMC Wholesale Terminal",
   },
   {
     id: "garlic",
     labelEn: "Garlic (Lahsun)",
     labelHi: "लहसुन (Lahsun)",
     icon: "🧄",
-    basePrice: 80.0,
+    basePrice: 240.0,
     trend: "rising",
     gainPct: 8.5,
     sellerPeakDay: 6,
     buyerDipDay: 2,
     shelfLifeDays: 60,
     spoilageRateDaily: 0.001,
-    primaryMandi: "Kasganj APMC / Sitapur Road Mandi",
+    primaryMandi: "Banthara APMC / Sitapur Road Mandi",
   },
   {
     id: "ginger",
     labelEn: "Ginger (Adrak)",
     labelHi: "अदरक (Adrak)",
     icon: "🫚",
-    basePrice: 77.5,
+    basePrice: 110.0,
     trend: "stable",
-    gainPct: 5.4,
+    gainPct: 6.4,
     sellerPeakDay: 2,
     buyerDipDay: 4,
     shelfLifeDays: 20,
     spoilageRateDaily: 0.005,
-    primaryMandi: "Regional APMC / Dubagga Wholesale",
+    primaryMandi: "Dubagga Wholesale Mandi, Lucknow",
   },
   {
     id: "spinach",
     labelEn: "Spinach (Palak)",
     labelHi: "पालक (Palak)",
     icon: "🥬",
-    basePrice: 15.0,
+    basePrice: 24.0,
     trend: "falling",
     gainPct: -8.3,
     sellerPeakDay: 0,
     buyerDipDay: 3,
     shelfLifeDays: 2,
     spoilageRateDaily: 0.10,
-    primaryMandi: "Amroha / BKT Feeder Mandi",
+    primaryMandi: "Bakshi Ka Talab Feeder Mandi (BKT)",
   },
   {
     id: "cauliflower",
     labelEn: "Cauliflower (Gobhi)",
     labelHi: "फूलगोभी (Gobhi)",
     icon: "🥦",
-    basePrice: 22.0,
+    basePrice: 38.0,
     trend: "rising",
-    gainPct: 15.0,
+    gainPct: 14.0,
     sellerPeakDay: 4,
     buyerDipDay: 1,
     shelfLifeDays: 5,
     spoilageRateDaily: 0.04,
-    primaryMandi: "Sehore / Dubagga Wholesale",
+    primaryMandi: "Dubagga APMC Wholesale Terminal",
   },
   {
     id: "wheat",
     labelEn: "Wheat (Gehu)",
     labelHi: "गेहूं (Gehu)",
     icon: "🌾",
-    basePrice: 25.0,
+    basePrice: 27.5,
     trend: "stable",
     gainPct: 3.2,
     sellerPeakDay: 5,
     buyerDipDay: 2,
     shelfLifeDays: 180,
     spoilageRateDaily: 0.0005,
-    primaryMandi: "Kannauj APMC / Mohanlalganj Mandi",
+    primaryMandi: "Mohanlalganj Krishi Upaj Mandi",
   },
 ];
 
@@ -515,10 +515,10 @@ function generateClientForecast(cropId: Commodity): PriceGuidance {
       { market_name: "FarmLink Direct (Farm Gate)", role: "Direct Producer Fair Trade", price_per_kg: Math.round(todayPrice * 0.94 * 10) / 10, distance_km: 0, status: "Direct Farm Gate (0% Cess, 0% Aadhat)" },
     ],
     source_meta: {
-      source: "Ensemble (HW+ARIMA+EWMA) Client Forecast (Offline Mode)",
+      source: "⚠️ Client-Side Fallback (Backend Offline — Simulated Prices)",
       market_name: crop.primaryMandi,
       is_live_api: false,
-      model_version: "Ensemble v5.0 (HW+ARIMA+EWMA)",
+      model_version: "Client Fallback (Offline)",
     },
     accuracy: {
       commodity: crop.id,
@@ -571,15 +571,24 @@ export default function MarketPredictorPage() {
   const [lastFetchedAt, setLastFetchedAt] = useState<string>("");
   const prevPriceRef = React.useRef<number>(0);
 
-  // Active crop metadata — NOW uses live prices when available
+  // Active crop metadata — dynamically uses live Agmarknet API prices & model forecasts
   const activeCropMeta = useMemo(() => {
     const base = CROPS.find((c) => c.id === selectedCrop) || CROPS[0];
     const liveData = livePrices[selectedCrop];
-    if (liveData && liveData.price > 0) {
-      return { ...base, basePrice: liveData.price };
-    }
-    return base;
-  }, [selectedCrop, livePrices]);
+    const currentPrice = (liveData && liveData.price > 0)
+      ? liveData.price
+      : (guidance?.today?.base || base.basePrice);
+
+    const trend = guidance?.trend || base.trend;
+    const gainPct = guidance?.action_recommendation?.expected_gain_pct ?? base.gainPct;
+
+    return {
+      ...base,
+      basePrice: currentPrice,
+      trend,
+      gainPct,
+    };
+  }, [selectedCrop, livePrices, guidance]);
 
   // Fetch forecast from backend, falling back gracefully
   const loadForecast = async (crop: Commodity, silent = false) => {
@@ -663,6 +672,7 @@ export default function MarketPredictorPage() {
     setSyncing(true);
     try {
       await api.syncMandi(selectedCrop).catch(() => {});
+      await fetchLivePrices();
       await loadForecast(selectedCrop);
       setSyncSuccessMsg(
         lang === "hi"
@@ -836,25 +846,30 @@ export default function MarketPredictorPage() {
 
     return LUCKNOW_5_MANDIS.map((mandi) => {
       // Try to match backend mandi_comparison data for this mandi
-      const backendMatch = backendMandis.find((bm) =>
+      const backendMatch = backendMandis.find((bm: any) =>
         bm.market_name?.toLowerCase().includes(mandi.id === "bkt" ? "bakshi" : mandi.id === "sitapur_rd" ? "sitapur" : mandi.id === "mohanlalganj" ? "mohanla" : mandi.id)
       );
 
-      // Wholesale terminal quoted rate includes transport into urban yard and aadhatia overhead:
-      // Dubagga: +4%, Sitapur Rd: +3%, Malihabad: +2%, Mohanlalganj: +2%, BKT: +0%
+      // Use real backend price if available; otherwise estimate from live benchmark
       let mandiQuoted = todayBase;
+      let isRealPrice = false;
+      let priceSource = "Estimated from live benchmark";
+
       if (backendMatch?.price_per_kg) {
         mandiQuoted = backendMatch.price_per_kg;
+        isRealPrice = backendMatch.is_real_price ?? false;
+        priceSource = backendMatch.price_source ?? (isRealPrice ? "Agmarknet Live" : "Estimated from live benchmark");
       } else {
-        if (mandi.id === "dubagga") mandiQuoted = Math.round(todayBase * 1.04 * 10) / 10;
-        else if (mandi.id === "sitapur_rd") mandiQuoted = Math.round(todayBase * 1.03 * 10) / 10;
-        else if (mandi.id === "malihabad") mandiQuoted = Math.round(todayBase * 1.02 * 10) / 10;
-        else if (mandi.id === "mohanlalganj") mandiQuoted = Math.round(todayBase * 1.02 * 10) / 10;
-        else if (mandi.id === "bkt") mandiQuoted = Math.round(todayBase * 1.00 * 10) / 10;
+        // Frontend estimation fallback — apply mandi-specific spread from live base
+        const spreads: Record<string, number> = { dubagga: 1.00, sitapur_rd: 0.97, malihabad: 0.94, mohanlalganj: 0.93, bkt: 0.91 };
+        const spread = spreads[mandi.id] ?? 1.0;
+        mandiQuoted = Math.round(todayBase * spread * 10) / 10;
+        isRealPrice = false;
+        priceSource = "Estimated — no live data for this mandi";
       }
 
       // Use backend status text if available
-      const statusText = backendMatch?.status || "Active Trading (2.5% Cess + 6% Aadhat)";
+      const statusText = backendMatch?.status || `Est. (${mandi.cessPct}% Cess + ${mandi.aadhatPct}% Aadhat)`;
 
       // Farmer deductions (Cess + Adhatiya + Handling + Transit to Mandi)
       const farmerDeductionsPerKg = Math.round((mandiQuoted * ((mandi.cessPct + mandi.aadhatPct) / 100) + mandi.handlingFeeKg + (mandi.distanceKm * 0.05)) * 10) / 10;
@@ -870,9 +885,12 @@ export default function MarketPredictorPage() {
         farmerNetRealization,
         buyerLandedCost,
         statusText,
+        isRealPrice,
+        priceSource,
       };
     });
   }, [guidance, activeCropMeta]);
+
 
   const farmlinkDirectStats = useMemo(() => {
     const todayBase = guidance?.today?.base || activeCropMeta.basePrice;
@@ -891,57 +909,57 @@ export default function MarketPredictorPage() {
   }, [guidance, activeCropMeta]);
 
   return (
-    <div className="min-h-screen bg-[#FAFAF9] text-slate-800 flex flex-col selection:bg-emerald-100 selection:text-emerald-900">
+    <div className="min-h-screen bg-[#F7F5EF] text-[#17201D] flex flex-col selection:bg-[#DCE8DD] selection:text-[#173D32]">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 w-full space-y-6">
-        {/* Top Header Banner with Live Agmarknet Beacon */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 pb-5">
+      <main className="flex-1 max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 w-full space-y-6">
+        {/* Top Editorial Header Banner with Live Agmarknet Beacon */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#E8E8E3] pb-6">
           <div>
-            <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1">
-              <span className={`flex h-2.5 w-2.5 rounded-full ${isLiveApi ? "bg-emerald-500" : "bg-amber-500"} animate-pulse`} />
+            <div className="flex items-center gap-2 text-xs font-semibold text-[#173D32] uppercase tracking-wider mb-2">
+              <span className={`flex h-2 w-2 rounded-full ${isLiveApi ? "bg-emerald-600" : "bg-[#C99B43]"} animate-pulse`} />
               <span>
                 {lang === "hi"
                   ? `${isLiveApi ? "लाइव" : "ऑफलाइन"} डेटा • लखनऊ की 5 प्रमुख मंडियां (अपडेट: ${lastSyncTime})`
                   : `${isLiveApi ? "LIVE" : "Cached"} Data • All 5 Lucknow Mandis (${lastSyncTime})`}
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900">
+            <h1 className="font-serif text-3xl sm:text-4xl text-[#17201D] font-normal tracking-tight">
               {lang === "hi" ? "बाज़ार मूल्य पूर्वानुमान व निर्णय इंजन" : "Market Price Predictor & Action Engine"}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl">
+            <p className="text-xs sm:text-sm text-[#5C584E] mt-1 max-w-2xl font-sans">
               {userPerspective === "seller"
                 ? (lang === "hi"
-                    ? "किसान डोमेन: Holt-Winters मॉडल से अधिकतम शुद्ध मुनाफा, फसल बेचने का सही समय, और 8.5% मंडी कटौती से बचाव।"
-                    : "Farmer Domain: Holt-Winters time-series forecasts for optimal harvest timing and middleman-cut elimination.")
+                    ? "किसान डोमेन: 4-मॉडल ML एन्सेम्बल (HW+ARIMA+EWMA+Ridge) से अधिकतम शुद्ध मुनाफा, फसल बेचने का सही समय, और 8.5% मंडी कटौती से बचाव।"
+                    : "Farmer Domain: 4-model ML ensemble (HW+ARIMA+EWMA+Ridge) forecasts for optimal harvest timing and middleman-cut elimination.")
                 : (lang === "hi"
-                    ? "खरीदार डोमेन: Holt-Winters मॉडल से न्यूनतम लागत पर थोक खरीद, आवक पूर्वानुमान और ऑर्डर लॉकिंग।"
-                    : "Buyer Domain: Holt-Winters forecasts for supply arrival surges, procurement dips, and landed cost optimization.")}
+                    ? "खरीदार डोमेन: 4-मॉडल ML एन्सेम्बल से न्यूनतम लागत पर थोक खरीद, आवक पूर्वानुमान और ऑर्डर लॉकिंग।"
+                    : "Buyer Domain: 4-model ML ensemble forecasts for supply arrival surges, procurement dips, and landed cost optimization.")}
             </p>
-            <div className="flex items-center gap-2 mt-2 flex-wrap">
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${isLiveApi ? "bg-emerald-50 text-emerald-800 border-emerald-200" : "bg-amber-50 text-amber-800 border-amber-200"}`}>
-                {isLiveApi ? "🟢 Agmarknet Live API" : "📊 Ensemble v5.0"}
+            <div className="flex items-center gap-2 mt-2.5 flex-wrap">
+              <span className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-md border ${isLiveApi ? "bg-[#DCE8DD] text-[#173D32] border-[#173D32]/20" : "bg-[#C86B4A]/15 text-[#9C381B] border-[#C86B4A]/30"}`}>
+                {isLiveApi ? "🟢 LIVE — Agmarknet API (Real Prices)" : "⚠️ SIMULATED — Backend Offline"}
               </span>
               {guidance?.accuracy && (
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
+                <span className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-md border ${
                   (guidance.accuracy.overall_mape || 10) < 10
-                    ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-                    : "bg-amber-50 text-amber-800 border-amber-200"
+                    ? "bg-[#DCE8DD] text-[#173D32] border-[#173D32]/20"
+                    : "bg-[#C99B43]/15 text-[#8C651A] border-[#C99B43]/30"
                 }`}>
                   🎯 MAPE: {guidance.accuracy.overall_mape || "6.5"}% | Score: {guidance.accuracy.accuracy_score || 92}/100
                 </span>
               )}
               {/* Live countdown to next refresh */}
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded border transition-all duration-300 ${
+              <span className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-md border transition-all duration-300 ${
                 refreshCountdown <= 3
-                  ? "bg-blue-50 text-blue-800 border-blue-200 animate-pulse"
-                  : "bg-slate-50 text-slate-600 border-slate-200"
+                  ? "bg-[#BFD8E5]/40 text-[#1E4D63] border-[#BFD8E5] animate-pulse"
+                  : "bg-[#F0EDE4] text-[#5C584E] border-[#E8E8E3]"
               }`}>
                 🔄 {lang === "hi" ? `अगला अपडेट: ${refreshCountdown}s` : `Next refresh: ${refreshCountdown}s`}
               </span>
               {/* Price flash indicator */}
               {priceFlash && (
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded border bg-yellow-50 text-yellow-800 border-yellow-300 animate-bounce">
+                <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-md border bg-[#C99B43]/20 text-[#8C651A] border-[#C99B43] animate-bounce">
                   ⚡ {lang === "hi" ? "भाव अपडेट हुआ!" : "Price Updated!"}
                 </span>
               )}
@@ -951,14 +969,14 @@ export default function MarketPredictorPage() {
           {/* Perspective & Mandi Sync Button */}
           <div className="flex items-center gap-2">
             {/* Domain Switcher */}
-            <div className="flex items-center bg-white p-1 rounded-xl border border-slate-200 shadow-xs">
+            <div className="flex items-center bg-[#F0EDE4] p-1 rounded-2xl border border-[#E8E8E3] shadow-xs">
               <button
                 type="button"
                 onClick={() => setUserPerspective("seller")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
                   userPerspective === "seller"
-                    ? "bg-emerald-600 text-white shadow-xs"
-                    : "text-slate-600 hover:text-slate-900"
+                    ? "bg-[#173D32] text-white shadow-xs"
+                    : "text-[#5C584E] hover:text-[#17201D]"
                 }`}
               >
                 <Sprout className="h-3.5 w-3.5" />
@@ -967,10 +985,10 @@ export default function MarketPredictorPage() {
               <button
                 type="button"
                 onClick={() => setUserPerspective("buyer")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
                   userPerspective === "buyer"
-                    ? "bg-[#064E3B] text-white shadow-xs"
-                    : "text-slate-600 hover:text-slate-900"
+                    ? "bg-[#173D32] text-white shadow-xs"
+                    : "text-[#5C584E] hover:text-[#17201D]"
                 }`}
               >
                 <ShoppingBag className="h-3.5 w-3.5" />
@@ -982,10 +1000,10 @@ export default function MarketPredictorPage() {
             <button
               onClick={handleSyncMandi}
               disabled={syncing}
-              className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-800 hover:bg-slate-50 transition shadow-xs disabled:opacity-50 cursor-pointer"
+              className="flex items-center gap-1.5 rounded-2xl border border-[#E8E8E3] bg-white px-3.5 py-2 text-xs font-semibold text-[#17201D] hover:bg-[#F7F5EF] transition shadow-xs disabled:opacity-50 cursor-pointer"
               title="Sync live rates from all 5 official Lucknow Mandis"
             >
-              <RotateCw className={`h-3.5 w-3.5 text-emerald-600 ${syncing ? "animate-spin" : ""}`} />
+              <RotateCw className={`h-3.5 w-3.5 text-[#173D32] ${syncing ? "animate-spin" : ""}`} />
               <span className="hidden sm:inline">{syncing ? "Syncing..." : "Sync 5 Mandis"}</span>
             </button>
           </div>
@@ -993,8 +1011,8 @@ export default function MarketPredictorPage() {
 
         {/* Sync Success Alert */}
         {syncSuccessMsg && (
-          <div className="rounded-xl bg-emerald-50 p-3.5 border border-emerald-200 text-xs font-bold text-emerald-900 flex items-center gap-2 animate-calm-reveal">
-            <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+          <div className="rounded-2xl bg-[#DCE8DD]/60 p-3.5 border border-[#173D32]/20 text-xs font-semibold text-[#173D32] flex items-center gap-2 animate-calm-reveal">
+            <CheckCircle2 className="h-4 w-4 text-[#173D32] shrink-0" />
             <span>{syncSuccessMsg}</span>
           </div>
         )}
@@ -1002,10 +1020,10 @@ export default function MarketPredictorPage() {
         {/* Crop Selector Ribbon */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#5C584E]">
               {lang === "hi" ? "फसल चुनें (Select Commodity)" : "Select Commodity"}
             </span>
-            <span className="text-[11px] text-slate-500 font-medium">
+            <span className="text-[11px] text-[#5C584E] font-medium">
               10 Lucknow Regional APMC Commodities
             </span>
           </div>
@@ -1014,30 +1032,28 @@ export default function MarketPredictorPage() {
             {CROPS.map((crop) => {
               const isSelected = selectedCrop === crop.id;
               const liveData = livePrices[crop.id];
-              const displayPrice = liveData && liveData.price > 0 ? liveData.price : crop.basePrice;
-              const isLive = liveData?.is_live || false;
+              const displayPrice = liveData && liveData.price > 0 ? liveData.price : (crop.id === selectedCrop && guidance?.today?.base ? guidance.today.base : crop.basePrice);
+              const isLive = liveData?.is_live || (crop.id === selectedCrop && isLiveApi) || false;
               return (
                 <button
                   key={crop.id}
                   onClick={() => setSelectedCrop(crop.id)}
-                  className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-bold border transition whitespace-nowrap cursor-pointer ${
+                  className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold border transition whitespace-nowrap cursor-pointer ${
                     isSelected
-                      ? userPerspective === "seller"
-                        ? "border-emerald-600 bg-emerald-50 text-emerald-900 shadow-xs ring-1 ring-emerald-600"
-                        : "border-[#064E3B] bg-emerald-950/10 text-[#064E3B] shadow-xs ring-1 ring-[#064E3B]"
-                      : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
+                      ? "border-[#173D32] bg-[#DCE8DD] text-[#173D32] shadow-xs"
+                      : "border-[#E8E8E3] bg-white text-[#5C584E] hover:border-[#173D32]/30 hover:text-[#17201D]"
                   }`}
                 >
                   <span className="text-base">{crop.icon}</span>
                   <span>{lang === "hi" ? crop.labelHi.split(" ")[0] : crop.labelEn.split(" ")[0]}</span>
-                  <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono flex items-center gap-1 ${
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono flex items-center gap-1 ${
                     crop.trend === "rising"
-                      ? "bg-emerald-100 text-emerald-800"
+                      ? "bg-[#DCE8DD] text-[#173D32]"
                       : crop.trend === "falling"
-                      ? "bg-rose-100 text-rose-800"
-                      : "bg-slate-100 text-slate-700"
+                      ? "bg-[#C86B4A]/15 text-[#9C381B]"
+                      : "bg-[#F0EDE4] text-[#5C584E]"
                   }`}>
-                    {isLive && <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />}
+                    {isLive && <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#173D32] animate-pulse" />}
                     ₹{displayPrice}/kg
                   </span>
                 </button>
@@ -1051,50 +1067,50 @@ export default function MarketPredictorPage() {
         {/* ───────────────────────────────────────────────────────────── */}
         {userPerspective === "seller" ? (
           /* FARMER HERO ADVISORY */
-          <div className="editorial-card p-5 sm:p-6 bg-white space-y-4 border-emerald-300 ring-1 ring-emerald-600/10">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3.5">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-800 font-bold text-2xl shadow-xs">
+          <div className="editorial-card p-5 sm:p-6 bg-white space-y-4 border border-[#E8E8E3] rounded-2xl shadow-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E8E8E3] pb-4">
+              <div className="flex items-center gap-3.5">
+                <div className="flex h-13 w-13 items-center justify-center rounded-2xl bg-[#DCE8DD] text-[#173D32] font-bold text-2xl shadow-xs">
                   {activeCropMeta.icon}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-[#5C584E]">
                       {lang === "hi" ? "किसान निर्णय इंजन (Farmer Advisory)" : "Farmer Optimal Selling Recommendation"}
                     </span>
-                    <span className="rounded-md bg-emerald-600 px-2 py-0.5 text-[10px] font-bold text-white uppercase">
+                    <span className="rounded-md bg-[#173D32] px-2 py-0.5 text-[10px] font-semibold text-white uppercase">
                       {activeCropMeta.trend === "rising" ? `HOLD FOR PEAK PRICE (Day ${activeCropMeta.sellerPeakDay})` : "HARVEST & SELL TODAY"}
                     </span>
                   </div>
-                  <h3 className="text-xl font-bold tracking-tight text-slate-900 mt-0.5">
+                  <h3 className="font-serif text-2xl text-[#17201D] font-normal mt-0.5">
                     {lang === "hi" ? activeCropMeta.labelHi : activeCropMeta.labelEn} • {activeCropMeta.primaryMandi}
                   </h3>
                 </div>
               </div>
 
               {/* Farmer Realization Stat */}
-              <div className="flex items-baseline gap-3 bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-xl sm:text-right">
+              <div className="flex items-baseline gap-3 bg-[#DCE8DD]/40 border border-[#173D32]/20 px-4 py-2.5 rounded-2xl sm:text-right">
                 <div>
-                  <p className="text-[10px] uppercase font-bold text-emerald-800">
+                  <p className="text-[10px] uppercase font-semibold text-[#173D32]">
                     {lang === "hi" ? "संभावित अतिरिक्त मुनाफा" : "Max Realization Gain"}
                   </p>
-                  <p className="text-xl font-black text-emerald-800">
-                    +{activeCropMeta.gainPct}% <span className="text-xs font-normal text-emerald-700">vs Today</span>
+                  <p className="text-xl font-serif text-[#173D32]">
+                    +{activeCropMeta.gainPct}% <span className="text-xs font-sans font-normal text-[#5C584E]">vs Today</span>
                   </p>
                 </div>
-                <TrendingUp className="h-5 w-5 text-emerald-600" />
+                <TrendingUp className="h-5 w-5 text-[#173D32]" />
               </div>
             </div>
 
             {/* Natural Advice Box */}
-            <div className="rounded-xl bg-slate-50 p-4 border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="rounded-2xl bg-[#F7F5EF] p-4 sm:p-5 border border-[#E8E8E3] flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="space-y-1 text-xs">
-                <p className="font-bold text-slate-900 text-sm">
+                <p className="font-semibold text-[#17201D] text-sm">
                   {lang === "hi"
                     ? `सलाह: ${activeCropMeta.labelHi.split(" ")[0]} को ${bestSellDay?.date} (${bestSellDay?.dayName}) तक रोकें। संभावित भाव ₹${bestSellDay?.price}/किलो तक पहुंचने का अनुमान है (+₹${(maxFarmerGainRupees).toLocaleString()} अतिरिक्त लाभ)।`
                     : `Recommendation: Hold harvest until ${bestSellDay?.date} (${bestSellDay?.dayName}). Expected modal rate ₹${bestSellDay?.price}/kg (+₹${(maxFarmerGainRupees).toLocaleString()} incremental profit).`}
                 </p>
-                <p className="text-slate-500 font-normal">
+                <p className="text-[#5C584E] font-normal">
                   {lang === "hi"
                     ? `भंडारण सुरक्षा: फार्म गेट पर शेल्फ लाइफ लगभग ${activeCropMeta.shelfLifeDays} दिन है। कोल्ड स्टोरेज में रखने पर नुकसान 80% कम हो जाता है।`
                     : `Shelf Life: ~${activeCropMeta.shelfLifeDays} days in ambient farm gate. Cold packhouse reduces decay loss by 80%.`}
@@ -1104,7 +1120,7 @@ export default function MarketPredictorPage() {
               {/* Direct Farmer CTA */}
               <Link
                 href="/farmer"
-                className="shrink-0 flex items-center gap-1.5 rounded-xl bg-emerald-600 px-5 py-3 text-xs font-bold text-white hover:bg-emerald-700 transition shadow-xs cursor-pointer"
+                className="shrink-0 flex items-center gap-1.5 rounded-xl bg-[#173D32] px-5 py-3 text-xs font-semibold text-white hover:bg-[#122e26] transition shadow-xs cursor-pointer"
               >
                 <span>{lang === "hi" ? "🌾 बोलकर उपज लिस्ट करें" : "🌾 List Produce Lot"}</span>
                 <ArrowRight className="h-4 w-4" />
@@ -1113,50 +1129,50 @@ export default function MarketPredictorPage() {
           </div>
         ) : (
           /* BUYER HERO ADVISORY */
-          <div className="editorial-card p-5 sm:p-6 bg-white space-y-4 border-slate-300 ring-1 ring-slate-400/10">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3.5">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-800 font-bold text-2xl shadow-xs">
+          <div className="editorial-card p-5 sm:p-6 bg-white space-y-4 border border-[#E8E8E3] rounded-2xl shadow-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E8E8E3] pb-4">
+              <div className="flex items-center gap-3.5">
+                <div className="flex h-13 w-13 items-center justify-center rounded-2xl bg-[#BFD8E5]/40 text-[#1E4D63] font-bold text-2xl shadow-xs">
                   {activeCropMeta.icon}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-[#5C584E]">
                       {lang === "hi" ? "थोक खरीदार निर्णय इंजन (Buyer Sourcing Advisory)" : "Buyer Sourcing Intelligence"}
                     </span>
-                    <span className="rounded-md bg-[#064E3B] px-2 py-0.5 text-[10px] font-bold text-white uppercase">
+                    <span className="rounded-md bg-[#173D32] px-2 py-0.5 text-[10px] font-semibold text-white uppercase">
                       {bestBuyDay?.dayIndex === 0 ? "PROCURE TODAY (Cost Minimizer)" : `WAIT FOR INFLUX DIP (Day ${bestBuyDay?.dayIndex})`}
                     </span>
                   </div>
-                  <h3 className="text-xl font-bold tracking-tight text-slate-900 mt-0.5">
+                  <h3 className="font-serif text-2xl text-[#17201D] font-normal mt-0.5">
                     {lang === "hi" ? activeCropMeta.labelHi : activeCropMeta.labelEn} • Bulk Sourcing
                   </h3>
                 </div>
               </div>
 
               {/* Buyer Sourcing Savings Stat */}
-              <div className="flex items-baseline gap-3 bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-xl sm:text-right">
+              <div className="flex items-baseline gap-3 bg-[#DCE8DD]/40 border border-[#173D32]/20 px-4 py-2.5 rounded-2xl sm:text-right">
                 <div>
-                  <p className="text-[10px] uppercase font-bold text-emerald-800">
+                  <p className="text-[10px] uppercase font-semibold text-[#173D32]">
                     {lang === "hi" ? "थोक खरीद पर अनुमानित बचत" : "Procurement Cost Savings"}
                   </p>
-                  <p className="text-xl font-black text-emerald-800">
-                    -{bestBuyDay?.savingsPct}% <span className="text-xs font-normal text-emerald-700">vs APMC Retail</span>
+                  <p className="text-xl font-serif text-[#173D32]">
+                    -{bestBuyDay?.savingsPct}% <span className="text-xs font-sans font-normal text-[#5C584E]">vs APMC Retail</span>
                   </p>
                 </div>
-                <TrendingDown className="h-5 w-5 text-emerald-600" />
+                <TrendingDown className="h-5 w-5 text-[#173D32]" />
               </div>
             </div>
 
             {/* Buyer Advice Box */}
-            <div className="rounded-xl bg-slate-50 p-4 border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="rounded-2xl bg-[#F7F5EF] p-4 sm:p-5 border border-[#E8E8E3] flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="space-y-1 text-xs">
-                <p className="font-bold text-slate-900 text-sm">
+                <p className="font-semibold text-[#17201D] text-sm">
                   {lang === "hi"
                     ? `सलाह: ${bestBuyDay?.date} (${bestBuyDay?.dayName}) को थोक आवक अधिक होने से भाव ₹${bestBuyDay?.directLandedPrice}/किलो के निचले स्तर पर रहेगा। फार्म गेट से सीधा ऑर्डर लॉक करके ₹${(maxBuyerSavingsRupees).toLocaleString()} की बचत करें।`
                     : `Recommendation: Procure on ${bestBuyDay?.date} (${bestBuyDay?.dayName}) during peak mandi arrival. Direct landed cost ₹${bestBuyDay?.directLandedPrice}/kg saves ₹${(maxBuyerSavingsRupees).toLocaleString()} vs traditional mandi traders.`}
                 </p>
-                <p className="text-slate-500 font-normal">
+                <p className="text-[#5C584E] font-normal">
                   {lang === "hi"
                     ? "गुणवत्ता गारंटी: फार्म गेट से सीधे 12 घंटे के भीतर लखनऊ में डिलीवरी, शून्य बिचौलिया मार्जिन।"
                     : "Freshness SLA: Farm gate direct harvest dispatched within 12 hours across Lucknow with zero distributor markups."}
@@ -1166,7 +1182,7 @@ export default function MarketPredictorPage() {
               {/* Direct Buyer CTA */}
               <Link
                 href="/buyer"
-                className="shrink-0 flex items-center gap-1.5 rounded-xl bg-[#064E3B] px-5 py-3 text-xs font-bold text-white hover:bg-emerald-900 transition shadow-xs cursor-pointer"
+                className="shrink-0 flex items-center gap-1.5 rounded-xl bg-[#173D32] px-5 py-3 text-xs font-semibold text-white hover:bg-[#122e26] transition shadow-xs cursor-pointer"
               >
                 <span>{lang === "hi" ? "🛒 थोक आर्डर लॉक करें" : "🛒 Lock Forward Order"}</span>
                 <ArrowRight className="h-4 w-4" />
@@ -1181,17 +1197,17 @@ export default function MarketPredictorPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left: 7-Day / 14-Day Price & Volatility Chart */}
           <div className="lg:col-span-7 space-y-4">
-            <div className="editorial-card p-5 sm:p-6 bg-white space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+            <div className="editorial-card p-5 sm:p-6 bg-white space-y-4 border border-[#E8E8E3] rounded-2xl shadow-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E8E8E3] pb-3.5">
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="text-lg font-bold tracking-tight text-slate-900">
+                    <h3 className="font-serif text-2xl text-[#17201D] font-normal">
                       {userPerspective === "seller"
                         ? (lang === "hi" ? "किसान मूल्य प्रक्षेपवक्र (7-Day Price Trajectory)" : "Wholesale Price Trajectory & Confidence Band")
                         : (lang === "hi" ? "खरीदार लागत प्रक्षेपवक्र (Landed Sourcing Curve)" : "Landed Procurement Cost Curve vs APMC Retail")}
                     </h3>
                   </div>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-xs text-[#5C584E] mt-0.5 font-sans">
                     {lang === "hi"
                       ? "लखनऊ की 5 प्रमुख मंडियों के आधार पर 95% सांख्यिकीय विश्वास अंतराल (Confidence Interval)"
                       : "Agmarknet Lucknow 5-Mandi benchmark with 95% statistical confidence interval"}
@@ -1199,19 +1215,19 @@ export default function MarketPredictorPage() {
                 </div>
 
                 {/* Horizon Switcher */}
-                <div className="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200 self-start sm:self-auto">
+                <div className="flex items-center bg-[#F0EDE4] p-1 rounded-xl border border-[#E8E8E3] self-start sm:self-auto shadow-xs">
                   <button
                     onClick={() => setHorizon("7day")}
-                    className={`px-2.5 py-1 text-xs font-bold rounded-md transition cursor-pointer ${
-                      horizon === "7day" ? "bg-white text-slate-900 shadow-xs" : "text-slate-600 hover:text-slate-900"
+                    className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition cursor-pointer ${
+                      horizon === "7day" ? "bg-[#173D32] text-white shadow-xs" : "text-[#5C584E] hover:text-[#17201D]"
                     }`}
                   >
                     7-Day Tactical
                   </button>
                   <button
                     onClick={() => setHorizon("14day")}
-                    className={`px-2.5 py-1 text-xs font-bold rounded-md transition cursor-pointer ${
-                      horizon === "14day" ? "bg-white text-slate-900 shadow-xs" : "text-slate-600 hover:text-slate-900"
+                    className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition cursor-pointer ${
+                      horizon === "14day" ? "bg-[#173D32] text-white shadow-xs" : "text-[#5C584E] hover:text-[#17201D]"
                     }`}
                   >
                     14-Day Extended
@@ -1221,68 +1237,60 @@ export default function MarketPredictorPage() {
 
               {/* Data Science KPI Strip */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
-                <div className="rounded-lg bg-slate-50 p-3 border border-slate-200">
-                  <span className="text-[10px] uppercase font-bold text-slate-500 block">
+                <div className="rounded-2xl bg-[#F7F5EF] p-3.5 border border-[#E8E8E3]">
+                  <span className="text-[10px] uppercase font-semibold text-[#5C584E] block">
                     {userPerspective === "seller" ? "Today's Farm Gate" : "Today's Landed Cost"}
                   </span>
-                  <p className="text-lg sm:text-xl font-bold text-slate-900 mt-0.5 font-mono">
+                  <p className="text-lg sm:text-xl font-serif text-[#17201D] mt-0.5">
                     ₹{userPerspective === "seller" ? guidance?.today?.base : (Math.round((guidance?.today?.base || activeCropMeta.basePrice) * 1.05 * 10) / 10)}
-                    <span className="text-xs font-normal text-slate-500">/kg</span>
+                    <span className="text-xs font-sans font-normal text-[#5C584E]">/kg</span>
                   </p>
-                  <span className="text-[10px] text-slate-500">Baseline Modal</span>
+                  <span className="text-[10px] text-[#5C584E]">Baseline Modal</span>
                 </div>
 
-                <div className={`rounded-lg p-3 border ${userPerspective === "seller" ? "bg-emerald-50 border-emerald-200" : "bg-blue-50 border-blue-200"}`}>
-                  <span className={`text-[10px] uppercase font-bold block ${userPerspective === "seller" ? "text-emerald-800" : "text-blue-800"}`}>
+                <div className="rounded-2xl p-3.5 border bg-[#DCE8DD]/40 border-[#173D32]/20">
+                  <span className="text-[10px] uppercase font-semibold block text-[#173D32]">
                     {userPerspective === "seller" ? "Peak Harvest Target" : "Lowest Sourcing Dip"}
                   </span>
-                  <p className={`text-lg sm:text-xl font-bold mt-0.5 font-mono ${userPerspective === "seller" ? "text-emerald-800" : "text-blue-800"}`}>
+                  <p className="text-lg sm:text-xl font-serif mt-0.5 text-[#173D32]">
                     ₹{userPerspective === "seller" ? bestSellDay?.price : bestBuyDay?.directLandedPrice}
-                    <span className="text-xs font-normal">/kg</span>
+                    <span className="text-xs font-sans font-normal">/kg</span>
                   </p>
-                  <span className={`text-[10px] ${userPerspective === "seller" ? "text-emerald-700" : "text-blue-700"}`}>
+                  <span className="text-[10px] text-[#173D32]">
                     Day {userPerspective === "seller" ? bestSellDay?.dayIndex : bestBuyDay?.dayIndex} ({userPerspective === "seller" ? bestSellDay?.dayName : bestBuyDay?.dayName})
                   </span>
                 </div>
 
-                <div className="rounded-lg bg-slate-50 p-3 border border-slate-200">
-                  <span className="text-[10px] uppercase font-bold text-slate-500 block">
+                <div className="rounded-2xl bg-[#F7F5EF] p-3.5 border border-[#E8E8E3]">
+                  <span className="text-[10px] uppercase font-semibold text-[#5C584E] block">
                     7-Day Moving Avg (7-DMA)
                   </span>
-                  <p className="text-lg sm:text-xl font-bold text-slate-900 mt-0.5 font-mono">
-                    ₹{guidance?.avg_price}<span className="text-xs font-normal text-slate-500">/kg</span>
+                  <p className="text-lg sm:text-xl font-serif text-[#17201D] mt-0.5">
+                    ₹{guidance?.avg_price}<span className="text-xs font-sans font-normal text-[#5C584E]">/kg</span>
                   </p>
-                  <span className="text-[10px] text-slate-500">σ Volatility: ±{guidance?.volatility_pct || "5.0"}%</span>
+                  <span className="text-[10px] text-[#5C584E]">σ Volatility: ±{guidance?.volatility_pct || "5.0"}%</span>
                 </div>
 
                 {/* Model Accuracy KPI */}
-                <div className={`rounded-lg p-3 border ${
-                  (guidance?.accuracy?.overall_mape || 10) < 10
-                    ? "bg-emerald-50 border-emerald-200"
-                    : "bg-amber-50 border-amber-200"
-                }`}>
-                  <span className="text-[10px] uppercase font-bold text-slate-500 block">
+                <div className="rounded-2xl p-3.5 border bg-[#DCE8DD]/40 border-[#173D32]/20">
+                  <span className="text-[10px] uppercase font-semibold text-[#5C584E] block">
                     Model Accuracy Score
                   </span>
-                  <p className={`text-lg sm:text-xl font-bold mt-0.5 font-mono ${
-                    (guidance?.accuracy?.overall_mape || 10) < 10 ? "text-emerald-800" : "text-amber-800"
-                  }`}>
-                    {guidance?.accuracy?.accuracy_score || 92}<span className="text-xs font-normal">/100</span>
+                  <p className="text-lg sm:text-xl font-serif mt-0.5 text-[#173D32]">
+                    {guidance?.accuracy?.accuracy_score || 92}<span className="text-xs font-sans font-normal">/100</span>
                   </p>
-                  <span className={`text-[10px] ${
-                    (guidance?.accuracy?.overall_mape || 10) < 10 ? "text-emerald-700" : "text-amber-700"
-                  }`}>
+                  <span className="text-[10px] text-[#173D32]">
                     MAPE: {guidance?.accuracy?.overall_mape || "6.5"}% (Target: &lt;10%)
                   </span>
                 </div>
               </div>
 
               {/* Accuracy Breakdown + Weather Impact Row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {/* Accuracy Horizons */}
-                <div className="rounded-lg bg-slate-50 p-3 border border-slate-200">
-                  <span className="text-[10px] uppercase font-bold text-slate-500 block mb-1.5">Ensemble Accuracy by Horizon</span>
-                  <div className="space-y-1">
+                <div className="rounded-2xl bg-[#F7F5EF] p-3.5 border border-[#E8E8E3]">
+                  <span className="text-[10px] uppercase font-semibold text-[#5C584E] block mb-2">Ensemble Accuracy by Horizon</span>
+                  <div className="space-y-1.5">
                     {[
                       { label: "1-3 Day", key: "short_term" as const, icon: "🎯" },
                       { label: "4-7 Day", key: "medium_term" as const, icon: "📊" },
@@ -1293,15 +1301,15 @@ export default function MarketPredictorPage() {
                       const met = mape < 10;
                       return (
                         <div key={h.key} className="flex items-center justify-between text-[11px]">
-                          <span className="text-slate-600 font-medium">{h.icon} {h.label}</span>
+                          <span className="text-[#17201D] font-medium">{h.icon} {h.label}</span>
                           <div className="flex items-center gap-2">
-                            <div className="w-20 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                            <div className="w-20 h-1.5 bg-[#E8E8E3] rounded-full overflow-hidden">
                               <div
-                                className={`h-full rounded-full ${met ? "bg-emerald-500" : "bg-amber-500"}`}
+                                className={`h-full rounded-full ${met ? "bg-[#173D32]" : "bg-[#C99B43]"}`}
                                 style={{ width: `${Math.max(5, 100 - mape * 5)}%` }}
                               />
                             </div>
-                            <span className={`font-mono font-bold ${met ? "text-emerald-700" : "text-amber-700"}`}>
+                            <span className={`font-mono font-bold ${met ? "text-[#173D32]" : "text-[#C99B43]"}`}>
                               {mape}%
                             </span>
                             <span className="text-[9px]">{met ? "✅" : "⚠️"}</span>
@@ -1313,8 +1321,8 @@ export default function MarketPredictorPage() {
                 </div>
 
                 {/* Weather Impact Widget */}
-                <div className="rounded-lg bg-slate-50 p-3 border border-slate-200">
-                  <span className="text-[10px] uppercase font-bold text-slate-500 block mb-1.5">Lucknow Weather Impact</span>
+                <div className="rounded-2xl bg-[#F7F5EF] p-3.5 border border-[#E8E8E3]">
+                  <span className="text-[10px] uppercase font-semibold text-[#5C584E] block mb-2">Lucknow Weather Impact</span>
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">
                       {(() => {
@@ -1326,25 +1334,25 @@ export default function MarketPredictorPage() {
                       })()}
                     </span>
                     <div className="flex-1">
-                      <p className="text-xs font-bold text-slate-900">
+                      <p className="text-xs font-semibold text-[#17201D]">
                         {guidance?.weather?.condition || "Clear"} — {guidance?.weather?.temperature_c || 30}°C
                       </p>
-                      <p className="text-[10px] text-slate-500">
+                      <p className="text-[10px] text-[#5C584E]">
                         Humidity: {guidance?.weather?.humidity_pct || 50}% | Rain: {guidance?.weather?.rainfall_mm || 0}mm | Wind: {guidance?.weather?.wind_speed_kmh || 8} km/h
                       </p>
                     </div>
                     {/* Weather price factor */}
                     {guidance?.market_drivers?.weather_price_factor && guidance.market_drivers.weather_price_factor > 1.01 && (
-                      <span className="rounded bg-amber-100 text-amber-800 text-[10px] font-bold px-1.5 py-0.5 border border-amber-200">
+                      <span className="rounded bg-[#C99B43]/15 text-[#8C651A] text-[10px] font-semibold px-2 py-0.5 border border-[#C99B43]/30">
                         +{Math.round((guidance.market_drivers.weather_price_factor - 1) * 100)}% Weather Impact
                       </span>
                     )}
                   </div>
                   {/* Festival Alert */}
                   {guidance?.market_drivers?.festival && (
-                    <div className="mt-2 rounded bg-amber-50 border border-amber-200 p-2 flex items-center gap-2 text-[11px]">
+                    <div className="mt-2 rounded-xl bg-[#C99B43]/10 border border-[#C99B43]/30 p-2 flex items-center gap-2 text-[11px]">
                       <span>🎉</span>
-                      <span className="font-bold text-amber-900">
+                      <span className="font-semibold text-[#8C651A]">
                         {guidance.market_drivers.festival.name} — Demand boost {guidance.market_drivers.festival.demand_boost}
                       </span>
                     </div>
@@ -1358,46 +1366,46 @@ export default function MarketPredictorPage() {
                   <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                     <defs>
                       <linearGradient id="chartGradForecast" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor={userPerspective === "seller" ? "#10B981" : "#064E3B"} stopOpacity={0.30} />
-                        <stop offset="95%" stopColor={userPerspective === "seller" ? "#10B981" : "#064E3B"} stopOpacity={0.0} />
+                        <stop offset="5%" stopColor="#173D32" stopOpacity={0.25} />
+                        <stop offset="95%" stopColor="#173D32" stopOpacity={0.0} />
                       </linearGradient>
                       <linearGradient id="chartGradCI" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#10B981" stopOpacity={0.12} />
-                        <stop offset="95%" stopColor="#10B981" stopOpacity={0.04} />
+                        <stop offset="5%" stopColor="#DCE8DD" stopOpacity={0.5} />
+                        <stop offset="95%" stopColor="#DCE8DD" stopOpacity={0.1} />
                       </linearGradient>
                       <linearGradient id="chartGradHist" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#64748B" stopOpacity={0.15} />
-                        <stop offset="95%" stopColor="#64748B" stopOpacity={0.0} />
+                        <stop offset="5%" stopColor="#5C584E" stopOpacity={0.15} />
+                        <stop offset="95%" stopColor="#5C584E" stopOpacity={0.0} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
-                    <XAxis dataKey="shortDate" stroke="#94A3B8" fontSize={10} tickLine={false} axisLine={false} interval={chartData.length > 14 ? 2 : 0} />
-                    <YAxis stroke="#94A3B8" fontSize={11} tickLine={false} axisLine={false} domain={["dataMin - 3", "dataMax + 3"]} tickFormatter={(v) => `₹${v}`} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#E8E8E3" vertical={false} />
+                    <XAxis dataKey="shortDate" stroke="#5C584E" fontSize={10} tickLine={false} axisLine={false} interval={chartData.length > 14 ? 2 : 0} />
+                    <YAxis stroke="#5C584E" fontSize={11} tickLine={false} axisLine={false} domain={["dataMin - 3", "dataMax + 3"]} tickFormatter={(v) => `₹${v}`} />
                     <Tooltip
                       content={({ active, payload }) => {
                         if (active && payload && payload.length) {
                           const d = payload[0].payload;
                           return (
-                            <div className="rounded-xl border border-slate-200 bg-white p-3 text-xs shadow-lg space-y-1">
-                              <p className="font-bold text-slate-900">{d.date}</p>
+                            <div className="rounded-2xl border border-[#E8E8E3] bg-white p-3.5 text-xs shadow-md space-y-1">
+                              <p className="font-semibold text-[#17201D]">{d.date}</p>
                               {d.isHistorical ? (
                                 <>
-                                  <p className="text-slate-700 font-bold text-sm">Actual Price: ₹{d.farmerPrice}/kg</p>
-                                  <p className="text-slate-500 text-[11px]">Range: ₹{d.low} – ₹{d.high}</p>
-                                  <p className="text-[10px] text-blue-600 font-medium">📜 Historical (Agmarknet)</p>
+                                  <p className="text-[#17201D] font-semibold text-sm">Actual Price: ₹{d.farmerPrice}/kg</p>
+                                  <p className="text-[#5C584E] text-[11px]">Range: ₹{d.low} – ₹{d.high}</p>
+                                  <p className="text-[10px] text-[#173D32] font-medium">📜 Historical (Agmarknet)</p>
                                 </>
                               ) : (
                                 <>
-                                  <p className="text-emerald-700 font-bold text-sm">
+                                  <p className="text-[#173D32] font-semibold text-sm">
                                     {userPerspective === "seller" ? `Forecast: ₹${d.farmerPrice}/kg` : `Landed Cost: ₹${d.buyerLanded}/kg`}
                                   </p>
-                                  <p className="text-slate-500 text-[11px]">
+                                  <p className="text-[#5C584E] text-[11px]">
                                     {userPerspective === "seller" ? `Net In-Pocket: ₹${d.farmerNet}/kg` : `APMC Traditional: ₹${d.apmcRetail}/kg`}
                                   </p>
-                                  <p className="text-[10px] text-slate-400 font-mono">
+                                  <p className="text-[10px] text-[#5C584E] font-mono">
                                     95% CI: ₹{d.low} – ₹{d.high}
                                   </p>
-                                  <p className={`text-[10px] font-medium ${d.confidence === "high" ? "text-emerald-600" : d.confidence === "medium" ? "text-amber-600" : "text-rose-600"}`}>
+                                  <p className={`text-[10px] font-medium ${d.confidence === "high" ? "text-[#173D32]" : d.confidence === "medium" ? "text-[#C99B43]" : "text-[#C86B4A]"}`}>
                                     Confidence: {d.confidence?.toUpperCase()}
                                   </p>
                                 </>
@@ -1410,37 +1418,37 @@ export default function MarketPredictorPage() {
                     />
                     {/* 95% Confidence Band (low to high) — only on forecast region */}
                     <Area type="monotone" dataKey="high" stroke="none" fill="url(#chartGradCI)" fillOpacity={1} />
-                    <Area type="monotone" dataKey="low" stroke="none" fill="#FAFAF9" fillOpacity={1} />
-                    {/* Historical actual price line — solid slate */}
+                    <Area type="monotone" dataKey="low" stroke="none" fill="#F7F5EF" fillOpacity={1} />
+                    {/* Historical actual price line */}
                     <Area
                       type="monotone"
                       dataKey="historicalPrice"
-                      stroke="#64748B"
-                      strokeWidth={2.5}
+                      stroke="#5C584E"
+                      strokeWidth={2}
                       strokeDasharray=""
                       fill="url(#chartGradHist)"
-                      dot={{ r: 3, fill: "#64748B", stroke: "#fff", strokeWidth: 1.5 }}
+                      dot={{ r: 3, fill: "#5C584E", stroke: "#fff", strokeWidth: 1.5 }}
                       connectNulls={false}
                     />
-                    {/* Forecast price line — solid emerald with gradient fill */}
+                    {/* Forecast price line */}
                     <Area
                       type="monotone"
                       dataKey="forecastPrice"
-                      stroke={userPerspective === "seller" ? "#059669" : "#064E3B"}
-                      strokeWidth={3}
-                      strokeDasharray="8 4"
+                      stroke="#173D32"
+                      strokeWidth={2.5}
+                      strokeDasharray="6 4"
                       fill="url(#chartGradForecast)"
-                      activeDot={{ r: 6, fill: userPerspective === "seller" ? "#059669" : "#064E3B", stroke: "#FFFFFF", strokeWidth: 2 }}
+                      activeDot={{ r: 5, fill: "#173D32", stroke: "#FFFFFF", strokeWidth: 2 }}
                       connectNulls={false}
                     />
                     {/* Today's reference line */}
                     {guidance?.today?.base && (
                       <ReferenceLine
                         y={guidance.today.base}
-                        stroke="#D97706"
+                        stroke="#C99B43"
                         strokeDasharray="4 4"
                         strokeWidth={1}
-                        label={{ value: `Today ₹${guidance.today.base}`, fill: "#D97706", fontSize: 10, position: "right" }}
+                        label={{ value: `Today ₹${guidance.today.base}`, fill: "#C99B43", fontSize: 10, position: "right" }}
                       />
                     )}
                   </AreaChart>
@@ -1448,47 +1456,47 @@ export default function MarketPredictorPage() {
               </div>
 
               {/* Chart Legend */}
-              <div className="flex flex-wrap items-center gap-4 text-[10px] sm:text-[11px] text-slate-500 border-t border-slate-100 pt-2.5">
+              <div className="flex flex-wrap items-center gap-4 text-[10px] sm:text-[11px] text-[#5C584E] border-t border-[#E8E8E3] pt-3">
                 <span className="flex items-center gap-1.5">
-                  <span className="w-5 h-0.5 bg-slate-500 inline-block" /> Historical (Actual)
+                  <span className="w-5 h-0.5 bg-[#5C584E] inline-block" /> Historical (Actual)
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="w-5 h-0.5 bg-emerald-600 inline-block" style={{ borderTop: "2px dashed #059669" }} /> Forecast (Holt-Winters)
+                  <span className="w-5 h-0.5 bg-[#173D32] inline-block" style={{ borderTop: "2px dashed #173D32" }} /> Forecast (Ensemble v6)
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="w-4 h-3 bg-emerald-100 inline-block rounded-sm opacity-60" /> 95% CI Band
+                  <span className="w-4 h-3 bg-[#DCE8DD] inline-block rounded-sm opacity-80" /> 95% CI Band
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="w-5 h-0 inline-block" style={{ borderTop: "1.5px dashed #D97706" }} /> Today&apos;s Price
+                  <span className="w-5 h-0 inline-block" style={{ borderTop: "1.5px dashed #C99B43" }} /> Today&apos;s Price
                 </span>
               </div>
 
-              <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
+              <div className="flex items-center justify-between text-[11px] text-[#5C584E] pt-1">
                 <span className="flex items-center gap-1">
-                  <Activity className="h-3 w-3 text-emerald-600" />
-                  <span>Ensemble v5.0: HW (40%) + ARIMA (35%) + EWMA (25%) | MAPE Target: &lt;10%</span>
+                  <Activity className="h-3 w-3 text-[#173D32]" />
+                  <span>Ensemble v6.0: HW (30%) + ARIMA (25%) + EWMA (15%) + Ridge ML (30%) | MAPE Target: &lt;10%</span>
                 </span>
-                <span className="text-slate-400 text-[10px]">{dataSource}</span>
+                <span className="text-[#5C584E] text-[10px]">{dataSource}</span>
               </div>
             </div>
           </div>
 
           {/* Right: Domain-Specific Interactive Simulator */}
           <div className="lg:col-span-5 space-y-4">
-            <div className="editorial-card p-5 sm:p-6 bg-white space-y-4">
+            <div className="editorial-card p-5 sm:p-6 bg-white space-y-4 border border-[#E8E8E3] rounded-2xl shadow-xs">
               <div>
-                <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 uppercase tracking-wider">
-                  <Sliders className="h-4 w-4 text-emerald-600" />
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-[#173D32] uppercase tracking-wider">
+                  <Sliders className="h-4 w-4 text-[#173D32]" />
                   <span>
                     {userPerspective === "seller"
                       ? (lang === "hi" ? "किसान राजस्व एवं शेल्फ लाइफ सिम्युलेटर" : "Farmer Realization Simulator")
                       : (lang === "hi" ? "खरीदार बजट एवं बचत सिम्युलेटर" : "Buyer Procurement Budget Simulator")}
                   </span>
                 </div>
-                <h3 className="text-lg font-bold tracking-tight text-slate-900 mt-0.5">
+                <h3 className="font-serif text-2xl text-[#17201D] font-normal mt-0.5">
                   {userPerspective === "seller" ? "Harvest Economics" : "Procurement Economics"}
                 </h3>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-[#5C584E] mt-0.5 font-sans">
                   {userPerspective === "seller"
                     ? "Simulate net in-hand cash accounting for biological shelf degradation."
                     : "Simulate landed cost savings versus local APMC wholesale distributors."}
@@ -1498,10 +1506,10 @@ export default function MarketPredictorPage() {
               {/* Quantity Slider */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-slate-800">
+                  <label className="text-xs font-semibold text-[#17201D]">
                     {userPerspective === "seller" ? "Produce Batch Quantity (kg)" : "Required Procurement Order (kg)"}
                   </label>
-                  <span className="font-mono text-sm font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  <span className="font-mono text-sm font-bold text-[#173D32] bg-[#DCE8DD] px-2.5 py-0.5 rounded-lg border border-[#173D32]/20">
                     {batchQty.toLocaleString()} kg ({(batchQty / 100).toFixed(1)} Quintals)
                   </span>
                 </div>
@@ -1513,7 +1521,7 @@ export default function MarketPredictorPage() {
                   step={100}
                   value={batchQty}
                   onChange={(e) => setBatchQty(Number(e.target.value))}
-                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
+                  className="w-full h-2 bg-[#E8E8E3] rounded-lg appearance-none cursor-pointer accent-[#173D32]"
                 />
 
                 {/* Presets */}
@@ -1523,10 +1531,10 @@ export default function MarketPredictorPage() {
                       key={qty}
                       type="button"
                       onClick={() => setBatchQty(qty)}
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded border transition cursor-pointer ${
+                      className={`text-[10px] font-semibold px-2.5 py-1 rounded-lg border transition cursor-pointer ${
                         batchQty === qty
-                          ? "border-emerald-600 bg-emerald-50 text-emerald-800"
-                          : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                          ? "border-[#173D32] bg-[#DCE8DD] text-[#173D32]"
+                          : "border-[#E8E8E3] bg-white text-[#5C584E] hover:bg-[#F7F5EF]"
                       }`}
                     >
                       {qty >= 1000 ? `${qty / 1000}T` : `${qty}kg`}
@@ -1538,24 +1546,24 @@ export default function MarketPredictorPage() {
               {/* Farmer Storage / Buyer Fulfillment Condition */}
               {userPerspective === "seller" ? (
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-800">
+                  <label className="text-xs font-semibold text-[#17201D]">
                     Storage Condition
                   </label>
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       type="button"
                       onClick={() => setStorageType("ambient")}
-                      className={`rounded-xl border p-2.5 text-xs text-left transition cursor-pointer ${
+                      className={`rounded-2xl border p-3 text-xs text-left transition cursor-pointer ${
                         storageType === "ambient"
-                          ? "border-emerald-600 bg-emerald-50 text-emerald-900 ring-1 ring-emerald-600"
-                          : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                          ? "border-[#173D32] bg-[#DCE8DD] text-[#173D32] shadow-xs"
+                          : "border-[#E8E8E3] bg-white text-[#5C584E] hover:border-[#173D32]/30"
                       }`}
                     >
-                      <div className="flex items-center justify-between font-bold">
+                      <div className="flex items-center justify-between font-semibold">
                         <span>Ambient Farm Gate</span>
-                        <Warehouse className="h-3.5 w-3.5 text-emerald-700" />
+                        <Warehouse className="h-3.5 w-3.5 text-[#173D32]" />
                       </div>
-                      <p className="text-[10px] text-slate-500 mt-0.5">
+                      <p className="text-[10px] text-[#5C584E] mt-0.5">
                         ~{(activeCropMeta.spoilageRateDaily * 100).toFixed(1)}%/day spoilage
                       </p>
                     </button>
@@ -1563,17 +1571,17 @@ export default function MarketPredictorPage() {
                     <button
                       type="button"
                       onClick={() => setStorageType("cold")}
-                      className={`rounded-xl border p-2.5 text-xs text-left transition cursor-pointer ${
+                      className={`rounded-2xl border p-3 text-xs text-left transition cursor-pointer ${
                         storageType === "cold"
-                          ? "border-emerald-600 bg-emerald-50 text-emerald-900 ring-1 ring-emerald-600"
-                          : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                          ? "border-[#173D32] bg-[#DCE8DD] text-[#173D32] shadow-xs"
+                          : "border-[#E8E8E3] bg-white text-[#5C584E] hover:border-[#173D32]/30"
                       }`}
                     >
-                      <div className="flex items-center justify-between font-bold">
+                      <div className="flex items-center justify-between font-semibold">
                         <span>Cold Packhouse</span>
-                        <CloudSun className="h-3.5 w-3.5 text-emerald-700" />
+                        <CloudSun className="h-3.5 w-3.5 text-[#173D32]" />
                       </div>
-                      <p className="text-[10px] text-slate-500 mt-0.5">
+                      <p className="text-[10px] text-[#5C584E] mt-0.5">
                         Malihabad Hub (-80% spoilage)
                       </p>
                     </button>
@@ -1581,15 +1589,15 @@ export default function MarketPredictorPage() {
                 </div>
               ) : (
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-800">
+                  <label className="text-xs font-semibold text-[#17201D]">
                     Fulfillment Mode
                   </label>
-                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs space-y-1">
-                    <p className="font-bold text-slate-900 flex items-center justify-between">
+                  <div className="rounded-2xl border border-[#E8E8E3] bg-[#F7F5EF] p-3.5 text-xs space-y-1">
+                    <p className="font-semibold text-[#17201D] flex items-center justify-between">
                       <span>FarmLink Direct Express Dispatch</span>
-                      <Truck className="h-4 w-4 text-emerald-600" />
+                      <Truck className="h-4 w-4 text-[#173D32]" />
                     </p>
-                    <p className="text-[11px] text-slate-600">
+                    <p className="text-[11px] text-[#5C584E]">
                       Dispatched from Lucknow farm gate directly to your receiving dock in &lt;12 hours. Escrow locked.
                     </p>
                   </div>
@@ -1598,77 +1606,77 @@ export default function MarketPredictorPage() {
 
               {/* Comparative Realization Card */}
               {userPerspective === "seller" ? (
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-3">
+                <div className="rounded-2xl border border-[#E8E8E3] bg-[#F7F5EF] p-4 sm:p-5 space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-700">If Sold Today</span>
-                    <span className="font-bold text-sm text-slate-900 font-mono">
+                    <span className="text-xs font-semibold text-[#5C584E]">If Sold Today</span>
+                    <span className="font-serif text-base text-[#17201D]">
                       {formatCurrency(todayFarmerRevenue)}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between border-t border-slate-200 pt-2 text-emerald-800">
+                  <div className="flex items-center justify-between border-t border-[#E8E8E3] pt-2 text-[#173D32]">
                     <div>
-                      <span className="text-xs font-bold block">
+                      <span className="text-xs font-semibold block">
                         Optimal Day ({bestSellDay?.dayName}) Realization
                       </span>
-                      <span className="text-[10px] text-slate-500">
+                      <span className="text-[10px] text-[#5C584E]">
                         Saleable: {bestSellDay?.saleableQty.toLocaleString()} kg (@ ₹{bestSellDay?.price}/kg)
                       </span>
                     </div>
-                    <span className="font-bold text-base text-emerald-800 font-mono">
+                    <span className="font-serif text-lg text-[#173D32]">
                       {formatCurrency(bestSellDay?.grossRevenue || todayFarmerRevenue)}
                     </span>
                   </div>
 
                   {/* Net Extra Profit Banner */}
-                  <div className="rounded-lg bg-emerald-600 p-3 text-white flex items-center justify-between">
+                  <div className="rounded-xl bg-[#173D32] p-3.5 text-white flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-200 block">
+                      <span className="text-[10px] uppercase font-semibold tracking-wider text-[#DCE8DD] block">
                         Incremental Profit by Timing
                       </span>
-                      <p className="text-lg font-black font-mono">
+                      <p className="text-lg font-serif">
                         +{formatCurrency(maxFarmerGainRupees)}
                       </p>
                     </div>
-                    <span className="rounded bg-emerald-800/80 px-2 py-1 text-xs font-bold font-mono">
+                    <span className="rounded-lg bg-white/15 px-2.5 py-1 text-xs font-semibold font-mono">
                       +{bestSellDay?.netGainPct || 0}%
                     </span>
                   </div>
                 </div>
               ) : (
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-3">
+                <div className="rounded-2xl border border-[#E8E8E3] bg-[#F7F5EF] p-4 sm:p-5 space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-700">APMC Wholesale Budget</span>
-                    <span className="font-bold text-sm text-slate-900 font-mono">
+                    <span className="text-xs font-semibold text-[#5C584E]">APMC Wholesale Budget</span>
+                    <span className="font-serif text-base text-[#17201D]">
                       {formatCurrency(Math.round(batchQty * (guidance?.today?.base || activeCropMeta.basePrice) * 1.18))}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between border-t border-slate-200 pt-2 text-emerald-800">
+                  <div className="flex items-center justify-between border-t border-[#E8E8E3] pt-2 text-[#173D32]">
                     <div>
-                      <span className="text-xs font-bold block">
+                      <span className="text-xs font-semibold block">
                         FarmLink Direct Landed Budget
                       </span>
-                      <span className="text-[10px] text-slate-500">
+                      <span className="text-[10px] text-[#5C584E]">
                         Procurement on {bestBuyDay?.dayName} (@ ₹{bestBuyDay?.directLandedPrice}/kg landed)
                       </span>
                     </div>
-                    <span className="font-bold text-base text-emerald-800 font-mono">
+                    <span className="font-serif text-lg text-[#173D32]">
                       {formatCurrency(bestBuyDay?.totalProcurementCost || 0)}
                     </span>
                   </div>
 
                   {/* Net Buyer Savings Banner */}
-                  <div className="rounded-lg bg-[#064E3B] p-3 text-white flex items-center justify-between">
+                  <div className="rounded-xl bg-[#173D32] p-3.5 text-white flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-200 block">
+                      <span className="text-[10px] uppercase font-semibold tracking-wider text-[#DCE8DD] block">
                         Total Procurement Savings
                       </span>
-                      <p className="text-lg font-black font-mono">
+                      <p className="text-lg font-serif">
                         -{formatCurrency(maxBuyerSavingsRupees)}
                       </p>
                     </div>
-                    <span className="rounded bg-emerald-800/80 px-2 py-1 text-xs font-bold font-mono">
+                    <span className="rounded-lg bg-white/15 px-2.5 py-1 text-xs font-semibold font-mono">
                       -{bestBuyDay?.savingsPct || 0}%
                     </span>
                   </div>
@@ -1681,61 +1689,61 @@ export default function MarketPredictorPage() {
         {/* ───────────────────────────────────────────────────────────── */}
         {/* ALL 5 PROMINENT MANDIS OF LUCKNOW COMPARISON GRID */}
         {/* ───────────────────────────────────────────────────────────── */}
-        <div className="editorial-card p-5 sm:p-6 bg-white space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+        <div className="editorial-card p-5 sm:p-6 bg-white space-y-4 border border-[#E8E8E3] rounded-2xl shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E8E8E3] pb-3.5">
             <div>
               <div className="flex items-center gap-2">
-                <Store className="h-4 w-4 text-emerald-600" />
-                <h3 className="text-lg font-bold tracking-tight text-slate-900">
+                <Store className="h-4 w-4 text-[#173D32]" />
+                <h3 className="font-serif text-2xl text-[#17201D] font-normal">
                   {lang === "hi"
                     ? "लखनऊ की सभी 5 प्रमुख मंडियों के लाइव भाव व कटौती विश्लेषण"
                     : "All 5 Prominent Lucknow APMC Mandis Live Comparison"}
                 </h3>
               </div>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-[#5C584E] mt-0.5 font-sans">
                 {userPerspective === "seller"
                   ? "Compare net farmer cash in hand after taking out 2.5% mandi cess, 6% adhatiya commission, and ₹2/crate handling extortion."
                   : "Compare landed wholesale purchase cost across all 5 Lucknow APMC yards versus FarmLink Direct farm gate sourcing."}
               </p>
             </div>
-            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 self-start">
+            <span className="text-xs font-semibold text-[#173D32] bg-[#DCE8DD] px-3.5 py-1.5 rounded-xl border border-[#173D32]/20 self-start">
               ⭐ FarmLink Direct: 0% Mandi Tax
             </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* 1. FarmLink Direct Card */}
-            <div className="rounded-xl border-2 border-emerald-600 bg-emerald-50/70 p-4 space-y-3 shadow-xs relative">
+            <div className="rounded-2xl border-2 border-[#173D32] bg-[#DCE8DD]/30 p-5 space-y-3.5 shadow-xs relative">
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="rounded bg-emerald-600 px-2 py-0.5 text-[10px] font-bold text-white uppercase">
+                  <span className="rounded-md bg-[#173D32] px-2.5 py-0.5 text-[10px] font-semibold text-white uppercase">
                     ⭐ Recommended Direct
                   </span>
-                  <h4 className="font-bold text-base text-slate-900 mt-1">FarmLink Direct (Farm Gate)</h4>
-                  <p className="text-xs text-slate-500">Lucknow Agri-Cluster Network (0 km transit)</p>
+                  <h4 className="font-serif text-xl text-[#17201D] mt-1.5">FarmLink Direct (Farm Gate)</h4>
+                  <p className="text-xs text-[#5C584E]">Lucknow Agri-Cluster Network (0 km transit)</p>
                 </div>
               </div>
 
-              <div className="border-t border-emerald-200/80 pt-2 space-y-1 text-xs">
-                <div className="flex justify-between text-slate-700">
+              <div className="border-t border-[#173D32]/20 pt-2.5 space-y-1.5 text-xs">
+                <div className="flex justify-between text-[#5C584E]">
                   <span>Farm Gate Base Rate:</span>
-                  <strong className="text-emerald-700 font-bold font-mono">₹{farmlinkDirectStats.directPrice}/kg</strong>
+                  <strong className="text-[#173D32] font-semibold font-mono">₹{farmlinkDirectStats.directPrice}/kg</strong>
                 </div>
-                <div className="flex justify-between text-slate-700">
+                <div className="flex justify-between text-[#5C584E]">
                   <span>Mandi Cess / Tax:</span>
-                  <strong className="text-emerald-700 font-bold">0.0% (₹0.00)</strong>
+                  <strong className="text-[#173D32] font-semibold">0.0% (₹0.00)</strong>
                 </div>
-                <div className="flex justify-between text-slate-700">
+                <div className="flex justify-between text-[#5C584E]">
                   <span>Adhatiya Cut / Commission:</span>
-                  <strong className="text-emerald-700 font-bold">0.0% (₹0.00)</strong>
+                  <strong className="text-[#173D32] font-semibold">0.0% (₹0.00)</strong>
                 </div>
-                <div className="flex justify-between text-slate-900 font-bold pt-1 border-t border-emerald-200">
+                <div className="flex justify-between text-[#17201D] font-bold pt-1.5 border-t border-[#173D32]/20">
                   <span>{userPerspective === "seller" ? "Net In-Pocket Realization:" : "Landed Cost to Buyer:"}</span>
-                  <span className="text-lg font-mono text-emerald-800 font-black">
+                  <span className="text-xl font-serif text-[#173D32]">
                     ₹{userPerspective === "seller" ? farmlinkDirectStats.farmerNetRealization : farmlinkDirectStats.buyerLandedCost}/kg
                   </span>
                 </div>
-                <p className="text-[10px] font-bold text-emerald-700 pt-0.5">
+                <p className="text-[10px] font-semibold text-[#173D32] pt-0.5">
                   {userPerspective === "seller"
                     ? "✨ Earns +12% to +16% more in-pocket vs selling at Mandi"
                     : "✨ Saves 18% to 22% vs APMC Mandi total landed cost"}
@@ -1745,29 +1753,29 @@ export default function MarketPredictorPage() {
 
             {/* All 5 Lucknow APMC Mandis */}
             {all5MandisData.map((mandi) => (
-              <div key={mandi.id} className="rounded-xl border border-slate-200 bg-slate-50/80 p-4 space-y-3">
+              <div key={mandi.id} className="rounded-2xl border border-[#E8E8E3] bg-[#F7F5EF] p-5 space-y-3.5">
                 <div className="flex items-start justify-between">
                   <div>
-                    <span className="rounded bg-slate-200 px-2 py-0.5 text-[10px] font-bold text-slate-700 uppercase">
+                    <span className="rounded-md bg-[#F0EDE4] px-2 py-0.5 text-[10px] font-semibold text-[#5C584E] uppercase">
                       {mandi.tag}
                     </span>
-                    <h4 className="font-bold text-sm text-slate-900 mt-1">{lang === "hi" ? mandi.nameHi : mandi.nameEn}</h4>
-                    <p className="text-[11px] text-slate-500">{mandi.area} ({mandi.distanceKm} km from center)</p>
+                    <h4 className="font-serif text-lg text-[#17201D] mt-1.5">{lang === "hi" ? mandi.nameHi : mandi.nameEn}</h4>
+                    <p className="text-[11px] text-[#5C584E]">{mandi.area} ({mandi.distanceKm} km from center)</p>
                   </div>
                 </div>
 
-                <div className="border-t border-slate-200 pt-2 space-y-1 text-xs">
-                  <div className="flex justify-between text-slate-600">
+                <div className="border-t border-[#E8E8E3] pt-2.5 space-y-1.5 text-xs">
+                  <div className="flex justify-between text-[#5C584E]">
                     <span>APMC Mandi Rate:</span>
-                    <strong className="font-mono text-slate-900">₹{mandi.mandiQuoted}/kg</strong>
+                    <strong className="font-mono text-[#17201D]">₹{mandi.mandiQuoted}/kg</strong>
                   </div>
-                  <div className="flex justify-between text-rose-600 text-[11px]">
+                  <div className="flex justify-between text-[#C86B4A] text-[11px]">
                     <span>Taxes & Commissions:</span>
                     <span className="font-mono">-{mandi.cessPct + mandi.aadhatPct}% + handling</span>
                   </div>
-                  <div className="flex justify-between text-slate-900 font-bold pt-1 border-t border-slate-200">
+                  <div className="flex justify-between text-[#17201D] font-semibold pt-1.5 border-t border-[#E8E8E3]">
                     <span>{userPerspective === "seller" ? "Net Realization:" : "Landed Cost:"}</span>
-                    <span className="text-base font-mono text-slate-800">
+                    <span className="text-base font-serif text-[#17201D]">
                       ₹{userPerspective === "seller" ? mandi.farmerNetRealization : mandi.buyerLandedCost}/kg
                     </span>
                   </div>
@@ -1780,21 +1788,21 @@ export default function MarketPredictorPage() {
         {/* ───────────────────────────────────────────────────────────── */}
         {/* DOMAIN-SPECIFIC INTERACTIVE DATA MATRIX TABLE */}
         {/* ───────────────────────────────────────────────────────────── */}
-        <div className="editorial-card p-5 sm:p-6 bg-white space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+        <div className="editorial-card p-5 sm:p-6 bg-white space-y-4 border border-[#E8E8E3] rounded-2xl shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E8E8E3] pb-3.5">
             <div>
-              <h3 className="text-lg font-bold tracking-tight text-slate-900">
+              <h3 className="font-serif text-2xl text-[#17201D] font-normal">
                 {userPerspective === "seller"
                   ? (lang === "hi" ? "किसान दैनिक फसल कटाई व मुनाफा मैट्रिक्स" : "Daily Harvest Timing & Spoilage Matrix (Farmer Domain)")
                   : (lang === "hi" ? "थोक खरीद बजट एवं आवक मैट्रिक्स" : "Procurement Budget & Supply Influx Matrix (Buyer Domain)")}
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-[#5C584E] font-sans">
                 {userPerspective === "seller"
                   ? `Comparative realization matrix for ${batchQty.toLocaleString()} kg of ${activeCropMeta.labelEn}.`
                   : `Comparative procurement budget matrix for ${batchQty.toLocaleString()} kg of ${activeCropMeta.labelEn}.`}
               </p>
             </div>
-            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 self-start">
+            <span className="text-xs font-semibold text-[#173D32] bg-[#DCE8DD] px-3.5 py-1.5 rounded-xl border border-[#173D32]/20 self-start">
               {userPerspective === "seller"
                 ? `⭐ Best Harvest Date: ${bestSellDay?.date} (${bestSellDay?.dayName})`
                 : `⭐ Best Procurement Date: ${bestBuyDay?.date} (${bestBuyDay?.dayName})`}
@@ -1805,18 +1813,18 @@ export default function MarketPredictorPage() {
             {userPerspective === "seller" ? (
               /* FARMER MATRIX TABLE */
               <table className="w-full text-left text-xs border-collapse">
-                <thead className="bg-slate-50 text-slate-600 uppercase font-bold text-[10px] tracking-wider border-b border-slate-200">
+                <thead className="bg-[#F0EDE4] text-[#5C584E] uppercase font-semibold text-[10px] tracking-wider border-b border-[#E8E8E3]">
                   <tr>
-                    <th className="py-3 px-3.5">Day & Date</th>
-                    <th className="py-3 px-3.5">Projected Rate (₹/kg)</th>
-                    <th className="py-3 px-3.5">Saleable Produce</th>
-                    <th className="py-3 px-3.5">Estimated Spoilage Loss</th>
-                    <th className="py-3 px-3.5">Net In-Pocket Cash</th>
-                    <th className="py-3 px-3.5">Profit Delta vs Today</th>
-                    <th className="py-3 px-3.5">Action</th>
+                    <th className="py-3.5 px-4">Day & Date</th>
+                    <th className="py-3.5 px-4">Projected Rate (₹/kg)</th>
+                    <th className="py-3.5 px-4">Saleable Produce</th>
+                    <th className="py-3.5 px-4">Estimated Spoilage Loss</th>
+                    <th className="py-3.5 px-4">Net In-Pocket Cash</th>
+                    <th className="py-3.5 px-4">Profit Delta vs Today</th>
+                    <th className="py-3.5 px-4">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 text-slate-800 font-medium">
+                <tbody className="divide-y divide-[#E8E8E3] text-[#17201D] font-medium">
                   {farmerSimulationMatrix.map((row) => {
                     const isOptimal = row.dayIndex === bestSellDay?.dayIndex;
                     return (
@@ -1824,63 +1832,63 @@ export default function MarketPredictorPage() {
                         key={row.dayIndex}
                         className={`transition ${
                           isOptimal
-                            ? "bg-emerald-50/80 font-bold"
+                            ? "bg-[#DCE8DD]/40 font-semibold"
                             : row.isToday
-                            ? "bg-slate-50/70"
-                            : "hover:bg-slate-50/50"
+                            ? "bg-[#F7F5EF]/80"
+                            : "hover:bg-[#F7F5EF]/50"
                         }`}
                       >
-                        <td className="py-3 px-3.5 text-slate-900">
+                        <td className="py-3.5 px-4 text-[#17201D]">
                           <div className="flex items-center gap-1.5">
-                            {isOptimal && <span className="text-emerald-700">⭐</span>}
+                            {isOptimal && <span className="text-[#173D32]">⭐</span>}
                             <span>{row.date} ({row.dayName})</span>
                             {row.isToday && (
-                              <span className="rounded bg-slate-200 px-1.5 py-0.2 text-[9px] font-bold text-slate-700 uppercase">
+                              <span className="rounded bg-[#F0EDE4] px-1.5 py-0.5 text-[9px] font-semibold text-[#5C584E] uppercase">
                                 Today
                               </span>
                             )}
                           </div>
                         </td>
-                        <td className="py-3 px-3.5 font-mono text-slate-900">
-                          ₹{row.price} <span className="text-[10px] text-slate-400 font-normal">/kg</span>
+                        <td className="py-3.5 px-4 font-mono text-[#17201D]">
+                          ₹{row.price} <span className="text-[10px] text-[#5C584E] font-normal">/kg</span>
                         </td>
-                        <td className="py-3 px-3.5 font-mono text-slate-900">
+                        <td className="py-3.5 px-4 font-mono text-[#17201D]">
                           {row.saleableQty.toLocaleString()} kg
                         </td>
-                        <td className="py-3 px-3.5 text-slate-500">
+                        <td className="py-3.5 px-4 text-[#5C584E]">
                           {row.spoilageLossKg > 0 ? (
-                            <span className="text-rose-600">-{row.spoilageLossKg} kg ({formatCurrency(row.spoilageLossRupees)})</span>
+                            <span className="text-[#C86B4A]">-{row.spoilageLossKg} kg ({formatCurrency(row.spoilageLossRupees)})</span>
                           ) : (
-                            <span className="text-emerald-700">0 kg (100% Fresh)</span>
+                            <span className="text-[#173D32]">0 kg (100% Fresh)</span>
                           )}
                         </td>
-                        <td className="py-3 px-3.5 font-bold text-slate-900 font-mono">
+                        <td className="py-3.5 px-4 font-serif text-sm text-[#17201D]">
                           {formatCurrency(row.grossRevenue)}
                         </td>
-                        <td className="py-3 px-3.5">
+                        <td className="py-3.5 px-4">
                           {row.netGainRupees > 0 ? (
-                            <span className="text-emerald-700 font-bold font-mono">
+                            <span className="text-[#173D32] font-semibold font-mono">
                               +{formatCurrency(row.netGainRupees)} (+{row.netGainPct}%)
                             </span>
                           ) : row.netGainRupees < 0 ? (
-                            <span className="text-rose-600 font-bold font-mono">
+                            <span className="text-[#C86B4A] font-semibold font-mono">
                               {formatCurrency(row.netGainRupees)} ({row.netGainPct}%)
                             </span>
                           ) : (
-                            <span className="text-slate-400">— Baseline</span>
+                            <span className="text-[#5C584E]">— Baseline</span>
                           )}
                         </td>
-                        <td className="py-3 px-3.5">
+                        <td className="py-3.5 px-4">
                           {isOptimal ? (
-                            <span className="rounded-md bg-emerald-600 px-2 py-0.5 text-[10px] font-bold text-white uppercase">
+                            <span className="rounded-md bg-[#173D32] px-2.5 py-1 text-[10px] font-semibold text-white uppercase">
                               Optimal Harvest Peak
                             </span>
                           ) : row.netGainRupees > 0 ? (
-                            <span className="rounded-md bg-emerald-100 text-emerald-800 px-2 py-0.5 text-[10px] font-bold">
+                            <span className="rounded-md bg-[#DCE8DD] text-[#173D32] px-2.5 py-1 text-[10px] font-semibold">
                               Hold Stock
                             </span>
                           ) : (
-                            <span className="rounded-md bg-slate-100 text-slate-700 px-2 py-0.5 text-[10px] font-bold">
+                            <span className="rounded-md bg-[#F0EDE4] text-[#5C584E] px-2.5 py-1 text-[10px] font-semibold">
                               Harvest & Sell
                             </span>
                           )}
@@ -1893,18 +1901,18 @@ export default function MarketPredictorPage() {
             ) : (
               /* BUYER MATRIX TABLE */
               <table className="w-full text-left text-xs border-collapse">
-                <thead className="bg-slate-50 text-slate-600 uppercase font-bold text-[10px] tracking-wider border-b border-slate-200">
+                <thead className="bg-[#F0EDE4] text-[#5C584E] uppercase font-semibold text-[10px] tracking-wider border-b border-[#E8E8E3]">
                   <tr>
-                    <th className="py-3 px-3.5">Day & Date</th>
-                    <th className="py-3 px-3.5">Farm Gate Modal</th>
-                    <th className="py-3 px-3.5">Direct Landed Price</th>
-                    <th className="py-3 px-3.5">Supply Influx Status</th>
-                    <th className="py-3 px-3.5">Total Landed Budget</th>
-                    <th className="py-3 px-3.5">Savings vs APMC Traditional</th>
-                    <th className="py-3 px-3.5">Procurement Action</th>
+                    <th className="py-3.5 px-4">Day & Date</th>
+                    <th className="py-3.5 px-4">Farm Gate Modal</th>
+                    <th className="py-3.5 px-4">Direct Landed Price</th>
+                    <th className="py-3.5 px-4">Supply Influx Status</th>
+                    <th className="py-3.5 px-4">Total Landed Budget</th>
+                    <th className="py-3.5 px-4">Savings vs APMC Traditional</th>
+                    <th className="py-3.5 px-4">Procurement Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 text-slate-800 font-medium">
+                <tbody className="divide-y divide-[#E8E8E3] text-[#17201D] font-medium">
                   {buyerSimulationMatrix.map((row) => {
                     const isOptimal = row.dayIndex === bestBuyDay?.dayIndex;
                     return (
@@ -1912,45 +1920,45 @@ export default function MarketPredictorPage() {
                         key={row.dayIndex}
                         className={`transition ${
                           isOptimal
-                            ? "bg-blue-50/80 font-bold"
+                            ? "bg-[#BFD8E5]/40 font-semibold"
                             : row.isToday
-                            ? "bg-slate-50/70"
-                            : "hover:bg-slate-50/50"
+                            ? "bg-[#F7F5EF]/80"
+                            : "hover:bg-[#F7F5EF]/50"
                         }`}
                       >
-                        <td className="py-3 px-3.5 text-slate-900">
+                        <td className="py-3.5 px-4 text-[#17201D]">
                           <div className="flex items-center gap-1.5">
-                            {isOptimal && <span className="text-blue-700">⭐</span>}
+                            {isOptimal && <span className="text-[#1E4D63]">⭐</span>}
                             <span>{row.date} ({row.dayName})</span>
                             {row.isToday && (
-                              <span className="rounded bg-slate-200 px-1.5 py-0.2 text-[9px] font-bold text-slate-700 uppercase">
+                              <span className="rounded bg-[#F0EDE4] px-1.5 py-0.5 text-[9px] font-semibold text-[#5C584E] uppercase">
                                 Today
                               </span>
                             )}
                           </div>
                         </td>
-                        <td className="py-3 px-3.5 font-mono text-slate-900">
-                          ₹{row.modalPrice} <span className="text-[10px] text-slate-400 font-normal">/kg</span>
+                        <td className="py-3.5 px-4 font-mono text-[#17201D]">
+                          ₹{row.modalPrice} <span className="text-[10px] text-[#5C584E] font-normal">/kg</span>
                         </td>
-                        <td className="py-3 px-3.5 font-mono text-emerald-800 font-bold">
-                          ₹{row.directLandedPrice} <span className="text-[10px] text-slate-400 font-normal">/kg</span>
+                        <td className="py-3.5 px-4 font-mono text-[#173D32] font-semibold">
+                          ₹{row.directLandedPrice} <span className="text-[10px] text-[#5C584E] font-normal">/kg</span>
                         </td>
-                        <td className={`py-3 px-3.5 ${row.arrivalColor}`}>
+                        <td className={`py-3.5 px-4 ${row.arrivalColor}`}>
                           {row.arrivalStatus}
                         </td>
-                        <td className="py-3 px-3.5 font-bold text-slate-900 font-mono">
+                        <td className="py-3.5 px-4 font-serif text-sm text-[#17201D]">
                           {formatCurrency(row.totalProcurementCost)}
                         </td>
-                        <td className="py-3 px-3.5 text-emerald-700 font-bold font-mono">
+                        <td className="py-3.5 px-4 text-[#173D32] font-semibold font-mono">
                           -{formatCurrency(row.savingsVsApmc)} (-{row.savingsPct}%)
                         </td>
-                        <td className="py-3 px-3.5">
+                        <td className="py-3.5 px-4">
                           {isOptimal ? (
-                            <span className="rounded-md bg-[#064E3B] px-2 py-0.5 text-[10px] font-bold text-white uppercase">
+                            <span className="rounded-md bg-[#173D32] px-2.5 py-1 text-[10px] font-semibold text-white uppercase">
                               Best Buy Zone
                             </span>
                           ) : (
-                            <span className="rounded-md bg-slate-100 text-slate-700 px-2 py-0.5 text-[10px] font-bold">
+                            <span className="rounded-md bg-[#F0EDE4] text-[#5C584E] px-2.5 py-1 text-[10px] font-semibold">
                               Regular Order
                             </span>
                           )}

@@ -34,6 +34,8 @@ import {
   User,
   ShoppingBag,
   Navigation,
+  CloudSun,
+  CloudRain,
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { LocationPickerModal, LocationData } from "@/components/LocationPickerModal";
@@ -247,106 +249,115 @@ export default function FarmerDashboardPage() {
     .filter((o) => ["delivered", "settlement_ready", "settled"].includes(o.status))
     .reduce((sum, o) => sum + o.requested_qty * o.agreed_price * 0.93, 0);
 
+  const displayHarvestVal = totalInventoryVal > 0 ? totalInventoryVal : 24560;
+
   return (
-    <div className="min-h-screen bg-[#FAFAF9] text-slate-800 flex flex-col selection:bg-emerald-100 selection:text-emerald-900">
+    <div className="min-h-screen bg-[#F7F5EF] text-[#17201D] flex flex-col selection:bg-[#DCE8DD] selection:text-[#173D32]">
       <Navbar />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 w-full space-y-6">
         
-        {/* 1. TOP HERO SUMMARY PANEL (Forest Green Banner) */}
-        <div className="rounded-2xl bg-[#064E3B] text-white p-6 sm:p-7 relative overflow-hidden shadow-md">
+        {/* 1. TOP EDITORIAL SUMMARY PANEL (Forest Green Banner) */}
+        <div className="rounded-3xl bg-[#173D32] text-white p-6 sm:p-8 relative overflow-hidden shadow-xl border border-[#0F2820]">
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
             
-            {/* Left: Greeting & Metrics */}
-            <div className="lg:col-span-7 space-y-2.5">
-              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/20 px-3 py-0.5 text-xs font-semibold text-emerald-200">
-                <Sprout className="h-3.5 w-3.5" />
+            {/* Left: Greeting & Primary KPIs */}
+            <div className="lg:col-span-7 space-y-3">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium text-[#DCE8DD]">
+                <Sprout className="h-3.5 w-3.5 text-[#C99B43]" />
                 <span>
                   {lang === "hi" ? "किसान एवं उत्पादक पोर्टल • लखनऊ क्लस्टर" : "Farmer & Producer Portal • Lucknow Cluster"}
                 </span>
               </div>
 
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white">
-                {lang === "hi"
-                  ? `नमस्ते, ${user?.first_name ? `${user.first_name} जी` : "किसान भाई"}`
-                  : `Welcome, ${user?.first_name ? `${user.first_name} ${user.last_name || ""}` : "Farmer Producer"}`}
-              </h1>
+              <div>
+                <h1 className="font-serif text-3xl sm:text-4xl text-white font-normal tracking-tight">
+                  Good morning, {user?.first_name || "Ramesh"}
+                </h1>
+                <p className="text-xs sm:text-sm text-[#DCE8DD]/90 font-sans mt-0.5">
+                  Your harvest is ready for the right market.
+                </p>
+              </div>
 
-              <p className="text-xs sm:text-sm text-emerald-100/90 font-normal leading-relaxed max-w-xl">
-                {lang === "hi"
-                  ? "आपकी ताज़ा उपज सीधे लखनऊ के बड़े खरीदारों और होटलों से जुड़ी है। कोई बिचौलिया नहीं, 100% पक्का डिजिटल भुगतान।"
-                  : "Directly connected to verified bulk buyers across Lucknow with 0% middlemen commission and fast digital settlements."}
-              </p>
-
-              {/* Live Inventory Stats */}
+              {/* Core Dark Green Summary Card Metric */}
               <div className="pt-2 flex flex-wrap items-baseline gap-3">
-                <div className="bg-white/10 px-4 py-2 rounded-xl border border-white/15 backdrop-blur-xs">
-                  <span className="text-[11px] font-semibold text-emerald-200 uppercase tracking-wider block">
-                    {lang === "hi" ? "कुल अनुमानित फसल मूल्य" : "Total Crop Inventory Value"}
+                <div className="bg-white/10 px-5 py-3 rounded-2xl border border-white/15 backdrop-blur-md">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#DCE8DD] block">
+                    Estimated Harvest Value
                   </span>
-                  <span className="text-xl sm:text-2xl font-bold text-white">
-                    {formatCurrency(totalInventoryVal > 0 ? totalInventoryVal : 76000)}
-                  </span>
+                  <div className="flex items-baseline gap-2 mt-0.5">
+                    <span className="text-2xl sm:text-3xl font-serif text-white">
+                      ₹{displayHarvestVal.toLocaleString("en-IN")}
+                    </span>
+                    <span className="text-xs text-[#C99B43] font-medium">
+                      across {lots.length > 0 ? lots.length : 3} active lots
+                    </span>
+                  </div>
                 </div>
 
-                <div className="bg-white/10 px-4 py-2 rounded-xl border border-white/15 backdrop-blur-xs">
-                  <span className="text-[11px] font-semibold text-emerald-200 uppercase tracking-wider block">
-                    {lang === "hi" ? "कुल उपलब्ध उपज" : "Active Stock"}
+                <div className="bg-white/10 px-4 py-3 rounded-2xl border border-white/15 backdrop-blur-md">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#DCE8DD] block">
+                    Active Stock
                   </span>
-                  <span className="text-xl sm:text-2xl font-bold text-emerald-300">
-                    {(totalInventoryKg > 0 ? totalInventoryKg : 2000).toLocaleString()} {lang === "hi" ? "किलो" : "kg"}
+                  <span className="text-xl sm:text-2xl font-serif text-[#DCE8DD] mt-0.5 block">
+                    {(totalInventoryKg > 0 ? totalInventoryKg : 1500).toLocaleString()} kg
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* Right: Tactile CTAs with Hand-Drawn Annotation */}
-            <div className="lg:col-span-5 flex flex-col items-center lg:items-end gap-3 relative">
-              
-              {/* Hand-Drawn Arrow & Handwritten Tooltip */}
-              <div className="hidden sm:flex items-center gap-2 mr-4">
-                <span className="font-caveat text-emerald-300 text-lg sm:text-xl font-bold tracking-wide">
-                  {lang === "hi" ? "बोलकर तुरंत लिस्ट करें ✨" : "Speak naturally to list instantly ✨"}
-                </span>
-                <svg className="w-8 h-8 text-emerald-300 -rotate-12 animate-hand-arrow" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M 5 10 Q 25 15 30 30 M 20 28 L 30 30 L 32 20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
+            {/* Right: Weather Card & Voice Action */}
+            <div className="lg:col-span-5 flex flex-col items-stretch lg:items-end gap-3.5">
+              {/* Weather Guidance Card */}
+              <div className="w-full rounded-2xl bg-white/10 backdrop-blur-md p-4 border border-white/15 space-y-1.5 text-xs text-[#DCE8DD]">
+                <div className="flex items-center justify-between text-white font-semibold">
+                  <span className="flex items-center gap-1.5">
+                    <CloudSun className="h-4 w-4 text-[#C99B43]" />
+                    <span>Farm Weather — Malihabad</span>
+                  </span>
+                  <span className="font-mono text-[11px] bg-[#DCE8DD]/20 px-2 py-0.5 rounded text-[#DCE8DD]">
+                    26°C · Humidity 68%
+                  </span>
+                </div>
+                <p className="text-[11px] text-[#DCE8DD]/90">
+                  Light rain likely after 3 PM. <strong>Best mango pickup window: 7:00–12:00 PM</strong>.
+                </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row lg:flex-col gap-2.5 w-full sm:w-auto">
+              {/* Actions */}
+              <div className="flex flex-col sm:flex-row lg:flex-row gap-2.5 w-full">
                 <button
                   type="button"
                   onClick={() => setVoiceModalOpen(true)}
-                  className="flex items-center justify-center gap-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white px-6 py-3.5 text-sm font-bold transition-all shadow-md hover:scale-105 active:scale-95 cursor-pointer"
+                  className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-[#C99B43] hover:bg-[#B88B35] text-white px-5 py-3 text-xs font-semibold transition-all shadow-xs cursor-pointer active:scale-98"
                 >
-                  <Mic className="h-4 w-4 animate-pulse" />
-                  <span>{lang === "hi" ? "🎤 बोलकर फसल लिस्ट करें (Voice AI)" : "🎤 Voice-Assisted Listing"}</span>
+                  <Mic className="h-4 w-4" />
+                  <span>{lang === "hi" ? "🎤 बोलकर फसल दर्ज करें" : "🎤 Voice List Harvest"}</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setActiveTab("list")}
-                  className="flex items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 hover:bg-white/20 px-5 py-2.5 text-xs font-semibold text-white transition-all cursor-pointer"
+                  className="flex-1 flex items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 hover:bg-white/20 px-4 py-3 text-xs font-semibold text-white transition cursor-pointer"
                 >
-                  <Plus className="h-4 w-4 text-emerald-300" />
-                  <span>{lang === "hi" ? "+ नई फसल लिस्ट करें (मैन्युअल)" : "+ List Harvest Manually"}</span>
+                  <Plus className="h-4 w-4 text-[#DCE8DD]" />
+                  <span>{lang === "hi" ? "+ नया लॉट (मैन्युअल)" : "+ Manual Batch"}</span>
                 </button>
               </div>
-
             </div>
 
           </div>
         </div>
 
-        {/* 2. FLAT TAB NAVIGATION */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none border-b border-slate-200 pt-1">
+        {/* 2. REFINED TAB NAVIGATION */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none border-b border-[#E8E8E3] pt-1">
           <button
             type="button"
             onClick={() => setActiveTab("overview")}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition shrink-0 ${
+            className={`px-4 py-2 rounded-xl text-xs font-semibold transition shrink-0 cursor-pointer ${
               activeTab === "overview"
-                ? "bg-emerald-600 text-white shadow-xs"
-                : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
+                ? "bg-[#173D32] text-white shadow-xs"
+                : "bg-white text-[#17201D] border border-[#E8E8E3] hover:bg-[#F7F5EF]"
             }`}
           >
             🌾 {lang === "hi" ? `मेरी फसलें (${lots.length})` : `My Produce Lots (${lots.length})`}
@@ -355,10 +366,10 @@ export default function FarmerDashboardPage() {
           <button
             type="button"
             onClick={() => setActiveTab("list")}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition shrink-0 ${
+            className={`px-4 py-2 rounded-xl text-xs font-semibold transition shrink-0 cursor-pointer ${
               activeTab === "list"
-                ? "bg-emerald-600 text-white shadow-xs"
-                : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
+                ? "bg-[#173D32] text-white shadow-xs"
+                : "bg-white text-[#17201D] border border-[#E8E8E3] hover:bg-[#F7F5EF]"
             }`}
           >
             ➕ {lang === "hi" ? "नई फसल लिस्ट करें" : "+ List Harvest Batch"}
@@ -367,37 +378,37 @@ export default function FarmerDashboardPage() {
           <button
             type="button"
             onClick={() => setActiveTab("orders")}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition shrink-0 ${
+            className={`px-4 py-2 rounded-xl text-xs font-semibold transition shrink-0 cursor-pointer ${
               activeTab === "orders"
-                ? "bg-emerald-600 text-white shadow-xs"
-                : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
+                ? "bg-[#173D32] text-white shadow-xs"
+                : "bg-white text-[#17201D] border border-[#E8E8E3] hover:bg-[#F7F5EF]"
             }`}
           >
-            🛒 {lang === "hi" ? `किसने फसल खरीदी (${orders.length})` : `Buyer Orders (${orders.length})`}
+            🛒 {lang === "hi" ? `खरीदारों के ऑर्डर (${orders.length})` : `Buyer Requests (${orders.length})`}
           </button>
 
           <button
             type="button"
             onClick={() => setActiveTab("farms")}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition shrink-0 ${
+            className={`px-4 py-2 rounded-xl text-xs font-semibold transition shrink-0 cursor-pointer ${
               activeTab === "farms"
-                ? "bg-emerald-600 text-white shadow-xs"
-                : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
+                ? "bg-[#173D32] text-white shadow-xs"
+                : "bg-white text-[#17201D] border border-[#E8E8E3] hover:bg-[#F7F5EF]"
             }`}
           >
-            📍 {lang === "hi" ? `मेरे खेत / प्लॉट (${farms.length})` : `My Farms (${farms.length})`}
+            📍 {lang === "hi" ? `खेत एवं प्लॉट (${farms.length})` : `Farm Plots (${farms.length})`}
           </button>
 
           <button
             type="button"
             onClick={() => setActiveTab("wallet")}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition shrink-0 ${
+            className={`px-4 py-2 rounded-xl text-xs font-semibold transition shrink-0 cursor-pointer ${
               activeTab === "wallet"
-                ? "bg-emerald-600 text-white shadow-xs"
-                : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
+                ? "bg-[#173D32] text-white shadow-xs"
+                : "bg-white text-[#17201D] border border-[#E8E8E3] hover:bg-[#F7F5EF]"
             }`}
           >
-            💰 {lang === "hi" ? "भुगतान और बैंक खाता" : "Payouts & Ledger"}
+            💰 {lang === "hi" ? "खाता और एस्क्रो भुगतान" : "Settlement & Wallet"}
           </button>
         </div>
 
@@ -406,90 +417,79 @@ export default function FarmerDashboardPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Left 8 cols: Produce Lots */}
             <div className="lg:col-span-8 space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-200 pb-2">
-                <h3 className="text-xl font-bold tracking-tight text-slate-900">
-                  {lang === "hi" ? "लखनऊ में आपकी सक्रिय फसलें" : "Active Crop Lots in Lucknow"}
+              <div className="flex items-center justify-between border-b border-[#E8E8E3] pb-2">
+                <h3 className="font-serif text-xl text-[#17201D]">
+                  {lang === "hi" ? "सक्रिय फसलें" : "Active Produce Lots in Lucknow"}
                 </h3>
-                <span className="text-xs font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
-                  {lots.length} {lang === "hi" ? "सक्रिय लिस्टिंग" : "active listings"}
+                <span className="text-xs font-mono font-semibold text-[#173D32] bg-[#DCE8DD] px-2.5 py-0.5 rounded-full">
+                  {lots.length} active listings
                 </span>
               </div>
 
               {loading ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {[1, 2].map((i) => (
-                    <div key={i} className="h-44 rounded-xl bg-white border border-slate-200 animate-pulse" />
+                    <div key={i} className="h-44 rounded-2xl bg-white border border-[#E8E8E3] animate-pulse" />
                   ))}
                 </div>
               ) : lots.length === 0 ? (
-                /* Friendly Pastel Empty State */
-                <div className="rounded-xl border-2 border-dashed border-slate-200 bg-white p-10 text-center space-y-3">
-                  <div className="mx-auto w-16 h-16 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
-                    <Sprout className="h-8 w-8" />
+                <div className="rounded-2xl border border-dashed border-[#E8E8E3] bg-white p-10 text-center space-y-3">
+                  <div className="mx-auto w-14 h-14 rounded-full bg-[#DCE8DD]/50 flex items-center justify-center text-[#173D32]">
+                    <Sprout className="h-7 w-7" />
                   </div>
-                  <h4 className="text-base font-bold text-slate-900">
+                  <h4 className="font-serif text-base text-[#17201D]">
                     {lang === "hi" ? "अभी तक कोई फसल लिस्ट नहीं है" : "No produce lots listed yet"}
                   </h4>
-                  <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
+                  <p className="text-xs text-[#576561] max-w-sm mx-auto font-sans leading-relaxed">
                     {lang === "hi"
-                      ? "ऊपर 'बोलकर फसल लिस्ट करें' बटन दबाकर अपनी ताज़ा उपज जोड़ें और लखनऊ के खरीदारों से सीधे जुड़ें।"
-                      : "Tap 'Voice-Assisted Listing' above to list your harvest in seconds with automated pricing guidance."}
+                      ? "ऊपर 'बोलकर फसल दर्ज करें' दबाकर अपनी ताज़ा उपज जोड़ें।"
+                      : "Tap 'Voice List Harvest' above to record your produce in seconds."}
                   </p>
-                  <div className="pt-2">
-                    <button
-                      type="button"
-                      onClick={() => setVoiceModalOpen(true)}
-                      className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-700 transition shadow-xs"
-                    >
-                      <Mic className="h-3.5 w-3.5" />
-                      <span>{lang === "hi" ? "बोलकर फसल लिस्ट करें" : "Start Voice Listing"}</span>
-                    </button>
-                  </div>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {lots.map((lot) => (
                     <div
                       key={lot.id}
-                      className="editorial-card p-5 flex flex-col justify-between space-y-3 bg-white"
+                      className="editorial-card p-5 flex flex-col justify-between space-y-3 bg-white rounded-2xl border border-[#E8E8E3]"
                     >
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <h4 className="text-lg font-bold tracking-tight text-slate-900 capitalize">
+                          <h4 className="font-serif text-lg text-[#17201D] capitalize">
                             {lot.commodity}
                           </h4>
-                          <span className="rounded-md bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold text-emerald-700 uppercase">
+                          <span className="rounded-md bg-[#DCE8DD] px-2 py-0.5 text-[10px] font-bold text-[#173D32] uppercase">
                             Grade {lot.grade}
                           </span>
                         </div>
 
-                        <p className="text-xs font-semibold text-slate-600 flex items-center gap-1">
-                          <MapPin className="h-3.5 w-3.5 text-emerald-600" />
+                        <p className="text-xs font-medium text-[#576561] flex items-center gap-1">
+                          <MapPin className="h-3.5 w-3.5 text-[#173D32]" />
                           <span>{lot.farm_detail?.village || "Bakshi Ka Talab"}, Lucknow</span>
                         </p>
 
-                        <div className="mt-2 grid grid-cols-2 gap-2 text-xs bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                        <div className="mt-2 grid grid-cols-2 gap-2 text-xs bg-[#F7F5EF] p-2.5 rounded-xl border border-[#E8E8E3]">
                           <div>
-                            <span className="text-[10px] font-bold text-slate-500 block uppercase">
+                            <span className="text-[9px] font-mono font-semibold text-[#576561] block uppercase">
                               {lang === "hi" ? "उपलब्ध मात्रा" : "Available"}
                             </span>
-                            <span className="text-sm font-bold text-slate-900">{lot.remaining_qty} kg</span>
+                            <span className="text-sm font-bold text-[#17201D]">{lot.remaining_qty} kg</span>
                           </div>
                           <div>
-                            <span className="text-[10px] font-bold text-slate-500 block uppercase">
+                            <span className="text-[9px] font-mono font-semibold text-[#576561] block uppercase">
                               {lang === "hi" ? "तय भाव" : "Asking Rate"}
                             </span>
-                            <span className="text-sm font-bold text-emerald-700">₹{lot.asking_price}/kg</span>
+                            <span className="text-sm font-bold text-[#C99B43]">₹{lot.asking_price}/kg</span>
                           </div>
                         </div>
                       </div>
 
-                      <div className="pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs">
-                        <span className="font-semibold text-emerald-700 flex items-center gap-1.5">
-                          <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                      <div className="pt-2.5 border-t border-[#E8E8E3] flex items-center justify-between text-xs">
+                        <span className="font-semibold text-[#173D32] flex items-center gap-1.5">
+                          <span className="h-2 w-2 rounded-full bg-[#173D32]" />
                           <span className="capitalize">{lot.status.replace("_", " ")}</span>
                         </span>
-                        <span className="font-normal text-slate-500">{formatDate(lot.created_at)}</span>
+                        <span className="text-[11px] text-[#576561] font-mono">{formatDate(lot.created_at)}</span>
                       </div>
                     </div>
                   ))}
@@ -499,12 +499,12 @@ export default function FarmerDashboardPage() {
 
             {/* Right 4 cols: Live Agmarknet Price Guidance */}
             <div className="lg:col-span-4 space-y-4">
-              <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-4 space-y-1.5">
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
-                  <TrendingUp className="h-4 w-4 text-emerald-700" />
+              <div className="rounded-2xl border border-[#DCE8DD] bg-[#DCE8DD]/30 p-4 space-y-1.5">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#173D32] flex items-center gap-1.5 font-mono">
+                  <TrendingUp className="h-4 w-4 text-[#173D32]" />
                   <span>{lang === "hi" ? "सरकारी मंडी लाइव भाव" : "Live Mandi Guidance"}</span>
                 </span>
-                <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                <p className="text-xs text-[#576561] leading-relaxed font-sans">
                   {lang === "hi"
                     ? "दुबग्गा एवं नवीन मंडी (सीतापुर रोड) के ताज़ा भाव के अनुसार अपनी उपज का सही मूल्य तय करें।"
                     : "Direct price synchronization with Lucknow APMC Mandis (Dubagga & Naveen Mandi)."}
@@ -520,17 +520,17 @@ export default function FarmerDashboardPage() {
           </div>
         )}
 
-        {/* TAB 2: LIST NEW PRODUCE FORM (Sleek Centered Wizard Card) */}
+        {/* TAB 2: LIST NEW PRODUCE FORM */}
         {activeTab === "list" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Form */}
-            <div className="lg:col-span-7 editorial-card p-6 sm:p-7 space-y-5 bg-white">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3.5">
+            <div className="lg:col-span-7 editorial-card p-6 sm:p-7 space-y-5 bg-white rounded-2xl border border-[#E8E8E3]">
+              <div className="flex items-center justify-between border-b border-[#E8E8E3] pb-3.5">
                 <div>
-                  <h3 className="text-xl font-bold tracking-tight text-slate-900">
+                  <h3 className="font-serif text-2xl text-[#17201D]">
                     {lang === "hi" ? "फसल का विवरण भरें" : "List Produce Batch"}
                   </h3>
-                  <p className="text-xs font-normal text-slate-500 mt-0.5">
+                  <p className="text-xs text-[#576561] mt-0.5 font-sans">
                     {lang === "hi" ? "हिंदी या अंग्रेजी में बोलें या नीचे फॉर्म भरें।" : "Speak naturally in Hindi or English, or fill manually below."}
                   </p>
                 </div>
@@ -538,28 +538,28 @@ export default function FarmerDashboardPage() {
                 <button
                   type="button"
                   onClick={() => setVoiceModalOpen(true)}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 rounded-lg hover:bg-emerald-100 transition cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#173D32] bg-[#DCE8DD] px-3.5 py-1.5 rounded-lg hover:bg-[#DCE8DD]/80 transition cursor-pointer"
                 >
-                  <Mic className="h-3.5 w-3.5 text-emerald-700" />
+                  <Mic className="h-3.5 w-3.5 text-[#173D32]" />
                   <span>{lang === "hi" ? "बोलकर भरें" : "Voice Auto-Fill"}</span>
                 </button>
               </div>
 
               {publishSuccess ? (
-                <div className="rounded-xl bg-emerald-50 p-6 text-center border border-emerald-200 space-y-2">
-                  <CheckCircle2 className="h-8 w-8 text-emerald-600 mx-auto" />
-                  <h4 className="text-lg font-bold text-emerald-900">
+                <div className="rounded-2xl bg-[#DCE8DD]/50 p-6 text-center border border-[#DCE8DD] space-y-2">
+                  <CheckCircle2 className="h-8 w-8 text-[#173D32] mx-auto" />
+                  <h4 className="font-serif text-lg text-[#173D32]">
                     {lang === "hi" ? "फसल सफलतापूर्वक लिस्ट हो गई!" : "Produce Lot Published!"}
                   </h4>
-                  <p className="text-xs font-medium text-slate-700">
-                    {availableQty} kg {commodity} {lang === "hi" ? "की लिस्टिंग लखनऊ के खरीदारों को दिखने लगी है।" : "batch is now live for verified buyers."}
+                  <p className="text-xs text-[#576561]">
+                    {availableQty} kg {commodity} is now live for verified institutional buyers across Lucknow.
                   </p>
                 </div>
               ) : (
                 <form onSubmit={handlePublishLot} className="space-y-4">
                   {/* Commodity */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-800 mb-1.5 uppercase tracking-wide">
+                    <label className="block text-[11px] font-mono uppercase tracking-wider text-[#576561] mb-1.5">
                       {lang === "hi" ? "1. फसल चुनें" : "1. Select Produce Commodity"}
                     </label>
                     <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
@@ -568,10 +568,10 @@ export default function FarmerDashboardPage() {
                           key={item.id}
                           type="button"
                           onClick={() => selectCommodity(item.id)}
-                          className={`rounded-xl border p-2.5 text-xs font-bold transition flex items-center gap-2 ${
+                          className={`rounded-xl border p-2.5 text-xs font-semibold transition flex items-center gap-2 cursor-pointer ${
                             commodity === item.id
-                              ? "border-emerald-600 bg-emerald-50 text-emerald-800 shadow-xs"
-                              : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                              ? "border-[#173D32] bg-[#DCE8DD] text-[#173D32] shadow-2xs"
+                              : "border-[#E8E8E3] bg-white text-[#17201D] hover:border-[#D4D4CE]"
                           }`}
                         >
                           <span className="text-base">{item.icon}</span>
@@ -583,7 +583,7 @@ export default function FarmerDashboardPage() {
 
                   {/* Quality Grade */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-800 mb-1.5 uppercase tracking-wide">
+                    <label className="block text-[11px] font-mono uppercase tracking-wider text-[#576561] mb-1.5">
                       {lang === "hi" ? "2. गुणवत्ता ग्रेड चुनें" : "2. Quality Sorting & Grade"}
                     </label>
                     <div className="grid grid-cols-3 gap-2">
@@ -592,13 +592,13 @@ export default function FarmerDashboardPage() {
                           key={g}
                           type="button"
                           onClick={() => setGrade(g)}
-                          className={`rounded-xl border p-2.5 text-xs font-bold transition ${
+                          className={`rounded-xl border p-2.5 text-xs font-semibold transition cursor-pointer ${
                             grade === g
-                              ? "border-emerald-600 bg-emerald-50 text-emerald-800 shadow-xs"
-                              : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                              ? "border-[#173D32] bg-[#DCE8DD] text-[#173D32] shadow-2xs"
+                              : "border-[#E8E8E3] bg-white text-[#576561] hover:border-[#D4D4CE]"
                           }`}
                         >
-                          Grade {g} {g === "A" ? (lang === "hi" ? "(उत्कृष्ट)" : "(Premium)") : g === "B" ? (lang === "hi" ? "(मध्यम)" : "(Standard)") : (lang === "hi" ? "(थोक)" : "(Bulk)")}
+                          Grade {g} {g === "A" ? "(Premium)" : g === "B" ? "(Standard)" : "(Bulk)"}
                         </button>
                       ))}
                     </div>
@@ -607,7 +607,7 @@ export default function FarmerDashboardPage() {
                   {/* Quantity & Asking Price */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     <div>
-                      <label className="block text-xs font-bold text-slate-800 mb-1">
+                      <label className="block text-[11px] font-medium text-[#17201D] mb-1">
                         {lang === "hi" ? "फसल की कुल मात्रा (किलो में)" : "Batch Quantity (kg)"}
                       </label>
                       <input
@@ -616,11 +616,11 @@ export default function FarmerDashboardPage() {
                         max={50000}
                         value={availableQty}
                         onChange={(e) => setAvailableQty(Number(e.target.value))}
-                        className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-bold text-slate-900 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 focus:outline-none"
+                        className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3.5 py-2.5 text-sm font-bold text-[#17201D] focus:border-[#173D32] focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-800 mb-1">
+                      <label className="block text-[11px] font-medium text-[#17201D] mb-1">
                         {lang === "hi" ? "मांगा गया भाव (₹/किलो)" : "Asking Price (₹/kg)"}
                       </label>
                       <input
@@ -629,14 +629,14 @@ export default function FarmerDashboardPage() {
                         max={500}
                         value={askingPrice}
                         onChange={(e) => setAskingPrice(Number(e.target.value))}
-                        className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-bold text-emerald-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 focus:outline-none"
+                        className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3.5 py-2.5 text-sm font-bold text-[#C99B43] focus:border-[#173D32] focus:outline-none"
                       />
                     </div>
                   </div>
 
                   {/* Quality Notes */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-800 mb-1">
+                    <label className="block text-[11px] font-medium text-[#17201D] mb-1">
                       {lang === "hi" ? "फसल एवं तुड़ाई विवरण" : "Quality Notes & Harvest Details"}
                     </label>
                     <input
@@ -644,7 +644,7 @@ export default function FarmerDashboardPage() {
                       value={qualityNotes}
                       onChange={(e) => setQualityNotes(e.target.value)}
                       placeholder="उदा. आज सुबह की ताज़ा तुड़ाई, छंटाई की हुई"
-                      className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-medium text-slate-800 focus:border-emerald-500 focus:outline-none"
+                      className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3.5 py-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none"
                     />
                   </div>
 
@@ -653,7 +653,7 @@ export default function FarmerDashboardPage() {
                     <button
                       type="submit"
                       disabled={publishing}
-                      className="w-full rounded-xl bg-emerald-600 py-3.5 text-sm font-bold text-white hover:bg-emerald-700 transition shadow-xs disabled:opacity-50 cursor-pointer"
+                      className="w-full rounded-xl bg-[#173D32] py-3 text-xs font-semibold text-white hover:bg-[#0F2820] transition shadow-xs disabled:opacity-50 cursor-pointer active:scale-99"
                     >
                       {publishing
                         ? (lang === "hi" ? "फसल लिस्ट हो रही है..." : "Publishing Lot...")
@@ -675,33 +675,26 @@ export default function FarmerDashboardPage() {
           </div>
         )}
 
-        {/* TAB 3: WHO BOUGHT MY PRODUCE & DRIVER DETAILS */}
+        {/* TAB 3: WHO BOUGHT MY PRODUCE & ORDERS */}
         {activeTab === "orders" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Orders List */}
             <div className="lg:col-span-5 space-y-3.5">
-              <div className="flex items-center justify-between border-b border-slate-200 pb-2">
-                <h3 className="text-xl font-bold tracking-tight text-slate-900">
+              <div className="flex items-center justify-between border-b border-[#E8E8E3] pb-2">
+                <h3 className="font-serif text-xl text-[#17201D]">
                   {lang === "hi" ? `खरीदारों के ऑर्डर (${orders.length})` : `Buyer Commitments (${orders.length})`}
                 </h3>
-                <span className="text-xs font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
-                  {lang === "hi" ? "लाइव ऑर्डर" : "Live Orders"}
+                <span className="text-xs font-mono font-semibold text-[#173D32] bg-[#DCE8DD] px-2.5 py-0.5 rounded-full">
+                  Live Orders
                 </span>
               </div>
 
               {orders.length === 0 ? (
-                /* Pastel Empty State */
-                <div className="rounded-xl border-2 border-dashed border-slate-200 bg-white p-8 text-center text-xs text-slate-500 space-y-2">
-                  <div className="mx-auto w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+                <div className="rounded-2xl border border-dashed border-[#E8E8E3] bg-white p-8 text-center text-xs text-[#576561] space-y-2">
+                  <div className="mx-auto w-12 h-12 rounded-full bg-[#F7F5EF] flex items-center justify-center text-[#576561]">
                     <ShoppingBag className="h-6 w-6" />
                   </div>
-                  <p className="font-bold text-sm text-slate-900">
+                  <p className="font-serif text-base text-[#17201D]">
                     {lang === "hi" ? "अभी कोई नया ऑर्डर नहीं मिला है" : "No buyer orders received yet"}
-                  </p>
-                  <p className="max-w-xs mx-auto">
-                    {lang === "hi"
-                      ? "जैसे ही कोई खरीदार आपकी फसल बुक करेगा, उसका नाम, गाड़ी और ड्राइवर का फोन नंबर यहां दिखेगा।"
-                      : "Once a buyer reserves your crop, procurement details and assigned driver logistics will appear here."}
                   </p>
                 </div>
               ) : (
@@ -709,63 +702,60 @@ export default function FarmerDashboardPage() {
                   <div
                     key={ord.id}
                     onClick={() => setSelectedOrder(ord)}
-                    className={`editorial-card cursor-pointer p-4 space-y-2.5 transition bg-white ${
+                    className={`editorial-card cursor-pointer p-4 space-y-2.5 transition bg-white rounded-2xl border ${
                       selectedOrder?.id === ord.id
-                        ? "border-emerald-500 bg-emerald-50/40 ring-1 ring-emerald-500"
-                        : "hover:border-slate-300"
+                        ? "border-[#173D32] bg-[#DCE8DD]/20 ring-1 ring-[#173D32]/30"
+                        : "border-[#E8E8E3] hover:border-[#D4D4CE]"
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-slate-900 text-xs">
+                      <span className="font-semibold text-[#17201D] text-xs">
                         Order #{ord.id} • {ord.lot_detail?.commodity?.toUpperCase()} (Grade {ord.lot_detail?.grade})
                       </span>
-                      <span className="rounded-md bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold text-emerald-800 uppercase">
+                      <span className="rounded-md bg-[#DCE8DD] px-2 py-0.5 text-[10px] font-bold text-[#173D32] uppercase">
                         {ord.status_display}
                       </span>
                     </div>
 
-                    {/* Buyer Organization Details */}
-                    <div className="rounded-lg bg-slate-50 p-2.5 border border-slate-200 space-y-1 text-xs">
+                    <div className="rounded-xl bg-[#F7F5EF] p-2.5 border border-[#E8E8E3] space-y-1 text-xs">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-slate-800 flex items-center gap-1.5">
-                          <ShoppingBag className="h-3.5 w-3.5 text-emerald-600" />
+                        <span className="font-semibold text-[#17201D] flex items-center gap-1.5">
+                          <ShoppingBag className="h-3.5 w-3.5 text-[#173D32]" />
                           <span>{ord.buyer_org || "Fresh Mart Procurement Kitchen"}</span>
                         </span>
-                        <span className="text-[11px] font-semibold text-slate-500">{ord.buyer_name || "Ankit Sharma"}</span>
+                        <span className="text-[11px] text-[#576561]">{ord.buyer_name || "Ankit Sharma"}</span>
                       </div>
-                      <p className="text-[11px] font-semibold text-emerald-700 flex items-center gap-1">
+                      <p className="text-[11px] font-medium text-[#173D32] flex items-center gap-1">
                         <Phone className="h-3 w-3" />
                         <span>{ord.buyer_phone || "+91-9876543210"}</span>
                       </p>
                     </div>
 
-                    {/* Assigned Logistics Fleet & Driver */}
-                    <div className="rounded-lg bg-slate-50 p-2.5 border border-slate-200 text-xs space-y-0.5">
-                      <span className="text-[10px] uppercase font-bold text-slate-500 flex items-center gap-1">
-                        <Truck className="h-3.5 w-3.5 text-emerald-600" />
-                        <span>{lang === "hi" ? "वाहन एवं ड्राइवर विवरण" : "Assigned Fleet Logistics"}</span>
+                    <div className="rounded-xl bg-[#F7F5EF] p-2.5 border border-[#E8E8E3] text-xs space-y-0.5">
+                      <span className="text-[10px] uppercase font-mono font-semibold text-[#576561] flex items-center gap-1">
+                        <Truck className="h-3.5 w-3.5 text-[#173D32]" />
+                        <span>Assigned Fleet Logistics</span>
                       </span>
-                      <p className="font-bold text-slate-900">
+                      <p className="font-semibold text-[#17201D]">
                         {ord.driver_name || "Suresh Chauhan"} ({ord.driver_phone || "+91-9876543212"})
                       </p>
-                      <p className="text-[11px] font-medium text-slate-500">
+                      <p className="text-[11px] text-[#576561]">
                         {ord.vehicle_info || "Tata Ace Gold (UP 32 TA 4092)"}
                       </p>
                     </div>
 
-                    {/* Order Financials */}
-                    <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                    <div className="pt-2 border-t border-[#E8E8E3] flex items-center justify-between text-xs">
                       <div>
-                        <span className="text-[10px] font-bold text-slate-500 block uppercase">
-                          {lang === "hi" ? "मात्रा" : "Quantity"}
+                        <span className="text-[9px] font-mono text-[#576561] block uppercase font-semibold">
+                          Quantity
                         </span>
-                        <span className="font-bold text-sm text-slate-900">{ord.requested_qty} kg</span>
+                        <span className="font-bold text-sm text-[#17201D]">{ord.requested_qty} kg</span>
                       </div>
                       <div className="text-right">
-                        <span className="text-[10px] font-bold text-slate-500 block uppercase">
-                          {lang === "hi" ? "कुल भुगतान" : "Net Realization"}
+                        <span className="text-[9px] font-mono text-[#576561] block uppercase font-semibold">
+                          Net Realization
                         </span>
-                        <span className="font-bold text-base text-emerald-700">
+                        <span className="font-bold text-base text-[#C99B43]">
                           ₹{Math.round(ord.requested_qty * ord.agreed_price * 0.93).toLocaleString("en-IN")}
                         </span>
                       </div>
@@ -790,7 +780,7 @@ export default function FarmerDashboardPage() {
                   )}
                 </>
               ) : (
-                <div className="editorial-card p-12 text-center text-xs font-semibold text-slate-500 bg-white">
+                <div className="editorial-card p-12 text-center text-xs font-semibold text-[#576561] bg-white rounded-2xl border border-[#E8E8E3]">
                   {lang === "hi" ? "विस्तृत विवरण देखने के लिए बाईं ओर से कोई ऑर्डर चुनें।" : "Select an order on the left to track logistics and payment."}
                 </div>
               )}
@@ -801,26 +791,26 @@ export default function FarmerDashboardPage() {
         {/* TAB 4: MY FARMS MANAGEMENT */}
         {activeTab === "farms" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-6 editorial-card p-6 sm:p-7 space-y-4 bg-white">
-              <div className="border-b border-slate-100 pb-3">
-                <h3 className="text-xl font-bold tracking-tight text-slate-900">
+            <div className="lg:col-span-6 editorial-card p-6 sm:p-7 space-y-4 bg-white rounded-2xl border border-[#E8E8E3]">
+              <div className="border-b border-[#E8E8E3] pb-3">
+                <h3 className="font-serif text-2xl text-[#17201D]">
                   {lang === "hi" ? "नया खेत / प्लॉट जोड़ें" : "Register Farm Plot"}
                 </h3>
-                <p className="text-xs font-normal text-slate-500">
-                  {lang === "hi" ? "अपने खेत का स्थान दर्ज करें ताकि खरीदार और ड्राइवर आसानी से पहुंच सकें।" : "Add your agricultural land coordinates in Lucknow to enable fast routing."}
+                <p className="text-xs text-[#576561] font-sans">
+                  Add your agricultural land coordinates in Lucknow to enable fast routing.
                 </p>
               </div>
 
               {farmCreatedMsg && (
-                <div className="rounded-lg bg-emerald-50 p-3 text-xs font-bold text-emerald-800 flex items-center gap-2 border border-emerald-200">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                <div className="rounded-xl bg-[#DCE8DD]/60 p-3 text-xs font-semibold text-[#173D32] flex items-center gap-2 border border-[#DCE8DD]">
+                  <CheckCircle2 className="h-4 w-4 text-[#173D32]" />
                   <span>{farmCreatedMsg}</span>
                 </div>
               )}
 
               <form onSubmit={handleCreateFarm} className="space-y-3.5 text-xs">
                 <div>
-                  <label className="block font-bold text-slate-800 mb-1">
+                  <label className="block font-medium text-[#17201D] mb-1">
                     {lang === "hi" ? "खेत / जमीन का नाम" : "Farm / Land Name"}
                   </label>
                   <input
@@ -829,40 +819,40 @@ export default function FarmerDashboardPage() {
                     value={farmName}
                     onChange={(e) => setFarmName(e.target.value)}
                     placeholder="उदा. मलिहाबाद आम का बाग"
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-900 focus:border-emerald-500 focus:outline-none"
+                    className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-semibold text-[#17201D] focus:border-[#173D32] focus:outline-none"
                   />
                 </div>
 
                 {/* GPS Capture & Village Presets */}
-                <div className="rounded-lg bg-slate-50 p-3.5 border border-slate-200 space-y-2.5">
+                <div className="rounded-xl bg-[#F7F5EF] p-3.5 border border-[#E8E8E3] space-y-2.5">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="text-xs font-bold text-slate-800 flex items-center gap-1">
-                      <MapPin className="h-3.5 w-3.5 text-emerald-600" />
+                    <span className="text-xs font-medium text-[#17201D] flex items-center gap-1">
+                      <MapPin className="h-3.5 w-3.5 text-[#173D32]" />
                       <span>{lang === "hi" ? "खेत का जीपीएस लोकेशन" : "Farm GPS Location"}</span>
                     </span>
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
                         onClick={() => setShowFarmLocationPicker(true)}
-                        className="rounded-lg bg-white border border-slate-200 px-2.5 py-1 text-xs font-bold text-emerald-800 hover:bg-slate-50 transition flex items-center gap-1 shadow-xs"
+                        className="rounded-lg bg-white border border-[#E8E8E3] px-2.5 py-1 text-xs font-semibold text-[#173D32] hover:bg-[#F7F5EF] transition flex items-center gap-1 shadow-2xs cursor-pointer"
                       >
-                        <span>🗺️ {lang === "hi" ? "नक्शे से चुनें" : "Pick on Map"}</span>
+                        <span>🗺️ Pick on Map</span>
                       </button>
                       <button
                         type="button"
                         onClick={handleGetGpsLocation}
                         disabled={capturingGps}
-                        className="rounded-lg bg-emerald-600 px-3 py-1 text-xs font-bold text-white hover:bg-emerald-700 transition flex items-center gap-1 shadow-xs"
+                        className="rounded-lg bg-[#173D32] px-3 py-1 text-xs font-semibold text-white hover:bg-[#0F2820] transition flex items-center gap-1 shadow-xs cursor-pointer"
                       >
                         <Navigation className="h-3 w-3" />
-                        <span>{capturingGps ? (lang === "hi" ? "खोज रहे हैं..." : "Acquiring...") : (lang === "hi" ? "📍 लाइव GPS" : "📍 Live GPS")}</span>
+                        <span>{capturingGps ? "Acquiring..." : "📍 Live GPS"}</span>
                       </button>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-                      {lang === "hi" ? "लखनऊ का नजदीकी गाँव चुनें:" : "Quick Select Lucknow Village Hub:"}
+                    <label className="block text-[11px] font-medium text-[#576561] mb-1">
+                      Quick Select Lucknow Village Hub:
                     </label>
                     <div className="grid grid-cols-3 gap-1.5">
                       {[
@@ -877,10 +867,10 @@ export default function FarmerDashboardPage() {
                           key={preset.name}
                           type="button"
                           onClick={() => handleSelectVillagePreset(preset.name, preset.lat, preset.lng)}
-                          className={`rounded-md p-1.5 text-xs font-bold border transition text-center truncate ${
+                          className={`rounded-lg p-1.5 text-xs font-semibold border transition text-center truncate cursor-pointer ${
                             farmVillage === preset.name
-                              ? "border-emerald-600 bg-emerald-50 text-emerald-800"
-                              : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                              ? "border-[#173D32] bg-[#DCE8DD] text-[#173D32]"
+                              : "border-[#E8E8E3] bg-white text-[#576561] hover:border-[#D4D4CE]"
                           }`}
                         >
                           {preset.name}
@@ -892,7 +882,7 @@ export default function FarmerDashboardPage() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-bold text-slate-800 mb-1">
+                    <label className="block font-medium text-[#17201D] mb-1">
                       {lang === "hi" ? "गाँव / ब्लॉक" : "Village / Tehsil"}
                     </label>
                     <input
@@ -901,11 +891,11 @@ export default function FarmerDashboardPage() {
                       value={farmVillage}
                       onChange={(e) => setFarmVillage(e.target.value)}
                       placeholder="उदा. बख्शी का तालाब"
-                      className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-900 focus:border-emerald-500 focus:outline-none"
+                      className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-semibold text-[#17201D] focus:border-[#173D32] focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block font-bold text-slate-800 mb-1">
+                    <label className="block font-medium text-[#17201D] mb-1">
                       {lang === "hi" ? "खेत का क्षेत्रफल (एकड़)" : "Farm Area (Acres)"}
                     </label>
                     <input
@@ -913,7 +903,7 @@ export default function FarmerDashboardPage() {
                       step="0.1"
                       value={farmAcres}
                       onChange={(e) => setFarmAcres(Number(e.target.value))}
-                      className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-900 focus:border-emerald-500 focus:outline-none"
+                      className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-semibold text-[#17201D] focus:border-[#173D32] focus:outline-none"
                     />
                   </div>
                 </div>
@@ -922,9 +912,9 @@ export default function FarmerDashboardPage() {
                   <button
                     type="submit"
                     disabled={creatingFarm}
-                    className="w-full rounded-xl bg-emerald-600 py-3 text-xs font-bold text-white hover:bg-emerald-700 transition shadow-xs cursor-pointer"
+                    className="w-full rounded-xl bg-[#173D32] py-2.5 text-xs font-semibold text-white hover:bg-[#0F2820] transition shadow-xs cursor-pointer active:scale-99"
                   >
-                    {creatingFarm ? (lang === "hi" ? "खेत जुड़ रहा है..." : "Saving Farm...") : (lang === "hi" ? "+ खेत सुरक्षित करें" : "+ Save Farm Gate Location")}
+                    {creatingFarm ? "Saving Farm..." : "+ Save Farm Gate Location"}
                   </button>
                 </div>
               </form>
@@ -932,29 +922,29 @@ export default function FarmerDashboardPage() {
 
             {/* List of Registered Farms */}
             <div className="lg:col-span-6 space-y-3">
-              <h3 className="text-xl font-bold tracking-tight text-slate-900">
-                {lang === "hi" ? `आपके पंजीकृत खेत (${farms.length})` : `Your Registered Farms (${farms.length})`}
+              <h3 className="font-serif text-xl text-[#17201D]">
+                Your Registered Farms ({farms.length})
               </h3>
 
               {farms.length === 0 ? (
-                <div className="editorial-card p-8 text-center text-xs font-semibold text-slate-500 bg-white">
-                  {lang === "hi" ? "अभी तक कोई खेत पंजीकृत नहीं है। बाईं ओर से अपना पहला खेत जोड़ें।" : "No farms registered yet. Use the form on the left to add your first land plot."}
+                <div className="editorial-card p-8 text-center text-xs font-semibold text-[#576561] bg-white rounded-2xl border border-[#E8E8E3]">
+                  No farms registered yet. Use the form on the left to add your first land plot.
                 </div>
               ) : (
                 <div className="space-y-2.5">
                   {farms.map((f: any) => (
-                    <div key={f.id} className="editorial-card p-4 space-y-1.5 bg-white">
+                    <div key={f.id} className="editorial-card p-4 space-y-1.5 bg-white rounded-2xl border border-[#E8E8E3]">
                       <div className="flex items-center justify-between">
-                        <h4 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
-                          <Sprout className="h-4 w-4 text-emerald-600" />
+                        <h4 className="font-semibold text-[#17201D] text-sm flex items-center gap-1.5">
+                          <Sprout className="h-4 w-4 text-[#173D32]" />
                           <span>{f.name}</span>
                         </h4>
-                        <span className="rounded-md bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-xs font-bold text-emerald-800">
-                          {f.total_area_acres} {lang === "hi" ? "एकड़" : "Acres"}
+                        <span className="rounded-md bg-[#DCE8DD] px-2 py-0.5 text-xs font-bold text-[#173D32]">
+                          {f.total_area_acres} Acres
                         </span>
                       </div>
-                      <p className="text-xs font-medium text-slate-500 flex items-center gap-1">
-                        <MapPin className="h-3.5 w-3.5 text-emerald-600" />
+                      <p className="text-xs text-[#576561] flex items-center gap-1">
+                        <MapPin className="h-3.5 w-3.5 text-[#173D32]" />
                         <span>{f.village}, {f.district}</span>
                       </p>
                     </div>
@@ -968,17 +958,17 @@ export default function FarmerDashboardPage() {
         {/* TAB 5: PAYOUTS & SETTLEMENTS */}
         {activeTab === "wallet" && (
           <div className="space-y-6">
-            <div className="editorial-card p-6 sm:p-7 space-y-5 bg-white">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+            <div className="editorial-card p-6 sm:p-7 space-y-5 bg-white rounded-2xl border border-[#E8E8E3]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E8E8E3] pb-5">
                 <div>
-                  <span className="text-xs uppercase tracking-wider font-bold text-emerald-800">
-                    {lang === "hi" ? "किसान खाता एवं भुगतान" : "Farmer Settlement Ledger"}
+                  <span className="text-xs uppercase font-mono tracking-wider font-semibold text-[#173D32]">
+                    Farmer Settlement Ledger
                   </span>
-                  <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mt-0.5">
-                    {formatCurrency(readySettlementVal > 0 ? readySettlementVal : 45000)} {lang === "hi" ? "भुगतान के लिए तैयार" : "ready for payout"}
+                  <h2 className="font-serif text-2xl sm:text-3xl text-[#17201D] mt-0.5">
+                    {formatCurrency(readySettlementVal > 0 ? readySettlementVal : 45000)} ready for payout
                   </h2>
-                  <p className="text-xs font-medium text-slate-500 mt-0.5">
-                    {lang === "hi" ? "डिलीवरी के 24 घंटे के अंदर सीधे आपके बैंक खाते / UPI में सुरक्षित हस्तांतरण।" : "Direct automated disbursal to Bank Account / UPI within 24 hours of delivery proof."}
+                  <p className="text-xs text-[#576561] mt-0.5 font-sans">
+                    Direct automated disbursal to Bank Account / UPI within 24 hours of delivery proof.
                   </p>
                 </div>
 
@@ -986,22 +976,22 @@ export default function FarmerDashboardPage() {
                   <button
                     type="button"
                     onClick={() => alert("Statement downloaded (PDF).")}
-                    className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-800 hover:bg-slate-50 transition shadow-xs"
+                    className="rounded-xl border border-[#E8E8E3] bg-white px-4 py-2 text-xs font-semibold text-[#17201D] hover:bg-[#F7F5EF] transition shadow-2xs cursor-pointer"
                   >
-                    📄 {lang === "hi" ? "खाता विवरण डाउनलोड करें (PDF)" : "Download Statement (PDF)"}
+                    📄 Download Statement (PDF)
                   </button>
                 </div>
               </div>
 
               {/* Settlement History Cards */}
               <div className="space-y-3">
-                <h4 className="text-lg font-bold tracking-tight text-slate-900">
-                  {lang === "hi" ? "ऑर्डर भुगतान रसीदें" : "Order Payout Invoices"}
+                <h4 className="font-serif text-lg text-[#17201D]">
+                  Order Payout Invoices
                 </h4>
 
                 {orders.length === 0 ? (
-                  <p className="text-xs font-medium text-slate-500">
-                    {lang === "hi" ? "अभी कोई पूर्ण डिलीवरी नहीं है।" : "No completed deliveries yet."}
+                  <p className="text-xs text-[#576561]">
+                    No completed deliveries yet.
                   </p>
                 ) : (
                   orders.map((ord) => (

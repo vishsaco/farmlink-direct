@@ -185,6 +185,8 @@ export interface MandiComparison {
   price_per_kg: number;
   distance_km: number;
   status: string;
+  is_real_price?: boolean;
+  price_source?: string;
 }
 
 export interface PriceGuidance {
