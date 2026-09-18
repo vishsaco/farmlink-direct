@@ -61,96 +61,96 @@ export function OrderTimelineCard({ order, onRefresh }: OrderTimelineCardProps) 
   const currentStepIndex = ORDER_STEPS.findIndex((s) => s.status === order.status);
 
   return (
-    <div className="editorial-card p-5 space-y-5 bg-white border border-[#E8E8E3] rounded-2xl shadow-xs">
+    <div className="editorial-card p-6 space-y-6 bg-white border border-[#E4E2DD] rounded-[24px] shadow-xs">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E8E8E3] pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E4E2DD] pb-4">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="font-serif text-2xl text-[#17201D]">
+          <div className="flex items-center gap-2.5">
+            <span className="font-serif text-2xl font-normal text-[#262238]">
               Order #{order.id}
             </span>
-            <span className="rounded-md bg-[#DCE8DD] border border-[#173D32]/20 px-2.5 py-0.5 text-[10px] font-semibold text-[#173D32] uppercase">
+            <span className="rounded-full bg-[#E8E4F2] border border-[#262238]/10 px-3 py-0.5 text-[11px] font-medium text-[#262238] uppercase tracking-wider">
               {order.status_display}
             </span>
           </div>
-          <p className="text-xs text-[#5C584E] mt-0.5">
+          <p className="text-xs text-[#737184] mt-1">
             {order.requested_qty} kg {order.lot_detail?.commodity} (Grade {order.lot_detail?.grade}) @ ₹{order.agreed_price}/kg
           </p>
         </div>
 
         <div className="sm:text-right">
-          <p className="font-serif text-2xl text-[#173D32]">
+          <p className="font-serif text-2xl font-normal text-[#262238]">
             ₹{(order.requested_qty * order.agreed_price).toLocaleString("en-IN")}
           </p>
-          <p className="text-[10px] text-[#5C584E] uppercase font-semibold">Total Order Commitment</p>
+          <p className="text-[10px] text-[#737184] uppercase tracking-wider font-medium">Total Order Commitment</p>
         </div>
       </div>
 
       {/* 3-Column Detailed Fulfillment Specs */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
         {/* Origin Farm */}
-        <div className="rounded-2xl bg-[#F7F5EF] p-4 border border-[#E8E8E3] space-y-1 text-xs">
-          <span className="text-[10px] uppercase font-semibold text-[#5C584E] flex items-center gap-1">
-            <Sprout className="h-3.5 w-3.5 text-[#173D32]" />
+        <div className="rounded-[20px] bg-[#F6F5F1] p-4 border border-[#E4E2DD] space-y-1.5 text-xs">
+          <span className="text-[10px] uppercase font-semibold text-[#737184] tracking-wider flex items-center gap-1.5">
+            <Sprout className="h-3.5 w-3.5 text-[#718A68]" />
             <span>Origin Farm / Kisan</span>
           </span>
-          <p className="font-semibold text-[#17201D] text-sm">
+          <p className="font-medium text-[#262238] text-sm">
             {order.farmer_name || order.lot_detail?.created_by_name || "Vikas Yadav"}
           </p>
-          <p className="text-[#5C584E] flex items-center gap-1">
-            <MapPin className="h-3 w-3 text-[#173D32]" />
+          <p className="text-[#737184] flex items-center gap-1.5">
+            <MapPin className="h-3 w-3 text-[#718A68]" />
             <span>{order.farmer_village || order.lot_detail?.farm_detail?.village || "Bakshi Ka Talab"}, Lucknow</span>
           </p>
-          <p className="text-[#5C584E] flex items-center gap-1">
-            <Phone className="h-3 w-3 text-[#173D32]" />
+          <p className="text-[#737184] flex items-center gap-1.5">
+            <Phone className="h-3 w-3 text-[#718A68]" />
             <span>{order.farmer_phone || "+91-9876543211"}</span>
           </p>
         </div>
 
         {/* Assigned Logistics Fleet & Driver */}
-        <div className="rounded-2xl bg-[#F7F5EF] p-4 border border-[#E8E8E3] space-y-1 text-xs">
-          <span className="text-[10px] uppercase font-semibold text-[#5C584E] flex items-center gap-1">
-            <Truck className="h-3.5 w-3.5 text-[#173D32]" />
+        <div className="rounded-[20px] bg-[#F6F5F1] p-4 border border-[#E4E2DD] space-y-1.5 text-xs">
+          <span className="text-[10px] uppercase font-semibold text-[#737184] tracking-wider flex items-center gap-1.5">
+            <Truck className="h-3.5 w-3.5 text-[#262238]" />
             <span>Logistics Dispatch</span>
           </span>
-          <p className="font-semibold text-[#17201D] text-sm">
+          <p className="font-medium text-[#262238] text-sm">
             {order.driver_name || "Suresh Chauhan"}
           </p>
-          <p className="text-[#5C584E]">
+          <p className="text-[#737184]">
             {order.vehicle_info || "Tata Ace (UP 32 TA 4092)"}
           </p>
-          <p className="text-[#5C584E] flex items-center gap-1">
-            <Phone className="h-3 w-3 text-[#173D32]" />
+          <p className="text-[#737184] flex items-center gap-1.5">
+            <Phone className="h-3 w-3 text-[#718A68]" />
             <span>{order.driver_phone || "+91-9876543212"}</span>
           </p>
         </div>
 
         {/* Delivery OTP & Destination */}
-        <div className="rounded-2xl bg-[#DCE8DD]/40 p-4 border border-[#173D32]/20 space-y-1 text-xs flex flex-col justify-between">
+        <div className="rounded-[20px] bg-[#E8E4F2]/50 p-4 border border-[#262238]/10 space-y-1.5 text-xs flex flex-col justify-between">
           <div>
-            <span className="text-[10px] uppercase font-semibold text-[#173D32] flex items-center gap-1">
-              <KeyRound className="h-3.5 w-3.5 text-[#173D32]" />
+            <span className="text-[10px] uppercase font-semibold text-[#262238] tracking-wider flex items-center gap-1.5">
+              <KeyRound className="h-3.5 w-3.5 text-[#718A68]" />
               <span>Buyer Delivery OTP</span>
             </span>
             <div className="mt-1 flex items-baseline gap-2">
-              <span className="font-mono text-2xl font-black text-[#173D32] tracking-wider">
+              <span className="font-mono text-2xl font-semibold text-[#262238] tracking-wider">
                 {order.delivery_otp || "8842"}
               </span>
-              <span className="text-[10px] text-[#5C584E]">(Share with driver)</span>
+              <span className="text-[10px] text-[#737184]">(Share with driver)</span>
             </div>
           </div>
-          <p className="text-[11px] text-[#5C584E] truncate">
+          <p className="text-[11px] text-[#737184] truncate">
             Dest: {order.delivery_address || "Hazratganj Central Receiving Station, Lucknow"}
           </p>
         </div>
       </div>
 
       {/* Horizontal Process Stepper */}
-      <div className="py-2">
+      <div className="py-3">
         <div className="relative flex items-center justify-between">
-          <div className="absolute left-0 top-1/2 h-0.5 w-full -translate-y-1/2 bg-[#E8E8E3]" />
+          <div className="absolute left-0 top-1/2 h-0.5 w-full -translate-y-1/2 bg-[#E4E2DD]" />
           <div
-            className="absolute left-0 top-1/2 h-0.5 -translate-y-1/2 bg-[#173D32] transition-all duration-700 ease-out"
+            className="absolute left-0 top-1/2 h-0.5 -translate-y-1/2 bg-[#262238] transition-all duration-700 ease-out"
             style={{
               width: `${Math.max(
                 0,
@@ -166,23 +166,23 @@ export function OrderTimelineCard({ order, onRefresh }: OrderTimelineCardProps) 
             return (
               <div key={step.status} className="relative z-10 flex flex-col items-center">
                 <div
-                  className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold transition-all duration-300 ${
+                  className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold transition-all duration-300 ${
                     isCurrent
-                      ? "bg-[#173D32] text-white ring-4 ring-[#DCE8DD] animate-active-halo scale-105"
+                      ? "bg-[#262238] text-white ring-4 ring-[#E8E4F2] scale-105"
                       : isCompleted
-                      ? "bg-[#173D32] text-white"
-                      : "bg-white text-[#5C584E] border border-[#E8E8E3]"
+                      ? "bg-[#262238] text-white"
+                      : "bg-white text-[#737184] border border-[#E4E2DD]"
                   }`}
                 >
-                  {isCompleted ? <CheckCircle2 className="h-4 w-4 animate-line-draw" /> : idx + 1}
+                  {isCompleted ? <CheckCircle2 className="h-4 w-4" /> : idx + 1}
                 </div>
                 <span
-                  className={`mt-2 text-[10px] font-semibold transition text-center max-w-[65px] leading-tight ${
+                  className={`mt-2 text-[10px] transition text-center max-w-[65px] leading-tight ${
                     isCurrent
-                      ? "text-[#173D32] font-bold"
+                      ? "text-[#262238] font-bold"
                       : isCompleted
-                      ? "text-[#17201D]"
-                      : "text-[#5C584E]"
+                      ? "text-[#262238] font-medium"
+                      : "text-[#737184]"
                   }`}
                 >
                   {step.label}
@@ -194,53 +194,53 @@ export function OrderTimelineCard({ order, onRefresh }: OrderTimelineCardProps) 
       </div>
 
       {/* Audit Log */}
-      <div className="pt-3.5 border-t border-[#E8E8E3] space-y-2.5">
-        <h5 className="text-[10px] font-semibold uppercase tracking-wider text-[#5C584E] flex items-center gap-1.5">
-          <ShieldCheck className="h-3.5 w-3.5 text-[#173D32]" />
+      <div className="pt-4 border-t border-[#E4E2DD] space-y-3">
+        <h5 className="text-[11px] font-medium uppercase tracking-wider text-[#737184] flex items-center gap-2">
+          <ShieldCheck className="h-4 w-4 text-[#718A68]" />
           <span>Immutable Audit Event Trail</span>
         </h5>
 
         {loading ? (
           <div className="space-y-2">
-            <div className="h-10 bg-[#F0EDE4] rounded-xl animate-pulse" />
+            <div className="h-12 bg-[#F6F5F1] rounded-[16px] animate-pulse" />
           </div>
         ) : timeline && timeline.timeline.length > 0 ? (
           <div className="space-y-2">
             {timeline.timeline.map((evt) => (
               <div
                 key={evt.id}
-                className="flex items-start justify-between rounded-2xl bg-[#F7F5EF] p-3 border border-[#E8E8E3] text-xs"
+                className="flex items-start justify-between rounded-[18px] bg-[#F6F5F1] p-3.5 border border-[#E4E2DD] text-xs"
               >
                 <div className="flex items-start gap-2.5">
-                  <div className="mt-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#173D32] text-white shrink-0">
+                  <div className="mt-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#262238] text-white shrink-0">
                     <CheckCircle2 className="h-3 w-3" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-[#17201D] capitalize">
+                      <span className="font-semibold text-[#262238] capitalize">
                         {evt.event_display}
                       </span>
                       {evt.has_otp && (
-                        <span className="flex items-center gap-1 rounded bg-[#DCE8DD] border border-[#173D32]/20 px-1.5 py-0.5 text-[10px] font-semibold text-[#173D32]">
-                          <KeyRound className="h-2.5 w-2.5" /> OTP Verified
+                        <span className="flex items-center gap-1 rounded-full bg-[#E8E4F2] border border-[#262238]/10 px-2 py-0.5 text-[10px] font-medium text-[#262238]">
+                          <KeyRound className="h-2.5 w-2.5 text-[#718A68]" /> OTP Verified
                         </span>
                       )}
                     </div>
-                    <p className="text-[11px] text-[#5C584E] mt-0.5 font-normal">
+                    <p className="text-[11px] text-[#737184] mt-0.5 font-normal">
                       {evt.note || "Handoff recorded successfully"}
                     </p>
                   </div>
                 </div>
 
-                <div className="text-right text-[10px] text-[#5C584E]">
-                  <p className="font-semibold text-[#17201D]">{evt.actor}</p>
+                <div className="text-right text-[10px] text-[#737184]">
+                  <p className="font-medium text-[#262238]">{evt.actor}</p>
                   <p>{formatDateTime(evt.timestamp)}</p>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-xs text-[#5C584E]">No events recorded yet.</p>
+          <p className="text-xs text-[#737184]">No events recorded yet.</p>
         )}
       </div>
     </div>

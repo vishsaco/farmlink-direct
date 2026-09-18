@@ -202,34 +202,34 @@ export default function BuyerMarketplacePage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#F7F5EF] text-[#17201D] flex flex-col selection:bg-[#DCE8DD] selection:text-[#173D32]">
+    <div className="min-h-screen bg-[#F6F5F1] text-[#262238] flex flex-col selection:bg-[#E8E4F2] selection:text-[#262238]">
       <Navbar />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 w-full space-y-6">
         {/* HEADER SECTION */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#E8E8E3] pb-5">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#E4E2DD] pb-5">
           <div>
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-[#173D32] uppercase tracking-wider mb-1">
-              <ShoppingBag className="h-3.5 w-3.5 text-[#173D32]" />
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#262238]/10 bg-[#E8E4F2] px-3.5 py-1 text-xs font-medium text-[#262238] uppercase tracking-wider mb-2">
+              <ShoppingBag className="h-3.5 w-3.5 text-[#718A68]" />
               <span>{t.buyerRole} • {t.lucknowCluster}</span>
             </div>
-            <h1 className="font-serif text-3xl sm:text-4xl text-[#17201D] font-normal tracking-tight">
+            <h1 className="font-serif text-3xl sm:text-4xl text-[#262238] font-normal tracking-tight">
               {t.buyerTitle}
             </h1>
-            <p className="text-xs sm:text-sm text-[#576561] font-sans mt-1 max-w-xl">
+            <p className="text-xs sm:text-sm text-[#737184] font-normal mt-1 max-w-xl">
               {t.buyerDesc}
             </p>
           </div>
 
           {/* VIEW SWITCHER PILLS */}
-          <div className="flex items-center gap-1.5 bg-white p-1 rounded-xl border border-[#E8E8E3] shadow-2xs shrink-0">
+          <div className="flex items-center gap-1.5 bg-white p-1 rounded-full border border-[#E4E2DD] shadow-xs shrink-0">
             <button
               type="button"
               onClick={() => setViewMode("list")}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-medium transition cursor-pointer ${
                 viewMode === "list"
-                  ? "bg-[#173D32] text-white shadow-xs"
-                  : "text-[#576561] hover:text-[#17201D]"
+                  ? "bg-[#262238] text-white shadow-xs"
+                  : "text-[#737184] hover:text-[#262238]"
               }`}
             >
               <List className="h-3.5 w-3.5" />
@@ -238,10 +238,10 @@ export default function BuyerMarketplacePage() {
             <button
               type="button"
               onClick={() => setViewMode("map")}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-medium transition cursor-pointer ${
                 viewMode === "map"
-                  ? "bg-[#173D32] text-white shadow-xs"
-                  : "text-[#576561] hover:text-[#17201D]"
+                  ? "bg-[#262238] text-white shadow-xs"
+                  : "text-[#737184] hover:text-[#262238]"
               }`}
             >
               <Map className="h-3.5 w-3.5" />
@@ -250,10 +250,10 @@ export default function BuyerMarketplacePage() {
             <button
               type="button"
               onClick={() => setViewMode("orders")}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-medium transition cursor-pointer ${
                 viewMode === "orders"
-                  ? "bg-[#173D32] text-white shadow-xs"
-                  : "text-[#576561] hover:text-[#17201D]"
+                  ? "bg-[#262238] text-white shadow-xs"
+                  : "text-[#737184] hover:text-[#262238]"
               }`}
             >
               <Clock className="h-3.5 w-3.5" />
@@ -266,17 +266,17 @@ export default function BuyerMarketplacePage() {
         {viewMode !== "orders" && (
           <div className="space-y-6">
             {/* SEARCH & REFINED FILTERS BAR */}
-            <div className="editorial-card p-4 sm:p-5 space-y-3.5 bg-white rounded-2xl border border-[#E8E8E3]">
+            <div className="p-4 sm:p-5 space-y-3.5 bg-white rounded-[24px] border border-[#E4E2DD] shadow-xs">
               <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
                 {/* Search input */}
                 <div className="md:col-span-4 relative">
-                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#576561]" />
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#737184]" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={lang === "hi" ? "फसल, ग्रेड, गाँव या किसान खोजें..." : "Search crop, grade, village, or farmer..."}
-                    className="w-full rounded-xl border border-[#E8E8E3] bg-[#F7F5EF]/40 pl-9 pr-3.5 py-2 text-xs font-medium text-[#17201D] placeholder:text-[#576561]/70 focus:border-[#173D32] focus:outline-none transition"
+                    className="w-full rounded-full border border-[#E4E2DD] bg-[#F6F5F1] pl-9 pr-4 py-2.5 text-xs text-[#262238] placeholder:text-[#737184] focus:bg-white focus:border-[#262238] focus:outline-none transition"
                   />
                 </div>
 
@@ -299,10 +299,10 @@ export default function BuyerMarketplacePage() {
                       key={c.id}
                       type="button"
                       onClick={() => setCommodity(c.id)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
+                      className={`px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition cursor-pointer ${
                         commodity === c.id
-                          ? "bg-[#173D32] text-white shadow-xs"
-                          : "bg-[#F7F5EF] border border-[#E8E8E3] text-[#17201D] hover:bg-[#E8E8E3]/60"
+                          ? "bg-[#262238] text-white shadow-xs"
+                          : "bg-[#F6F5F1] border border-[#E4E2DD] text-[#262238] hover:bg-[#E8E4F2]"
                       }`}
                     >
                       {c.label}
@@ -321,10 +321,10 @@ export default function BuyerMarketplacePage() {
                       key={g.id}
                       type="button"
                       onClick={() => setGrade(g.id)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
+                      className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition cursor-pointer ${
                         grade === g.id
-                          ? "border border-[#173D32] bg-[#DCE8DD] text-[#173D32]"
-                          : "border border-[#E8E8E3] bg-white text-[#576561] hover:text-[#17201D]"
+                          ? "bg-[#E8E4F2] text-[#262238] border border-[#262238]/20 shadow-xs"
+                          : "border border-[#E4E2DD] bg-white text-[#737184] hover:text-[#262238]"
                       }`}
                     >
                       {g.label}
@@ -345,7 +345,7 @@ export default function BuyerMarketplacePage() {
                   onSelectLot={handleOpenDetail}
                   height="480px"
                 />
-                <p className="text-center text-xs font-normal text-[#576561]">
+                <p className="text-center text-xs font-normal text-[#737184]">
                   {lang === "hi"
                     ? "लखनऊ के चारों ओर उपलब्ध फसलों का वास्तविक नक्शा। विवरण देखने और ऑर्डर करने के लिए किसी भी पिन पर क्लिक करें।"
                     : `Showing real-time farm supply plots around Lucknow within ${radiusKm} km. Click any pin to inspect batch details & reserve.`}
@@ -356,12 +356,12 @@ export default function BuyerMarketplacePage() {
             {/* 3-COLUMN DESKTOP / 1-COL MOBILE GRID (Produce Lot Cards) */}
             {viewMode === "list" && (
               <div>
-                <div className="flex items-center justify-between mb-4 text-xs font-medium text-[#576561]">
+                <div className="flex items-center justify-between mb-4 text-xs font-medium text-[#737184]">
                   <span>
                     {lang === "hi" ? "लखनऊ में उपलब्ध फसलें: " : "Showing "}
-                    <strong className="text-[#17201D] font-semibold">{filteredLots.length}</strong> {lang === "hi" ? "सत्यापित लॉट" : "verified produce lots"}
+                    <strong className="text-[#262238] font-semibold">{filteredLots.length}</strong> {lang === "hi" ? "सत्यापित लॉट" : "verified produce lots"}
                   </span>
-                  <span className="font-semibold text-[#173D32]">
+                  <span className="font-medium text-[#262238]">
                     {lang === "hi" ? "दूरी: सबसे नजदीक" : "Sorted by: Nearest Distance"}
                   </span>
                 </div>
@@ -369,16 +369,16 @@ export default function BuyerMarketplacePage() {
                 {loading ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {[1, 2, 3].map((i) => (
-                      <div key={i} className="h-64 rounded-2xl bg-white border border-[#E8E8E3] animate-pulse" />
+                      <div key={i} className="h-64 rounded-[24px] bg-white border border-[#E4E2DD] animate-pulse" />
                     ))}
                   </div>
                 ) : filteredLots.length === 0 ? (
                   /* Friendly Empty State */
-                  <div className="rounded-2xl border border-dashed border-[#E8E8E3] bg-white p-12 text-center text-xs text-[#576561] space-y-2">
-                    <div className="mx-auto w-12 h-12 rounded-full bg-[#DCE8DD]/50 flex items-center justify-center text-[#173D32]">
-                      <ShoppingBag className="h-6 w-6" />
+                  <div className="rounded-[28px] border border-dashed border-[#E4E2DD] bg-white p-12 text-center text-xs text-[#737184] space-y-3">
+                    <div className="mx-auto w-12 h-12 rounded-full bg-[#E8E4F2] flex items-center justify-center text-[#262238]">
+                      <ShoppingBag className="h-6 w-6 text-[#718A68]" />
                     </div>
-                    <p className="font-serif text-base text-[#17201D]">
+                    <p className="font-serif text-lg text-[#262238] font-normal">
                       {lang === "hi" ? "कोई फसल नहीं मिली।" : "No lots match your filters"}
                     </p>
                     <p>
@@ -392,62 +392,62 @@ export default function BuyerMarketplacePage() {
                       return (
                         <div
                           key={lot.id}
-                          className="editorial-card-interactive group flex flex-col justify-between overflow-hidden cursor-pointer bg-white rounded-2xl border border-[#E8E8E3]"
+                          className="group flex flex-col justify-between overflow-hidden cursor-pointer bg-white rounded-[24px] border border-[#E4E2DD] shadow-xs hover:shadow-md transition"
                           onClick={() => handleOpenDetail(lot)}
                         >
                           <div>
                             {/* Card Image */}
-                            <div className="relative h-44 w-full overflow-hidden bg-[#F7F5EF]">
+                            <div className="relative h-48 w-full overflow-hidden bg-[#F6F5F1]">
                               <img
                                 src={img}
                                 alt={lot.commodity}
-                                className="photo-zoom h-full w-full object-cover"
+                                className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
                               />
                               <div className="absolute top-3 left-3">
-                                <span className="rounded-md bg-[#173D32] px-2 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider shadow-xs">
+                                <span className="rounded-full bg-[#262238]/90 backdrop-blur-xs px-3 py-1 text-[10px] font-medium text-white uppercase tracking-wider shadow-xs">
                                   Grade {lot.grade}
                                 </span>
                               </div>
                               <div className="absolute bottom-3 right-3">
-                                <span className="rounded-md bg-[#17201D]/80 px-2 py-0.5 text-[10px] font-medium text-white backdrop-blur-xs">
+                                <span className="rounded-full bg-[#262238]/80 px-2.5 py-0.5 text-[10px] font-medium text-white backdrop-blur-xs">
                                   {lot.distance_km ? `${lot.distance_km} km away` : "Lucknow Cluster"}
                                 </span>
                               </div>
                             </div>
 
                             {/* Card Content */}
-                            <div className="p-4 space-y-3">
+                            <div className="p-5 space-y-3.5">
                               <div className="flex items-start justify-between gap-2">
                                 <div>
-                                  <h3 className="font-serif text-lg text-[#17201D] capitalize group-hover:text-[#173D32] transition">
+                                  <h3 className="font-serif text-xl text-[#262238] font-normal capitalize">
                                     {lot.commodity}
                                   </h3>
-                                  <p className="text-xs font-medium text-[#576561] flex items-center gap-1 mt-0.5">
-                                    <MapPin className="h-3.5 w-3.5 text-[#173D32]" />
+                                  <p className="text-xs font-normal text-[#737184] flex items-center gap-1.5 mt-0.5">
+                                    <MapPin className="h-3.5 w-3.5 text-[#718A68]" />
                                     <span>{lot.farm_detail?.village || "Bakshi Ka Talab"}, Lucknow</span>
                                   </p>
                                 </div>
 
                                 <div className="text-right">
-                                  <span className="text-xl font-bold text-[#C99B43]">
+                                  <span className="text-2xl font-serif font-normal text-[#718A68]">
                                     ₹{lot.asking_price}
                                   </span>
-                                  <span className="text-[10px] text-[#576561] block font-mono">/ kg</span>
+                                  <span className="text-[10px] text-[#737184] block font-mono">/ kg</span>
                                 </div>
                               </div>
 
-                              <div className="flex items-center justify-between text-xs text-[#17201D] bg-[#F7F5EF] p-2.5 rounded-xl border border-[#E8E8E3]">
+                              <div className="flex items-center justify-between text-xs text-[#262238] bg-[#F6F5F1] p-3 rounded-[16px] border border-[#E4E2DD]">
                                 <div>
-                                  <span className="text-[9px] text-[#576561] block uppercase font-mono font-semibold">
+                                  <span className="text-[9px] text-[#737184] block uppercase font-mono font-medium tracking-wider">
                                     {lang === "hi" ? "उपलब्ध" : "Available"}
                                   </span>
-                                  <span className="font-bold text-xs text-[#17201D]">{lot.remaining_qty} kg</span>
+                                  <span className="font-semibold text-sm text-[#262238]">{lot.remaining_qty} kg</span>
                                 </div>
                                 <div className="text-right">
-                                  <span className="text-[9px] text-[#576561] block uppercase font-mono font-semibold">
+                                  <span className="text-[9px] text-[#737184] block uppercase font-mono font-medium tracking-wider">
                                     {lang === "hi" ? "उत्पादक" : "Farmer"}
                                   </span>
-                                  <span className="font-semibold text-xs text-[#173D32]">
+                                  <span className="font-medium text-xs text-[#262238]">
                                     {lot.created_by_name || "Verified Kisan"}
                                   </span>
                                 </div>
@@ -456,13 +456,13 @@ export default function BuyerMarketplacePage() {
                           </div>
 
                           {/* Footer */}
-                          <div className="px-4 pb-4 pt-0 flex items-center justify-between text-xs">
-                            <span className="text-[11px] text-[#576561] font-normal truncate max-w-[160px]">
+                          <div className="px-5 pb-5 pt-0 flex items-center justify-between text-xs">
+                            <span className="text-[11px] text-[#737184] font-normal truncate max-w-[160px]">
                               {lot.quality_notes || "Uniform quality sorting"}
                             </span>
-                            <span className="font-semibold text-[#173D32] group-hover:underline flex items-center gap-1">
+                            <span className="font-medium text-[#262238] flex items-center gap-1">
                               <span>{lang === "hi" ? "फसल बुक करें" : "Reserve Lot"}</span>
-                              <ArrowRight className="h-3 w-3 text-[#173D32]" />
+                              <ArrowRight className="h-3.5 w-3.5 text-[#718A68]" />
                             </span>
                           </div>
                         </div>
@@ -478,17 +478,17 @@ export default function BuyerMarketplacePage() {
         {/* TAB 2: BUYER ORDERS & DELIVERIES */}
         {viewMode === "orders" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-5 space-y-3.5">
-              <h3 className="font-serif text-xl text-[#17201D] border-b border-[#E8E8E3] pb-2">
+            <div className="lg:col-span-5 space-y-4">
+              <h3 className="font-serif text-2xl font-normal text-[#262238] border-b border-[#E4E2DD] pb-3">
                 {lang === "hi" ? `मेरे खरीदारी ऑर्डर (${orders.length})` : `My Procurement Orders (${orders.length})`}
               </h3>
 
               {orders.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-[#E8E8E3] bg-white p-8 text-center text-xs text-[#576561] space-y-2">
-                  <div className="mx-auto w-12 h-12 rounded-full bg-[#F7F5EF] flex items-center justify-center text-[#576561]">
-                    <ShoppingBag className="h-6 w-6" />
+                <div className="rounded-[24px] border border-dashed border-[#E4E2DD] bg-white p-10 text-center text-xs text-[#737184] space-y-3">
+                  <div className="mx-auto w-12 h-12 rounded-full bg-[#F6F5F1] flex items-center justify-center text-[#737184]">
+                    <ShoppingBag className="h-6 w-6 text-[#718A68]" />
                   </div>
-                  <p className="font-serif text-base text-[#17201D]">
+                  <p className="font-serif text-lg text-[#262238] font-normal">
                     {lang === "hi" ? "अभी कोई ऑर्डर नहीं है।" : "No orders placed yet"}
                   </p>
                   <p>
@@ -500,32 +500,32 @@ export default function BuyerMarketplacePage() {
                   <div
                     key={ord.id}
                     onClick={() => setActiveOrderTracking(ord)}
-                    className={`editorial-card cursor-pointer p-4 transition space-y-2.5 bg-white rounded-2xl border ${
+                    className={`cursor-pointer p-5 transition space-y-3 bg-white rounded-[24px] border ${
                       activeOrderTracking?.id === ord.id
-                        ? "border-[#173D32] bg-[#DCE8DD]/20 ring-1 ring-[#173D32]/30"
-                        : "border-[#E8E8E3] hover:border-[#D4D4CE]"
+                        ? "border-[#262238] bg-[#E8E4F2]/30 ring-1 ring-[#262238]/20 shadow-xs"
+                        : "border-[#E4E2DD] hover:border-[#262238]/30"
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold text-[#17201D] text-xs">
+                      <span className="font-medium text-[#262238] text-xs">
                         Order #{ord.id} • {ord.lot_detail?.commodity?.toUpperCase()}
                       </span>
-                      <span className="rounded-md bg-[#DCE8DD] px-2 py-0.5 text-[10px] font-bold text-[#173D32] uppercase">
+                      <span className="rounded-full bg-[#E8E4F2] px-2.5 py-0.5 text-[10px] font-medium text-[#262238] uppercase tracking-wider">
                         {ord.status_display}
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between text-xs text-[#17201D]">
-                      <span className="text-[#576561]">Supplier: {ord.lot_detail?.created_by_name || "Verified FPO"}</span>
-                      <span className="font-bold text-[#C99B43]">
+                    <div className="flex items-center justify-between text-xs text-[#262238]">
+                      <span className="text-[#737184]">Supplier: {ord.lot_detail?.created_by_name || "Verified FPO"}</span>
+                      <span className="font-semibold text-[#718A68]">
                         {ord.requested_qty} kg @ ₹{ord.agreed_price}/kg
                       </span>
                     </div>
 
                     {/* Delivery OTP and Google Maps tracking */}
-                    <div className="pt-2 border-t border-[#E8E8E3] flex items-center justify-between text-xs">
-                      <span className="flex items-center gap-1 font-mono font-bold text-[#173D32] bg-[#DCE8DD]/60 px-2 py-0.5 rounded-md border border-[#DCE8DD]">
-                        <KeyRound className="h-3 w-3" />
+                    <div className="pt-2.5 border-t border-[#E4E2DD] flex items-center justify-between text-xs">
+                      <span className="flex items-center gap-1.5 font-mono font-medium text-[#262238] bg-[#E8E4F2] px-2.5 py-0.5 rounded-full border border-[#262238]/10">
+                        <KeyRound className="h-3 w-3 text-[#718A68]" />
                         <span>OTP: {ord.delivery_otp || "8842"}</span>
                       </span>
                       <a
@@ -533,9 +533,9 @@ export default function BuyerMarketplacePage() {
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="font-semibold text-[#173D32] hover:underline flex items-center gap-1"
+                        className="font-medium text-[#262238] hover:underline flex items-center gap-1"
                       >
-                        <MapPin className="h-3 w-3 text-[#173D32]" />
+                        <MapPin className="h-3.5 w-3.5 text-[#718A68]" />
                         <span>Google Maps &rarr;</span>
                       </a>
                     </div>
@@ -558,7 +558,7 @@ export default function BuyerMarketplacePage() {
                   )}
                 </>
               ) : (
-                <div className="editorial-card p-12 text-center text-xs font-semibold text-[#576561] bg-white rounded-2xl border border-[#E8E8E3]">
+                <div className="p-12 text-center text-xs font-medium text-[#737184] bg-white rounded-[24px] border border-[#E4E2DD]">
                   {lang === "hi" ? "ऑर्डर का विवरण और ड्राइवर लोकेशन देखने के लिए बाईं ओर से कोई ऑर्डर चुनें।" : "Select an order on the left to track state progression and delivery verification."}
                 </div>
               )}
@@ -569,83 +569,83 @@ export default function BuyerMarketplacePage() {
 
       {/* LOT DETAIL & SPLIT RESERVATION MODAL */}
       {selectedLot && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#17201D]/75 p-3 sm:p-5 backdrop-blur-sm animate-calm-reveal">
-          <div className="relative w-full max-w-3xl rounded-3xl border border-[#E8E8E3] bg-white shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#262238]/60 p-4 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative w-full max-w-3xl rounded-[28px] border border-[#E4E2DD] bg-white shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]">
             {/* Close Button */}
             <button
               type="button"
               onClick={() => setSelectedLot(null)}
-              className="absolute right-4 top-4 z-20 rounded-full p-2 text-[#576561] hover:bg-[#E8E8E3]/60 transition cursor-pointer"
+              className="absolute right-4 top-4 z-20 rounded-full p-2 text-[#737184] hover:bg-[#F6F5F1] hover:text-[#262238] transition cursor-pointer"
             >
-              <X className="h-4 w-4" />
+              <X className="h-5 w-5" />
             </button>
 
             {/* Left Photo & Weather Readiness Panel */}
-            <div className="md:w-5/12 relative bg-[#173D32] flex flex-col justify-between p-6 text-white overflow-hidden">
+            <div className="md:w-5/12 relative bg-[#262238] flex flex-col justify-between p-6 text-white overflow-hidden">
               <div
-                className="absolute inset-0 bg-cover bg-center opacity-60"
+                className="absolute inset-0 bg-cover bg-center opacity-50"
                 style={{
                   backgroundImage: `url('${selectedLot.photo_url || cropImages[selectedLot.commodity] || cropImages.tomato}')`,
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0F2820] via-[#173D32]/70 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1b1827] via-[#262238]/80 to-transparent" />
 
-              <div className="relative z-10">
-                <span className="rounded-md bg-[#173D32]/90 border border-white/20 px-2 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">
+              <div className="relative z-10 space-y-1.5">
+                <span className="rounded-full bg-white/15 border border-white/20 px-3 py-0.5 text-[10px] font-medium text-white uppercase tracking-wider">
                   Grade {selectedLot.grade} Verified
                 </span>
-                <h3 className="font-serif text-2xl text-white mt-2 capitalize">
+                <h3 className="font-serif text-2xl text-white font-normal capitalize">
                   {selectedLot.commodity} Batch
                 </h3>
-                <p className="text-xs text-[#DCE8DD] mt-0.5 flex items-center gap-1">
-                  <MapPin className="h-3 w-3 text-[#C99B43]" />
+                <p className="text-xs text-[#E8E4F2] flex items-center gap-1.5">
+                  <MapPin className="h-3.5 w-3.5 text-[#718A68]" />
                   <span>{selectedLot.farm_detail?.village || "Bakshi Ka Talab"}, Lucknow</span>
                 </p>
               </div>
 
               {/* Weather Readiness Card */}
-              <div className="relative z-10 rounded-2xl bg-white/10 backdrop-blur-md p-3.5 border border-white/20 space-y-1.5 text-xs text-[#DCE8DD]">
-                <div className="flex items-center gap-1.5 font-semibold text-white">
-                  <CloudSun className="h-4 w-4 text-[#C99B43]" />
+              <div className="relative z-10 rounded-[20px] bg-white/10 backdrop-blur-md p-4 border border-white/15 space-y-1.5 text-xs text-[#E8E4F2]">
+                <div className="flex items-center gap-2 font-medium text-white">
+                  <CloudSun className="h-4 w-4 text-[#718A68]" />
                   <span>Pickup Weather Readiness</span>
                 </div>
-                <p className="text-[11px] text-[#DCE8DD]/90">
+                <p className="text-[11px] text-[#E8E4F2]/90">
                   Today: 28°C · Clear transit conditions until 2:00 PM. High dispatch readiness.
                 </p>
               </div>
             </div>
 
             {/* Right Reservation Form Panel */}
-            <div className="md:w-7/12 p-6 overflow-y-auto space-y-4 bg-[#F7F5EF]/30">
+            <div className="md:w-7/12 p-6 sm:p-8 overflow-y-auto space-y-5 bg-white">
               <div>
-                <span className="text-[10px] font-mono uppercase text-[#576561] tracking-wider">
+                <span className="text-[10px] font-mono uppercase text-[#737184] tracking-wider font-medium">
                   Direct Escrow Reservation
                 </span>
-                <h4 className="font-serif text-xl text-[#17201D]">
+                <h4 className="font-serif text-2xl text-[#262238] font-normal mt-0.5">
                   Commit Harvest Lot
                 </h4>
               </div>
 
               {/* Lot Specs */}
-              <div className="grid grid-cols-3 gap-2 bg-white p-3 rounded-xl border border-[#E8E8E3] text-xs">
+              <div className="grid grid-cols-3 gap-2 bg-[#F6F5F1] p-3.5 rounded-[18px] border border-[#E4E2DD] text-xs">
                 <div>
-                  <span className="text-[9px] text-[#576561] block uppercase font-mono font-semibold">Total Stock</span>
-                  <p className="font-bold text-[#17201D] text-sm mt-0.5">{selectedLot.remaining_qty} kg</p>
+                  <span className="text-[9px] text-[#737184] block uppercase font-mono font-medium tracking-wider">Total Stock</span>
+                  <p className="font-semibold text-[#262238] text-sm mt-0.5">{selectedLot.remaining_qty} kg</p>
                 </div>
                 <div>
-                  <span className="text-[9px] text-[#576561] block uppercase font-mono font-semibold">Price Rate</span>
-                  <p className="font-bold text-[#C99B43] text-sm mt-0.5">₹{selectedLot.asking_price}/kg</p>
+                  <span className="text-[9px] text-[#737184] block uppercase font-mono font-medium tracking-wider">Price Rate</span>
+                  <p className="font-semibold text-[#718A68] text-sm mt-0.5">₹{selectedLot.asking_price}/kg</p>
                 </div>
                 <div>
-                  <span className="text-[9px] text-[#576561] block uppercase font-mono font-semibold">Producer</span>
-                  <p className="font-semibold text-[#173D32] text-xs mt-0.5 truncate">{selectedLot.created_by_name || "Kisan"}</p>
+                  <span className="text-[9px] text-[#737184] block uppercase font-mono font-medium tracking-wider">Producer</span>
+                  <p className="font-medium text-[#262238] text-xs mt-0.5 truncate">{selectedLot.created_by_name || "Kisan"}</p>
                 </div>
               </div>
 
               {/* Order Reservation Form */}
-              <form onSubmit={handleCommitOrder} className="space-y-3.5">
+              <form onSubmit={handleCommitOrder} className="space-y-4">
                 <div>
-                  <label className="block text-[11px] font-medium text-[#17201D] mb-1">
+                  <label className="block text-xs font-semibold text-[#262238] mb-1.5">
                     {lang === "hi" ? "खरीदारी की मात्रा (किलो)" : "Procurement Quantity (kg)"}
                   </label>
                   <input
@@ -654,21 +654,21 @@ export default function BuyerMarketplacePage() {
                     max={selectedLot.remaining_qty}
                     value={orderQty}
                     onChange={(e) => setOrderQty(Number(e.target.value))}
-                    className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-sm font-bold text-[#17201D] focus:border-[#173D32] focus:outline-none"
+                    className="w-full rounded-[16px] border border-[#E4E2DD] bg-[#F6F5F1] px-4 py-2.5 text-sm font-semibold text-[#262238] focus:bg-white focus:border-[#262238] focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="text-[11px] font-medium text-[#17201D]">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-xs font-semibold text-[#262238]">
                       {lang === "hi" ? "डिलीवरी का पता" : "Receiving Destination in Lucknow"}
                     </label>
                     <button
                       type="button"
                       onClick={() => setShowLocationPicker(true)}
-                      className="text-xs font-semibold text-[#173D32] hover:underline flex items-center gap-1 cursor-pointer"
+                      className="text-xs font-medium text-[#262238] hover:underline flex items-center gap-1 cursor-pointer"
                     >
-                      <MapPin className="h-3 w-3 text-[#173D32]" />
+                      <MapPin className="h-3 w-3 text-[#718A68]" />
                       <span>🗺️ {lang === "hi" ? "नक्शे से चुनें" : "Pick on Map"}</span>
                     </button>
                   </div>
@@ -677,28 +677,28 @@ export default function BuyerMarketplacePage() {
                     required
                     value={deliveryAddress}
                     onChange={(e) => setDeliveryAddress(e.target.value)}
-                    className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-medium text-[#17201D] focus:border-[#173D32] focus:outline-none"
+                    className="w-full rounded-[16px] border border-[#E4E2DD] bg-[#F6F5F1] px-4 py-2.5 text-xs text-[#262238] focus:bg-white focus:border-[#262238] focus:outline-none"
                   />
                 </div>
 
                 {/* Cost Summary Box */}
-                <div className="rounded-xl bg-[#DCE8DD]/40 p-3.5 border border-[#DCE8DD] space-y-1 text-xs">
+                <div className="rounded-[18px] bg-[#E8E4F2]/50 p-4 border border-[#262238]/10 space-y-1.5 text-xs">
                   <div className="flex items-center justify-between">
-                    <span className="text-[#576561]">Gross Produce Amount:</span>
-                    <span className="font-semibold text-[#17201D]">₹{(orderQty * selectedLot.asking_price).toLocaleString("en-IN")}</span>
+                    <span className="text-[#737184]">Gross Produce Amount:</span>
+                    <span className="font-medium text-[#262238]">₹{(orderQty * selectedLot.asking_price).toLocaleString("en-IN")}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[#576561]">Direct Cluster Logistics:</span>
-                    <span className="font-semibold text-[#173D32]">Included (₹0)</span>
+                    <span className="text-[#737184]">Direct Cluster Logistics:</span>
+                    <span className="font-medium text-[#718A68]">Included (₹0)</span>
                   </div>
-                  <div className="pt-1.5 border-t border-[#DCE8DD] flex items-center justify-between font-semibold text-xs text-[#173D32]">
+                  <div className="pt-2 border-t border-[#262238]/10 flex items-center justify-between font-medium text-xs text-[#262238]">
                     <span>Total Escrow Commitment:</span>
-                    <span className="text-base font-bold text-[#173D32]">₹{(orderQty * selectedLot.asking_price).toLocaleString("en-IN")}</span>
+                    <span className="text-base font-semibold text-[#262238]">₹{(orderQty * selectedLot.asking_price).toLocaleString("en-IN")}</span>
                   </div>
                 </div>
 
                 {reserveError && (
-                  <div className="rounded-xl bg-[#F8ECE8] p-2.5 text-xs font-medium text-[#C86B4A] border border-[#C86B4A]/30 flex items-center gap-1.5">
+                  <div className="rounded-[16px] bg-[#C86B4A]/10 p-3 text-xs font-medium text-[#C86B4A] border border-[#C86B4A]/20 flex items-center gap-2">
                     <AlertCircle className="h-4 w-4 shrink-0" />
                     <span>{reserveError}</span>
                   </div>
@@ -707,7 +707,7 @@ export default function BuyerMarketplacePage() {
                 <button
                   type="submit"
                   disabled={reserving}
-                  className="w-full rounded-xl bg-[#173D32] py-2.5 text-xs font-semibold text-white hover:bg-[#0F2820] transition shadow-xs disabled:opacity-50 cursor-pointer active:scale-99"
+                  className="w-full rounded-full bg-[#262238] py-3.5 text-xs font-medium text-white hover:bg-[#342e4c] transition shadow-xs disabled:opacity-50 cursor-pointer active:scale-99"
                 >
                   {reserving ? (lang === "hi" ? "ऑर्डर बुक हो रहा है..." : "Locking Escrow...") : (lang === "hi" ? "🔒 ऑर्डर बुक करें (एस्क्रो सुरक्षित)" : "🔒 Reserve & Lock Escrow")}
                 </button>

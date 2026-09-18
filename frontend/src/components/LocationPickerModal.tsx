@@ -140,17 +140,17 @@ export function LocationPickerModal({
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#17201D]/75 p-4 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="relative w-full max-w-2xl rounded-3xl border border-[#E9E7E1] bg-white p-6 sm:p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#262238]/60 p-4 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="relative w-full max-w-2xl rounded-[28px] border border-[#E4E2DD] bg-white p-6 sm:p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
         {/* Top Header */}
-        <div className="flex items-center justify-between border-b border-[#E9E7E1] pb-4">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#173D32] text-white shadow-xs">
-              <MapPin className="h-5 w-5 text-[#C99B43]" />
+        <div className="flex items-center justify-between border-b border-[#E4E2DD] pb-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-[14px] bg-[#E8E4F2] text-[#262238] shadow-xs">
+              <MapPin className="h-5 w-5 text-[#718A68]" />
             </div>
             <div>
-              <h3 className="font-serif text-2xl font-bold text-[#17201D]">{title}</h3>
-              <p className="text-xs text-[#7D8A65]">
+              <h3 className="font-serif text-2xl font-normal text-[#262238]">{title}</h3>
+              <p className="text-xs text-[#737184]">
                 {role === "buyer"
                   ? "Pinpoint and confirm your commercial receiving dock address in Lucknow"
                   : "Pinpoint and confirm your exact farm gate pickup location in Lucknow"}
@@ -159,62 +159,62 @@ export function LocationPickerModal({
           </div>
           <button
             onClick={onClose}
-            className="rounded-full p-2 text-[#7D8A65] hover:bg-[#F7F5EF] hover:text-[#17201D] transition"
+            className="rounded-full p-2 text-[#737184] hover:bg-[#F6F5F1] hover:text-[#262238] transition"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* 1. SEAMLESS LIVE GPS ACTION */}
-        <div className="rounded-2xl border border-[#173D32]/20 bg-[#DCE8DD]/40 p-4 space-y-2">
+        <div className="rounded-[20px] border border-[#262238]/10 bg-[#E8E4F2]/50 p-4 space-y-2">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <button
               type="button"
               onClick={handleUseCurrentLiveLocation}
               disabled={capturingGps}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-full bg-[#173D32] px-6 py-3 text-xs font-bold text-white hover:bg-[#215445] transition shadow-md disabled:opacity-50 shrink-0 active:scale-95"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-full bg-[#262238] px-6 py-3 text-xs font-medium text-white hover:bg-[#342e4c] transition shadow-xs disabled:opacity-50 shrink-0 active:scale-95 cursor-pointer"
             >
               {capturingGps ? (
-                <Loader2 className="h-4 w-4 text-[#C99B43] animate-spin" />
+                <Loader2 className="h-4 w-4 text-[#718A68] animate-spin" />
               ) : (
-                <Navigation className="h-4 w-4 text-[#C99B43]" />
+                <Navigation className="h-4 w-4 text-[#718A68]" />
               )}
               <span>{capturingGps ? "Acquiring High-Precision GPS..." : "📍 Get My Exact Live Location"}</span>
             </button>
 
-            <div className="text-xs text-[#173D32] font-semibold text-center sm:text-right">
+            <div className="text-xs text-[#262238] font-medium text-center sm:text-right">
               {gpsSuccess ? (
-                <span className="text-[#173D32] flex items-center gap-1">
-                  <CheckCircle2 className="h-4 w-4 text-[#C99B43]" />
+                <span className="text-[#262238] flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-[#718A68]" />
                   <span>{gpsSuccess}</span>
                 </span>
               ) : (
-                <span className="text-[#7D8A65]">1-Tap browser GPS with automatic village reverse-geocoding</span>
+                <span className="text-[#737184]">1-Tap browser GPS with automatic village reverse-geocoding</span>
               )}
             </div>
           </div>
         </div>
 
         {/* 2. SEARCH ANY VILLAGE / LOCALITY */}
-        <div className="space-y-1.5">
-          <label className="block text-xs font-bold text-[#17201D] uppercase tracking-wider">
+        <div className="space-y-2">
+          <label className="block text-xs font-semibold text-[#262238] uppercase tracking-wider">
             Search Any Place, Tehsil or Village in Lucknow:
           </label>
           <form onSubmit={handleSearchAddress} className="flex gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-[#7D8A65]" />
+              <Search className="absolute left-3.5 top-3 h-4 w-4 text-[#737184]" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="e.g. Malihabad, Gomti Nagar, Kakori, Mohanlalganj..."
-                className="w-full rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] pl-10 pr-4 py-2 text-xs font-medium focus:bg-white focus:border-[#173D32] focus:outline-none"
+                className="w-full rounded-full border border-[#E4E2DD] bg-[#F6F5F1] pl-10 pr-4 py-2.5 text-xs text-[#262238] focus:bg-white focus:border-[#262238] focus:outline-none transition"
               />
             </div>
             <button
               type="submit"
               disabled={searching || !searchQuery.trim()}
-              className="rounded-xl bg-[#173D32] px-4 py-2 text-xs font-bold text-white hover:bg-[#215445] transition disabled:opacity-50 shadow-xs"
+              className="rounded-full bg-[#262238] px-5 py-2.5 text-xs font-medium text-white hover:bg-[#342e4c] transition disabled:opacity-50 shadow-xs cursor-pointer"
             >
               {searching ? "Searching..." : "Search"}
             </button>
@@ -222,16 +222,16 @@ export function LocationPickerModal({
 
           {/* Search Results Dropdown */}
           {searchResults.length > 0 && (
-            <div className="rounded-xl border border-[#E9E7E1] bg-white p-2 shadow-lg space-y-1 max-h-40 overflow-y-auto z-10">
+            <div className="rounded-[18px] border border-[#E4E2DD] bg-white p-2 shadow-lg space-y-1 max-h-40 overflow-y-auto z-10">
               {searchResults.map((item, idx) => (
                 <button
                   key={idx}
                   type="button"
                   onClick={() => handleSelectSearchResult(item)}
-                  className="w-full text-left p-2 rounded-lg hover:bg-[#F7F5EF] text-xs transition flex items-center gap-2"
+                  className="w-full text-left p-2.5 rounded-xl hover:bg-[#F6F5F1] text-xs transition flex items-center gap-2"
                 >
-                  <MapPin className="h-3.5 w-3.5 text-[#C99B43] shrink-0" />
-                  <span className="truncate font-medium text-[#17201D]">{item.display_name}</span>
+                  <MapPin className="h-3.5 w-3.5 text-[#718A68] shrink-0" />
+                  <span className="truncate font-medium text-[#262238]">{item.display_name}</span>
                 </button>
               ))}
             </div>
@@ -240,10 +240,10 @@ export function LocationPickerModal({
 
         {/* 3. LUCKNOW 12-ZONE PRESETS */}
         <div className="space-y-2">
-          <label className="block text-xs font-bold text-[#17201D] uppercase tracking-wider">
+          <label className="block text-xs font-semibold text-[#262238] uppercase tracking-wider">
             Or Choose from Whole-Lucknow Agricultural Hubs:
           </label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-36 overflow-y-auto pr-1">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-40 overflow-y-auto pr-1">
             {LUCKNOW_PRESETS.map((preset, idx) => {
               const isSelected = lat === preset.lat && lng === preset.lng;
               return (
@@ -251,14 +251,14 @@ export function LocationPickerModal({
                   key={idx}
                   type="button"
                   onClick={() => handleSelectPreset(preset)}
-                  className={`p-2.5 rounded-xl border text-left text-xs transition space-y-0.5 ${
+                  className={`p-3 rounded-[16px] border text-left text-xs transition space-y-0.5 cursor-pointer ${
                     isSelected
-                      ? "border-[#173D32] bg-[#DCE8DD] font-bold text-[#173D32] shadow-xs"
-                      : "border-[#E9E7E1] bg-white hover:border-[#173D32]/40 text-[#17201D]"
+                      ? "border-[#262238] bg-[#E8E4F2] font-semibold text-[#262238] shadow-xs"
+                      : "border-[#E4E2DD] bg-white hover:border-[#262238]/30 text-[#262238]"
                   }`}
                 >
-                  <p className="font-bold truncate">{preset.name.split(",")[0]}</p>
-                  <p className="text-[10px] text-[#7D8A65] line-clamp-1">{preset.desc}</p>
+                  <p className="font-semibold truncate">{preset.name.split(",")[0]}</p>
+                  <p className="text-[10px] text-[#737184] line-clamp-1">{preset.desc}</p>
                 </button>
               );
             })}
@@ -266,31 +266,31 @@ export function LocationPickerModal({
         </div>
 
         {/* 4. CONFIRMED LOCATION DETAILS & GOOGLE MAPS PREVIEW */}
-        <div className="rounded-2xl border border-[#E9E7E1] bg-white p-4 space-y-3 shadow-inner">
+        <div className="rounded-[20px] border border-[#E4E2DD] bg-white p-4 space-y-3">
           <div>
-            <label className="block text-xs font-semibold text-[#17201D] mb-1">
+            <label className="block text-xs font-semibold text-[#262238] mb-1">
               Confirmed Address / Landmark:
             </label>
             <input
               type="text"
               value={selectedAddress}
               onChange={(e) => setSelectedAddress(e.target.value)}
-              className="w-full rounded-xl border border-[#E9E7E1] bg-[#F7F5EF] px-3.5 py-2.5 text-xs font-bold text-[#17201D] focus:bg-white focus:border-[#173D32] focus:outline-none"
+              className="w-full rounded-xl border border-[#E4E2DD] bg-[#F6F5F1] px-3.5 py-2.5 text-xs font-medium text-[#262238] focus:bg-white focus:border-[#262238] focus:outline-none"
             />
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[#7D8A65] pt-1">
-            <span className="font-mono font-medium">
-              Exact Coordinates: <strong className="text-[#17201D]">{lat}° N, {lng}° E</strong>
+          <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[#737184] pt-1">
+            <span className="font-mono text-[11px]">
+              Exact Coordinates: <strong className="text-[#262238]">{lat}° N, {lng}° E</strong>
             </span>
             <a
               href={googleMapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 font-bold text-[#173D32] hover:underline bg-[#DCE8DD]/40 px-2.5 py-1 rounded-full border border-[#173D32]/20"
+              className="inline-flex items-center gap-1.5 font-medium text-[#262238] hover:underline bg-[#E8E4F2] px-3 py-1 rounded-full border border-[#262238]/10"
             >
-              <span>View Exact Pin in Google Maps</span>
-              <ExternalLink className="h-3.5 w-3.5 text-[#C99B43]" />
+              <span>View in Google Maps</span>
+              <ExternalLink className="h-3 w-3 text-[#718A68]" />
             </a>
           </div>
         </div>
@@ -300,16 +300,16 @@ export function LocationPickerModal({
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 rounded-full border border-[#E9E7E1] py-3 text-xs font-bold text-[#7D8A65] hover:bg-[#F7F5EF] transition"
+            className="flex-1 rounded-full border border-[#E4E2DD] py-3 text-xs font-medium text-[#737184] hover:bg-[#F6F5F1] transition cursor-pointer"
           >
             Cancel
           </button>
           <button
             type="button"
             onClick={handleConfirm}
-            className="flex-1 rounded-full bg-[#173D32] py-3 text-xs font-bold text-white hover:bg-[#215445] transition shadow-md flex items-center justify-center gap-2"
+            className="flex-1 rounded-full bg-[#262238] py-3 text-xs font-medium text-white hover:bg-[#342e4c] transition shadow-xs flex items-center justify-center gap-2 cursor-pointer"
           >
-            <CheckCircle2 className="h-4 w-4 text-[#C99B43]" />
+            <CheckCircle2 className="h-4 w-4 text-[#718A68]" />
             <span>Confirm & Apply Location</span>
           </button>
         </div>

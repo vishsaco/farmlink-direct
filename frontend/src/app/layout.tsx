@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, DM_Serif_Display, Caveat } from "next/font/google";
+import { Manrope, Inter, Caveat } from "next/font/google";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth";
 import { LanguageProvider } from "@/lib/LanguageContext";
 
-const sansFont = Plus_Jakarta_Sans({
+const headingFont = Manrope({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-heading",
   display: "swap",
+  weight: ["300", "400", "500", "600", "700"],
 });
 
-const serifFont = DM_Serif_Display({
-  weight: ["400"],
+const sansFont = Inter({
   subsets: ["latin"],
-  variable: "--font-serif",
+  variable: "--font-sans",
   display: "swap",
 });
 
@@ -25,9 +25,9 @@ const caveatFont = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: "FarmLink — Direct B2B Produce Network & Weather Intelligence",
+  title: "FarmLink Direct — From Farm Gate to Market",
   description:
-    "A direct B2B fresh produce marketplace connecting verified farmers and FPOs with reliable institutional buyers, transparent price intelligence, and traceable fulfillment across Lucknow.",
+    "Connect verified farmers and FPOs directly with commercial buyers through transparent pricing, smarter harvest planning and traceable fulfillment across Lucknow.",
 };
 
 export default function RootLayout({
@@ -36,8 +36,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${sansFont.variable} ${serifFont.variable} ${caveatFont.variable}`}>
-      <body className="bg-[#F7F5EF] text-[#17201D] font-sans min-h-screen antialiased selection:bg-[#DCE8DD] selection:text-[#173D32]">
+    <html lang="en" className={`${headingFont.variable} ${sansFont.variable} ${caveatFont.variable}`}>
+      <body className="bg-[#F6F5F1] text-[#262238] font-sans min-h-screen antialiased selection:bg-[#E8E4F2] selection:text-[#262238]">
         <LanguageProvider>
           <AuthProvider>{children}</AuthProvider>
         </LanguageProvider>

@@ -93,7 +93,7 @@ export default function MapInner({
         center={center}
         zoom={10}
         scrollWheelZoom={false}
-        style={{ height: "100%", width: "100%", borderRadius: "20px" }}
+        style={{ height: "100%", width: "100%", borderRadius: "24px" }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -105,9 +105,9 @@ export default function MapInner({
           center={center}
           radius={radiusKm * 1000}
           pathOptions={{
-            color: "#173D32",
-            fillColor: "#173D32",
-            fillOpacity: 0.06,
+            color: "#262238",
+            fillColor: "#262238",
+            fillOpacity: 0.05,
             weight: 2,
             dashArray: "6, 6",
           }}
@@ -123,17 +123,17 @@ export default function MapInner({
           return (
             <Marker key={idx} position={[zone.lat, zone.lng]} icon={icon}>
               <Popup>
-                <div className="p-2 text-xs font-sans space-y-1">
-                  <span className="rounded bg-[#DCE8DD] px-1.5 py-0.5 text-[9px] font-bold text-[#173D32] uppercase">
+                <div className="p-2 text-xs font-sans space-y-1.5">
+                  <span className="rounded-full bg-[#E8E4F2] px-2 py-0.5 text-[9px] font-medium text-[#262238] uppercase tracking-wider">
                     {zone.type.toUpperCase()} • LUCKNOW CLUSTER
                   </span>
-                  <h4 className="font-serif font-bold text-sm text-[#17201D] mt-0.5">{zone.name}</h4>
-                  <p className="text-[#7D8A65] text-[11px]">{zone.desc}</p>
+                  <h4 className="font-serif font-normal text-sm text-[#262238] mt-1">{zone.name}</h4>
+                  <p className="text-[#737184] text-[11px]">{zone.desc}</p>
                   <a
                     href={`https://www.google.com/maps/search/?api=1&query=${zone.lat},${zone.lng}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[10px] font-bold text-[#173D32] hover:underline block pt-1"
+                    className="text-[11px] font-medium text-[#718A68] hover:underline block pt-1"
                   >
                     Open in Google Maps →
                   </a>
@@ -151,23 +151,23 @@ export default function MapInner({
           return (
             <Marker key={lot.id} position={[lat, lng]} icon={farmIcon}>
               <Popup>
-                <div className="p-2 text-xs font-sans space-y-1.5 min-w-[180px]">
-                  <span className="rounded bg-[#C99B43]/20 px-1.5 py-0.5 text-[9px] font-bold text-[#C99B43] uppercase">
+                <div className="p-2.5 text-xs font-sans space-y-1.5 min-w-[190px]">
+                  <span className="rounded-full bg-[#E8E4F2] px-2 py-0.5 text-[9px] font-medium text-[#262238] uppercase tracking-wider">
                     Grade {lot.grade} • Active Harvest Lot #{lot.id}
                   </span>
-                  <h4 className="font-serif font-bold text-sm capitalize text-[#17201D]">
+                  <h4 className="font-serif font-normal text-base capitalize text-[#262238]">
                     {lot.commodity} ({lot.remaining_qty} kg)
                   </h4>
-                  <p className="text-[11px] text-[#7D8A65]">
-                    ₹{lot.asking_price}/kg • {lot.farm_detail?.village || "Lucknow Tehsil"}
+                  <p className="text-[12px] text-[#262238] font-medium">
+                    ₹{lot.asking_price}/kg • <span className="text-[#737184] font-normal">{lot.farm_detail?.village || "Lucknow Tehsil"}</span>
                   </p>
-                  <p className="text-[10px] text-slate-500 font-light">
+                  <p className="text-[10px] text-[#737184]">
                     {lot.farm_detail?.name || "Verified Farm"}
                   </p>
                   {onSelectLot && (
                     <button
                       onClick={() => onSelectLot(lot)}
-                      className="mt-1 w-full rounded-full bg-[#173D32] py-1 text-[11px] font-bold text-white hover:bg-[#215445] transition"
+                      className="mt-2 w-full rounded-full bg-[#262238] py-1.5 text-[11px] font-medium text-white hover:bg-[#342e4c] transition shadow-xs cursor-pointer"
                     >
                       Select Lot
                     </button>

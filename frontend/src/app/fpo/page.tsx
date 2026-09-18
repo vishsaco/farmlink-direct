@@ -220,29 +220,29 @@ export default function FPOAggregatorPage() {
   const fpoCommission = Math.round(totalSalesRevenue * 0.03);
 
   return (
-    <div className="min-h-screen bg-[#F7F5EF] text-[#17201D] flex flex-col selection:bg-[#DCE8DD] selection:text-[#173D32]">
+    <div className="min-h-screen bg-[#F6F5F1] text-[#262238] flex flex-col selection:bg-[#E8E4F2] selection:text-[#262238]">
       <Navbar />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 w-full space-y-6">
         {/* Header Banner */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#E8E8E3] pb-5">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#E4E2DD] pb-5">
           <div>
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-[#173D32] uppercase tracking-wider mb-1">
-              <Building className="h-3.5 w-3.5 text-[#173D32]" />
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#262238]/10 bg-[#E8E4F2] px-3.5 py-1 text-xs font-medium text-[#262238] uppercase tracking-wider mb-2">
+              <Building className="h-3.5 w-3.5 text-[#718A68]" />
               <span>
                 {user?.organization_detail?.name || "Lucknow Krishi Utpadak Sahakari Samiti"} • {t.fpoRole}
               </span>
             </div>
-            <h1 className="font-serif text-3xl sm:text-4xl text-[#17201D] font-normal tracking-tight">
+            <h1 className="font-serif text-3xl sm:text-4xl text-[#262238] font-normal tracking-tight">
               {t.fpoTitle}
             </h1>
-            <p className="text-xs sm:text-sm text-[#576561] font-sans mt-0.5 max-w-2xl">
+            <p className="text-xs sm:text-sm text-[#737184] font-normal mt-1 max-w-2xl">
               {t.fpoDesc}
             </p>
           </div>
 
           {/* Tab Navigation Buttons */}
-          <div className="flex items-center gap-1.5 bg-white p-1 rounded-xl border border-[#E8E8E3] shadow-2xs overflow-x-auto">
+          <div className="flex items-center gap-1.5 bg-white p-1 rounded-full border border-[#E4E2DD] shadow-xs overflow-x-auto scrollbar-none">
             {[
               { id: "overview", label: t.aggregationHubTab, icon: Layers },
               { id: "pool", label: t.poolBulkLotTab, icon: Package },
@@ -255,10 +255,10 @@ export default function FPOAggregatorPage() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap transition cursor-pointer ${
                     activeTab === tab.id
-                      ? "bg-[#173D32] text-white shadow-xs"
-                      : "text-[#576561] hover:text-[#17201D]"
+                      ? "bg-[#262238] text-white shadow-xs"
+                      : "text-[#737184] hover:text-[#262238]"
                   }`}
                 >
                   <Icon className="h-3.5 w-3.5" />
@@ -274,42 +274,42 @@ export default function FPOAggregatorPage() {
           <div className="space-y-6">
             {/* KPI Metric Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="editorial-card p-4 space-y-1 bg-white rounded-2xl border border-[#E8E8E3]">
-                <span className="text-[10px] font-mono font-semibold text-[#576561] uppercase tracking-wider flex items-center gap-1">
-                  <Users className="h-3.5 w-3.5 text-[#173D32]" />
+              <div className="p-5 space-y-1.5 bg-white rounded-[24px] border border-[#E4E2DD] shadow-xs">
+                <span className="text-[10px] font-mono font-medium text-[#737184] uppercase tracking-wider flex items-center gap-1.5">
+                  <Users className="h-3.5 w-3.5 text-[#718A68]" />
                   <span>{t.activeMembersCount}</span>
                 </span>
-                <p className="font-serif text-2xl text-[#17201D]">{members.length} Farmers</p>
-                <p className="text-[11px] text-[#576561] font-sans">Whole-Lucknow cooperative registry</p>
+                <p className="font-serif text-2xl text-[#262238] font-normal">{members.length} Farmers</p>
+                <p className="text-[11px] text-[#737184] font-normal">Whole-Lucknow cooperative registry</p>
               </div>
 
-              <div className="editorial-card p-4 space-y-1 bg-white rounded-2xl border border-[#E8E8E3]">
-                <span className="text-[10px] font-mono font-semibold text-[#576561] uppercase tracking-wider flex items-center gap-1">
-                  <Package className="h-3.5 w-3.5 text-[#173D32]" />
+              <div className="p-5 space-y-1.5 bg-white rounded-[24px] border border-[#E4E2DD] shadow-xs">
+                <span className="text-[10px] font-mono font-medium text-[#737184] uppercase tracking-wider flex items-center gap-1.5">
+                  <Package className="h-3.5 w-3.5 text-[#262238]" />
                   <span>{t.pooledVolumeQuintals}</span>
                 </span>
-                <p className="font-serif text-2xl text-[#17201D]">
-                  {(totalPooledKg / 100).toFixed(0)} <span className="text-xs font-normal text-[#576561] font-sans">Quintals</span>
+                <p className="font-serif text-2xl text-[#262238] font-normal">
+                  {(totalPooledKg / 100).toFixed(0)} <span className="text-xs font-normal text-[#737184]">Quintals</span>
                 </p>
-                <p className="text-[11px] text-[#576561] font-sans">Real active commercial inventory</p>
+                <p className="text-[11px] text-[#737184] font-normal">Real active commercial inventory</p>
               </div>
 
-              <div className="editorial-card p-4 space-y-1 bg-white rounded-2xl border border-[#E8E8E3]">
-                <span className="text-[10px] font-mono font-semibold text-[#576561] uppercase tracking-wider flex items-center gap-1">
-                  <TrendingUp className="h-3.5 w-3.5 text-[#173D32]" />
+              <div className="p-5 space-y-1.5 bg-white rounded-[24px] border border-[#E4E2DD] shadow-xs">
+                <span className="text-[10px] font-mono font-medium text-[#737184] uppercase tracking-wider flex items-center gap-1.5">
+                  <TrendingUp className="h-3.5 w-3.5 text-[#718A68]" />
                   <span>{t.grossSalesTrade}</span>
                 </span>
-                <p className="font-serif text-2xl text-[#17201D]">{formatCurrency(totalSalesRevenue)}</p>
-                <p className="text-[11px] text-[#576561] font-sans">Direct B2B buyer commitments</p>
+                <p className="font-serif text-2xl text-[#262238] font-normal">{formatCurrency(totalSalesRevenue)}</p>
+                <p className="text-[11px] text-[#737184] font-normal">Direct B2B buyer commitments</p>
               </div>
 
-              <div className="editorial-card p-4 space-y-1 bg-white rounded-2xl border border-[#E8E8E3]">
-                <span className="text-[10px] font-mono font-semibold text-[#576561] uppercase tracking-wider flex items-center gap-1">
-                  <Coins className="h-3.5 w-3.5 text-[#173D32]" />
+              <div className="p-5 space-y-1.5 bg-white rounded-[24px] border border-[#E4E2DD] shadow-xs">
+                <span className="text-[10px] font-mono font-medium text-[#737184] uppercase tracking-wider flex items-center gap-1.5">
+                  <Coins className="h-3.5 w-3.5 text-[#718A68]" />
                   <span>{t.fpoSurplusFund}</span>
                 </span>
-                <p className="font-serif text-2xl text-[#C99B43]">{formatCurrency(fpoCommission)}</p>
-                <p className="text-[11px] text-[#576561] font-sans">3% cooperative handling retained</p>
+                <p className="font-serif text-2xl text-[#718A68] font-normal">{formatCurrency(fpoCommission)}</p>
+                <p className="text-[11px] text-[#737184] font-normal">3% cooperative handling retained</p>
               </div>
             </div>
 
@@ -317,67 +317,67 @@ export default function FPOAggregatorPage() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               <div className="lg:col-span-7 space-y-3">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-serif text-xl text-[#17201D]">
+                  <h3 className="font-serif text-2xl font-normal text-[#262238]">
                     Whole Lucknow Cooperative Network Map
                   </h3>
-                  <span className="text-xs text-[#576561] font-mono">12 Active Regional Zones</span>
+                  <span className="text-xs text-[#737184] font-mono">12 Active Regional Zones</span>
                 </div>
-                <div className="editorial-card p-1.5 bg-white overflow-hidden h-[420px] rounded-2xl border border-[#E8E8E3]">
+                <div className="p-1 bg-white overflow-hidden h-[420px] rounded-[24px] border border-[#E4E2DD] shadow-xs">
                   <LeafletMap lots={lots} center={[26.89, 80.91]} height="100%" />
                 </div>
               </div>
 
               <div className="lg:col-span-5 space-y-3">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-serif text-xl text-[#17201D]">
+                  <h3 className="font-serif text-2xl font-normal text-[#262238]">
                     Active Pooled Lots ({lots.length})
                   </h3>
                   <button
                     onClick={() => setActiveTab("pool")}
-                    className="text-xs font-semibold text-[#173D32] hover:underline flex items-center gap-1 cursor-pointer"
+                    className="text-xs font-medium text-[#262238] hover:underline flex items-center gap-1 cursor-pointer"
                   >
                     <span>+ Pool New</span>
-                    <ArrowRight className="h-3.5 w-3.5" />
+                    <ArrowRight className="h-3.5 w-3.5 text-[#718A68]" />
                   </button>
                 </div>
 
                 {lots.length === 0 ? (
-                  <div className="editorial-card p-8 text-center space-y-2 bg-white rounded-2xl border border-[#E8E8E3]">
-                    <Package className="h-10 w-10 text-[#576561]/40 mx-auto" />
-                    <p className="font-serif text-base text-[#17201D]">No Pooled Bulk Lots Active</p>
-                    <p className="text-xs text-[#576561] font-sans">
+                  <div className="p-8 text-center space-y-3 bg-white rounded-[24px] border border-[#E4E2DD] shadow-xs">
+                    <Package className="h-10 w-10 text-[#737184]/40 mx-auto" />
+                    <p className="font-serif text-lg text-[#262238] font-normal">No Pooled Bulk Lots Active</p>
+                    <p className="text-xs text-[#737184] font-normal leading-relaxed">
                       Aggregate harvest batches from registered farmers into standardized quintal lots.
                     </p>
                     <button
                       onClick={() => setActiveTab("pool")}
-                      className="rounded-xl bg-[#173D32] px-4 py-2 text-xs font-semibold text-white hover:bg-[#0F2820] transition cursor-pointer"
+                      className="rounded-full bg-[#262238] px-5 py-2.5 text-xs font-medium text-white hover:bg-[#342e4c] transition cursor-pointer"
                     >
                       Create First Bulk Lot
                     </button>
                   </div>
                 ) : (
-                  <div className="space-y-2.5 max-h-[420px] overflow-y-auto">
+                  <div className="space-y-3 max-h-[420px] overflow-y-auto pr-1">
                     {lots.map((lot) => (
                       <div
                         key={lot.id}
-                        className="editorial-card p-3.5 flex items-center justify-between gap-3 bg-white rounded-2xl border border-[#E8E8E3]"
+                        className="p-4 flex items-center justify-between gap-3 bg-white rounded-[20px] border border-[#E4E2DD] shadow-xs"
                       >
                         <div className="flex items-center gap-3">
                           <img
                             src={lot.photo_url || "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&auto=format&fit=crop&q=80"}
                             alt={lot.commodity}
-                            className="h-11 w-11 rounded-xl object-cover border border-[#E8E8E3]"
+                            className="h-12 w-12 rounded-[14px] object-cover border border-[#E4E2DD]"
                           />
                           <div>
-                            <p className="font-semibold text-xs text-[#17201D] capitalize">
+                            <p className="font-semibold text-xs text-[#262238] capitalize">
                               {lot.available_qty} kg {lot.commodity} (Grade {lot.grade})
                             </p>
-                            <p className="text-[11px] text-[#576561]">
+                            <p className="text-[11px] text-[#737184]">
                               ₹{lot.asking_price}/kg • {lot.farm_detail?.village || "Lucknow Intake Hub"}
                             </p>
                           </div>
                         </div>
-                        <span className="rounded-md bg-[#DCE8DD] px-2 py-0.5 text-[10px] font-bold text-[#173D32] capitalize">
+                        <span className="rounded-full bg-[#E8E4F2] px-2.5 py-0.5 text-[10px] font-medium text-[#262238] capitalize">
                           {lot.status.replace("_", " ")}
                         </span>
                       </div>
@@ -393,42 +393,42 @@ export default function FPOAggregatorPage() {
         {activeTab === "pool" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div className="lg:col-span-7 space-y-4">
-              <div className="editorial-card p-6 sm:p-7 space-y-5 bg-white rounded-2xl border border-[#E8E8E3]">
+              <div className="p-6 sm:p-8 space-y-6 bg-white rounded-[28px] border border-[#E4E2DD] shadow-xs">
                 <div>
-                  <h3 className="font-serif text-2xl text-[#17201D]">
+                  <h3 className="font-serif text-2xl text-[#262238] font-normal">
                     {t.poolBulkLotTab}
                   </h3>
-                  <p className="text-xs text-[#576561] font-sans mt-0.5">
+                  <p className="text-xs text-[#737184] font-normal mt-1">
                     Combine harvests from registered farmers into standardized quintal truckloads for enterprise buyers.
                   </p>
                 </div>
 
                 {publishSuccess && (
-                  <div className="rounded-xl bg-[#DCE8DD]/50 p-3.5 border border-[#DCE8DD] text-xs font-semibold text-[#173D32] flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-[#173D32]" />
+                  <div className="rounded-[16px] bg-[#E8E4F2] p-4 border border-[#262238]/10 text-xs font-medium text-[#262238] flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#718A68]" />
                     <span>Bulk Lot Published to Live Marketplace! Buyers can now place orders.</span>
                   </div>
                 )}
 
-                <form onSubmit={handlePublishBulkLot} className="space-y-4">
+                <form onSubmit={handlePublishBulkLot} className="space-y-5">
                   {/* Select Commodity */}
                   <div>
-                    <label className="block text-[11px] font-mono uppercase tracking-wider text-[#576561] mb-1.5">
+                    <label className="block text-[11px] font-mono uppercase tracking-wider text-[#737184] mb-2">
                       Select Bulk Produce Commodity
                     </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
                       {COMMODITY_OPTIONS.map((item) => (
                         <button
                           key={item.id}
                           type="button"
                           onClick={() => selectCommodity(item.id)}
-                          className={`rounded-xl border p-2.5 text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer ${
+                          className={`rounded-[16px] border p-3 text-xs font-medium transition flex items-center gap-2 cursor-pointer ${
                             commodity === item.id
-                              ? "border-[#173D32] bg-[#DCE8DD] text-[#173D32] shadow-2xs"
-                              : "border-[#E8E8E3] bg-white text-[#17201D] hover:border-[#D4D4CE]"
+                              ? "border-[#262238] bg-[#E8E4F2] text-[#262238] shadow-xs"
+                              : "border-[#E4E2DD] bg-white text-[#262238] hover:border-[#262238]/30"
                           }`}
                         >
-                          <span className="text-base">{item.icon}</span>
+                          <span className="text-lg">{item.icon}</span>
                           <span className="truncate">{item.label.split(" ")[0]}</span>
                         </button>
                       ))}
@@ -436,9 +436,9 @@ export default function FPOAggregatorPage() {
                   </div>
 
                   {/* Quantity & Asking Price */}
-                  <div className="grid grid-cols-2 gap-3.5">
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[11px] font-medium text-[#17201D] mb-1">
+                      <label className="block text-xs font-semibold text-[#262238] mb-1.5">
                         Total Pooled Quantity (kg)
                       </label>
                       <input
@@ -447,11 +447,11 @@ export default function FPOAggregatorPage() {
                         max={100000}
                         value={availableQty}
                         onChange={(e) => setAvailableQty(Number(e.target.value))}
-                        className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3.5 py-2 text-sm font-bold text-[#17201D] focus:border-[#173D32] focus:outline-none"
+                        className="w-full rounded-[16px] border border-[#E4E2DD] bg-[#F6F5F1] px-4 py-2.5 text-sm font-semibold text-[#262238] focus:bg-white focus:border-[#262238] focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#17201D] mb-1">
+                      <label className="block text-xs font-semibold text-[#262238] mb-1.5">
                         Wholesale Asking Price (₹/kg)
                       </label>
                       <input
@@ -460,20 +460,20 @@ export default function FPOAggregatorPage() {
                         max={500}
                         value={askingPrice}
                         onChange={(e) => setAskingPrice(Number(e.target.value))}
-                        className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3.5 py-2 text-sm font-bold text-[#C99B43] focus:border-[#173D32] focus:outline-none"
+                        className="w-full rounded-[16px] border border-[#E4E2DD] bg-[#F6F5F1] px-4 py-2.5 text-sm font-semibold text-[#718A68] focus:bg-white focus:border-[#262238] focus:outline-none"
                       />
                     </div>
                   </div>
 
                   {/* Collection Hub */}
                   <div>
-                    <label className="block text-[11px] font-medium text-[#17201D] mb-1">
+                    <label className="block text-xs font-semibold text-[#262238] mb-1.5">
                       FPO Collection & Dispatch Hub (Lucknow Cluster)
                     </label>
                     <select
                       value={collectionHub}
                       onChange={(e) => setCollectionHub(e.target.value)}
-                      className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3.5 py-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none"
+                      className="w-full rounded-[16px] border border-[#E4E2DD] bg-[#F6F5F1] px-4 py-2.5 text-xs font-normal text-[#262238] focus:bg-white focus:border-[#262238] focus:outline-none"
                     >
                       <option value="Bakshi Ka Talab Central Hub, Lucknow">Bakshi Ka Talab Central Intake Hub</option>
                       <option value="Malihabad Mango Packhouse, Lucknow">Malihabad Mango Packhouse & Cold Storage</option>
@@ -486,21 +486,21 @@ export default function FPOAggregatorPage() {
 
                   {/* Quality Specification */}
                   <div>
-                    <label className="block text-[11px] font-medium text-[#17201D] mb-1">
+                    <label className="block text-xs font-semibold text-[#262238] mb-1.5">
                       FPO Quality Certification & Grade Notes
                     </label>
                     <input
                       type="text"
                       value={qualityNotes}
                       onChange={(e) => setQualityNotes(e.target.value)}
-                      className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs text-[#17201D] focus:border-[#173D32] focus:outline-none"
+                      className="w-full rounded-[16px] border border-[#E4E2DD] bg-[#F6F5F1] px-4 py-2.5 text-xs text-[#262238] focus:bg-white focus:border-[#262238] focus:outline-none"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={publishing}
-                    className="w-full rounded-xl bg-[#173D32] py-3 text-xs font-semibold text-white hover:bg-[#0F2820] transition shadow-xs disabled:opacity-50 cursor-pointer active:scale-99"
+                    className="w-full rounded-full bg-[#262238] py-3.5 text-xs font-medium text-white hover:bg-[#342e4c] transition shadow-xs disabled:opacity-50 cursor-pointer active:scale-99"
                   >
                     {publishing ? "Publishing Bulk Pooled Lot..." : t.publishToMarketplace}
                   </button>
@@ -521,73 +521,73 @@ export default function FPOAggregatorPage() {
 
         {/* TAB 3: MEMBER FARMERS DIRECTORY */}
         {activeTab === "members" && (
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <h3 className="font-serif text-xl text-[#17201D]">
+                <h3 className="font-serif text-2xl text-[#262238] font-normal">
                   {t.memberFarmersTab} ({members.length})
                 </h3>
-                <p className="text-xs text-[#576561]">
+                <p className="text-xs text-[#737184] mt-0.5">
                   Real registered farmers in the Lucknow cooperative cluster.
                 </p>
               </div>
 
               <button
                 onClick={() => setShowAddMemberModal(true)}
-                className="flex items-center gap-1.5 rounded-xl bg-[#173D32] px-4 py-2 text-xs font-semibold text-white hover:bg-[#0F2820] transition shadow-xs cursor-pointer"
+                className="flex items-center gap-2 rounded-full bg-[#262238] px-5 py-2.5 text-xs font-medium text-white hover:bg-[#342e4c] transition shadow-xs cursor-pointer"
               >
-                <Plus className="h-4 w-4 text-[#C99B43]" />
+                <Plus className="h-4 w-4 text-[#718A68]" />
                 <span>{t.addMemberFarmer}</span>
               </button>
             </div>
 
             {members.length === 0 ? (
-              <div className="editorial-card p-12 text-center space-y-2 bg-white rounded-2xl border border-[#E8E8E3]">
-                <Users className="h-10 w-10 text-[#576561]/40 mx-auto" />
-                <p className="font-serif text-base text-[#17201D]">No Member Farmers Registered Yet</p>
-                <p className="text-xs text-[#576561]">Click &apos;+ Add Member Farmer&apos; to onboard local producers in Lucknow.</p>
+              <div className="p-12 text-center space-y-3 bg-white rounded-[24px] border border-[#E4E2DD]">
+                <Users className="h-10 w-10 text-[#737184]/40 mx-auto" />
+                <p className="font-serif text-lg text-[#262238] font-normal">No Member Farmers Registered Yet</p>
+                <p className="text-xs text-[#737184]">Click &apos;+ Add Member Farmer&apos; to onboard local producers in Lucknow.</p>
                 <button
                   onClick={() => setShowAddMemberModal(true)}
-                  className="rounded-xl bg-[#173D32] px-4 py-2 text-xs font-semibold text-white hover:bg-[#0F2820] transition cursor-pointer"
+                  className="rounded-full bg-[#262238] px-5 py-2.5 text-xs font-medium text-white hover:bg-[#342e4c] transition cursor-pointer"
                 >
                   {t.addMemberFarmer}
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {members.map((m) => (
                   <div
                     key={m.id}
-                    className="editorial-card p-4 space-y-3 bg-white rounded-2xl border border-[#E8E8E3]"
+                    className="p-5 space-y-3 bg-white rounded-[24px] border border-[#E4E2DD] shadow-xs"
                   >
                     <div className="flex items-start justify-between">
                       <div>
-                        <span className="text-[10px] font-mono font-semibold text-[#173D32] uppercase tracking-wider block">
+                        <span className="text-[10px] font-mono font-medium text-[#262238] uppercase tracking-wider block">
                           {m.id}
                         </span>
-                        <h4 className="font-serif text-base text-[#17201D] mt-0.5">{m.name}</h4>
+                        <h4 className="font-serif text-lg text-[#262238] font-normal mt-0.5">{m.name}</h4>
                       </div>
-                      <span className="rounded-md bg-[#DCE8DD] px-2 py-0.5 text-[10px] font-bold text-[#173D32] flex items-center gap-1">
-                        <ShieldCheck className="h-3 w-3" />
+                      <span className="rounded-full bg-[#E8E4F2] px-2.5 py-0.5 text-[10px] font-medium text-[#262238] flex items-center gap-1">
+                        <ShieldCheck className="h-3 w-3 text-[#718A68]" />
                         <span>Verified</span>
                       </span>
                     </div>
 
-                    <div className="space-y-1 text-xs text-[#576561]">
-                      <p className="flex items-center gap-1.5 text-[#17201D] font-medium">
-                        <MapPin className="h-3.5 w-3.5 text-[#173D32]" />
+                    <div className="space-y-1.5 text-xs text-[#737184]">
+                      <p className="flex items-center gap-1.5 text-[#262238] font-medium">
+                        <MapPin className="h-3.5 w-3.5 text-[#718A68]" />
                         <span>{m.village}, Lucknow ({m.acres} Acres)</span>
                       </p>
                       <p className="flex items-center gap-1.5">
-                        <Phone className="h-3.5 w-3.5 text-[#173D32]" />
+                        <Phone className="h-3.5 w-3.5 text-[#262238]" />
                         <span>{m.phone}</span>
                       </p>
                       <p className="flex items-center gap-1.5">
-                        <Sprout className="h-3.5 w-3.5 text-[#173D32]" />
+                        <Sprout className="h-3.5 w-3.5 text-[#718A68]" />
                         <span>Crops: {m.crops.join(", ")}</span>
                       </p>
-                      <p className="flex items-center gap-1.5 text-[11px] font-mono text-[#576561]">
-                        <Receipt className="h-3.5 w-3.5 text-[#576561]/60" />
+                      <p className="flex items-center gap-1.5 text-[11px] font-mono text-[#737184]">
+                        <Receipt className="h-3.5 w-3.5 text-[#737184]/60" />
                         <span>Payout: {m.bankAccount}</span>
                       </p>
                     </div>
@@ -600,12 +600,12 @@ export default function FPOAggregatorPage() {
 
         {/* TAB 4: COLLECTION CENTER INTAKE */}
         {activeTab === "intake" && (
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div>
-              <h3 className="font-serif text-xl text-[#17201D]">
+              <h3 className="font-serif text-2xl text-[#262238] font-normal">
                 {t.collectionIntakeTab} (Lucknow Regional Hubs)
               </h3>
-              <p className="text-xs text-[#576561]">
+              <p className="text-xs text-[#737184] mt-0.5">
                 Real-time harvest intake, sorting, and holding capacity across whole Lucknow cluster.
               </p>
             </div>
@@ -637,24 +637,24 @@ export default function FPOAggregatorPage() {
                   status: "Active Intake",
                 },
               ].map((hub, idx) => (
-                <div key={idx} className="editorial-card p-5 space-y-3 bg-white rounded-2xl border border-[#E8E8E3]">
+                <div key={idx} className="p-6 space-y-4 bg-white rounded-[24px] border border-[#E4E2DD] shadow-xs">
                   <div className="flex items-center justify-between">
-                    <span className="rounded-md bg-[#DCE8DD] px-2.5 py-0.5 text-xs font-bold text-[#173D32]">
+                    <span className="rounded-full bg-[#E8E4F2] px-3 py-0.5 text-xs font-medium text-[#262238]">
                       {hub.status}
                     </span>
-                    <span className="text-xs text-[#576561] font-mono">{hub.temp}</span>
+                    <span className="text-xs text-[#737184] font-mono">{hub.temp}</span>
                   </div>
                   <div>
-                    <h4 className="font-serif text-lg text-[#17201D]">{hub.name}</h4>
-                    <p className="text-xs text-[#576561] mt-0.5 font-sans">
-                      Current Storage: <span className="font-bold text-[#17201D]">{hub.current}</span> / {hub.capacity}
+                    <h4 className="font-serif text-xl text-[#262238] font-normal">{hub.name}</h4>
+                    <p className="text-xs text-[#737184] mt-1 font-normal">
+                      Current Storage: <span className="font-semibold text-[#262238]">{hub.current}</span> / {hub.capacity}
                     </p>
                   </div>
-                  <div className="space-y-1 text-xs">
-                    <span className="text-[#576561] font-medium">Handling Produce:</span>
-                    <div className="flex flex-wrap gap-1 mt-1">
+                  <div className="space-y-1.5 text-xs">
+                    <span className="text-[#737184] font-medium">Handling Produce:</span>
+                    <div className="flex flex-wrap gap-1.5 mt-1">
                       {hub.activeCrops.map((c, i) => (
-                        <span key={i} className="rounded-md bg-[#F7F5EF] border border-[#E8E8E3] px-2 py-0.5 text-[11px] font-medium text-[#17201D]">
+                        <span key={i} className="rounded-full bg-[#F6F5F1] border border-[#E4E2DD] px-2.5 py-0.5 text-[11px] font-medium text-[#262238]">
                           {c}
                         </span>
                       ))}
@@ -668,43 +668,43 @@ export default function FPOAggregatorPage() {
 
         {/* TAB 5: MEMBER PAYOUTS & SETTLEMENTS */}
         {activeTab === "settlements" && (
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div>
-              <h3 className="font-serif text-xl text-[#17201D]">
+              <h3 className="font-serif text-2xl text-[#262238] font-normal">
                 {t.memberPayoutsTab}
               </h3>
-              <p className="text-xs text-[#576561]">
+              <p className="text-xs text-[#737184] mt-0.5">
                 Transparent sales proceeds credited to registered member farmer bank accounts after 3% handling fee.
               </p>
             </div>
 
             {members.length === 0 ? (
-              <div className="editorial-card p-12 text-center text-xs text-[#576561] bg-white rounded-2xl border border-[#E8E8E3]">
+              <div className="p-12 text-center text-xs text-[#737184] bg-white rounded-[24px] border border-[#E4E2DD]">
                 No member payout history recorded yet.
               </div>
             ) : (
-              <div className="editorial-card overflow-hidden bg-white rounded-2xl border border-[#E8E8E3]">
+              <div className="overflow-hidden bg-white rounded-[24px] border border-[#E4E2DD] shadow-xs">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs border-collapse">
-                    <thead className="bg-[#F7F5EF] text-[#576561] uppercase font-mono font-semibold text-[10px] tracking-wider border-b border-[#E8E8E3]">
+                    <thead className="bg-[#F6F5F1] text-[#737184] uppercase font-mono font-medium text-[10px] tracking-wider border-b border-[#E4E2DD]">
                       <tr>
-                        <th className="py-3 px-4">Member Farmer</th>
-                        <th className="py-3 px-4">Village</th>
-                        <th className="py-3 px-4">Active Crops</th>
-                        <th className="py-3 px-4">Bank Disbursement</th>
-                        <th className="py-3 px-4">Status</th>
+                        <th className="py-3.5 px-5">Member Farmer</th>
+                        <th className="py-3.5 px-5">Village</th>
+                        <th className="py-3.5 px-5">Active Crops</th>
+                        <th className="py-3.5 px-5">Bank Disbursement</th>
+                        <th className="py-3.5 px-5">Status</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#E8E8E3] text-[#17201D]">
+                    <tbody className="divide-y divide-[#E4E2DD] text-[#262238]">
                       {members.map((m) => (
-                        <tr key={m.id} className="hover:bg-[#DCE8DD]/20 transition">
-                          <td className="py-3 px-4 font-semibold text-[#17201D]">{m.name}</td>
-                          <td className="py-3 px-4 text-[#576561]">{m.village}</td>
-                          <td className="py-3 px-4">{m.crops.join(", ")}</td>
-                          <td className="py-3 px-4 font-mono font-bold text-[#173D32]">{m.bankAccount}</td>
-                          <td className="py-3 px-4">
-                            <span className="rounded-md bg-[#DCE8DD] px-2 py-0.5 text-[11px] font-bold text-[#173D32] flex items-center gap-1 w-fit">
-                              <CheckCircle2 className="h-3 w-3" />
+                        <tr key={m.id} className="hover:bg-[#E8E4F2]/30 transition">
+                          <td className="py-3.5 px-5 font-medium text-[#262238]">{m.name}</td>
+                          <td className="py-3.5 px-5 text-[#737184]">{m.village}</td>
+                          <td className="py-3.5 px-5">{m.crops.join(", ")}</td>
+                          <td className="py-3.5 px-5 font-mono font-medium text-[#262238]">{m.bankAccount}</td>
+                          <td className="py-3.5 px-5">
+                            <span className="rounded-full bg-[#E8E4F2] px-3 py-0.5 text-[11px] font-medium text-[#262238] flex items-center gap-1.5 w-fit">
+                              <CheckCircle2 className="h-3 w-3 text-[#718A68]" />
                               <span>{t.directBankTransfer}</span>
                             </span>
                           </td>
@@ -720,85 +720,85 @@ export default function FPOAggregatorPage() {
 
         {/* Add Member Farmer Modal */}
         {showAddMemberModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#17201D]/75 p-4 backdrop-blur-sm animate-calm-reveal">
-            <div className="relative w-full max-w-md rounded-3xl border border-[#E8E8E3] bg-white p-6 shadow-2xl space-y-4 text-[#17201D]">
-              <div className="flex items-center justify-between">
-                <h3 className="font-serif text-xl text-[#17201D]">{t.addMemberFarmer}</h3>
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#262238]/60 p-4 backdrop-blur-md animate-in fade-in duration-200">
+            <div className="relative w-full max-w-md rounded-[28px] border border-[#E4E2DD] bg-white p-6 sm:p-8 shadow-2xl space-y-5 text-[#262238]">
+              <div className="flex items-center justify-between border-b border-[#E4E2DD] pb-4">
+                <h3 className="font-serif text-2xl text-[#262238] font-normal">{t.addMemberFarmer}</h3>
                 <button
                   onClick={() => setShowAddMemberModal(false)}
-                  className="rounded-full p-1 text-[#576561] hover:bg-[#E8E8E3] transition cursor-pointer"
+                  className="rounded-full p-2 text-[#737184] hover:bg-[#F6F5F1] hover:text-[#262238] transition cursor-pointer"
                 >
-                  <X className="h-4 w-4" />
+                  <X className="h-5 w-5" />
                 </button>
               </div>
 
-              <form onSubmit={handleAddMember} className="space-y-3 text-xs">
+              <form onSubmit={handleAddMember} className="space-y-4 text-xs">
                 <div>
-                  <label className="block font-medium text-[#17201D] mb-1">Farmer Full Name</label>
+                  <label className="block font-semibold text-[#262238] mb-1.5">Farmer Full Name</label>
                   <input
                     type="text"
                     required
                     value={newMemberName}
                     onChange={(e) => setNewMemberName(e.target.value)}
                     placeholder="e.g. Ram Prasad Verma"
-                    className="w-full rounded-xl border border-[#E8E8E3] bg-white p-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none"
+                    className="w-full rounded-[16px] border border-[#E4E2DD] bg-[#F6F5F1] p-3 text-xs font-medium text-[#262238] focus:bg-white focus:border-[#262238] focus:outline-none"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-medium text-[#17201D] mb-1">Village / Tehsil</label>
+                    <label className="block font-semibold text-[#262238] mb-1.5">Village / Tehsil</label>
                     <input
                       type="text"
                       required
                       value={newMemberVillage}
                       onChange={(e) => setNewMemberVillage(e.target.value)}
                       placeholder="e.g. Bakshi Ka Talab"
-                      className="w-full rounded-xl border border-[#E8E8E3] bg-white p-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none"
+                      className="w-full rounded-[16px] border border-[#E4E2DD] bg-[#F6F5F1] p-3 text-xs font-medium text-[#262238] focus:bg-white focus:border-[#262238] focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block font-medium text-[#17201D] mb-1">Land (Acres)</label>
+                    <label className="block font-semibold text-[#262238] mb-1.5">Land (Acres)</label>
                     <input
                       type="number"
                       step="0.5"
                       value={newMemberAcres}
                       onChange={(e) => setNewMemberAcres(Number(e.target.value))}
-                      className="w-full rounded-xl border border-[#E8E8E3] bg-white p-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none"
+                      className="w-full rounded-[16px] border border-[#E4E2DD] bg-[#F6F5F1] p-3 text-xs font-medium text-[#262238] focus:bg-white focus:border-[#262238] focus:outline-none"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block font-medium text-[#17201D] mb-1">Phone Number</label>
+                  <label className="block font-semibold text-[#262238] mb-1.5">Phone Number</label>
                   <input
                     type="tel"
                     required
                     value={newMemberPhone}
                     onChange={(e) => setNewMemberPhone(e.target.value)}
                     placeholder="+91-9876543210"
-                    className="w-full rounded-xl border border-[#E8E8E3] bg-white p-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none"
+                    className="w-full rounded-[16px] border border-[#E4E2DD] bg-[#F6F5F1] p-3 text-xs font-medium text-[#262238] focus:bg-white focus:border-[#262238] focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block font-medium text-[#17201D] mb-1">Bank Account / IFSC</label>
+                  <label className="block font-semibold text-[#262238] mb-1.5">Bank Account / IFSC</label>
                   <input
                     type="text"
                     value={newMemberBank}
                     onChange={(e) => setNewMemberBank(e.target.value)}
                     placeholder="SBI •••• 4512"
-                    className="w-full rounded-xl border border-[#E8E8E3] bg-white p-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none"
+                    className="w-full rounded-[16px] border border-[#E4E2DD] bg-[#F6F5F1] p-3 text-xs font-medium text-[#262238] focus:bg-white focus:border-[#262238] focus:outline-none"
                   />
                 </div>
-                <div className="flex gap-2 pt-2">
+                <div className="flex gap-3 pt-2">
                   <button
                     type="button"
                     onClick={() => setShowAddMemberModal(false)}
-                    className="flex-1 rounded-xl border border-[#E8E8E3] py-2 font-semibold text-[#576561] hover:bg-[#F7F5EF] cursor-pointer"
+                    className="flex-1 rounded-full border border-[#E4E2DD] py-2.5 font-medium text-[#737184] hover:bg-[#F6F5F1] transition cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 rounded-xl bg-[#173D32] py-2 font-semibold text-white hover:bg-[#0F2820] shadow-xs cursor-pointer active:scale-98"
+                    className="flex-1 rounded-full bg-[#262238] py-2.5 font-medium text-white hover:bg-[#342e4c] transition shadow-xs cursor-pointer active:scale-98"
                   >
                     {t.addMemberFarmer}
                   </button>

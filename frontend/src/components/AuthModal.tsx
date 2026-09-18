@@ -243,99 +243,89 @@ export function AuthModal({
     { id: "ops", label: "Ops Coordinator", icon: ShieldAlert, desc: "Control tower" },
   ];
 
+  const inputClass = "w-full rounded-2xl border border-[#E4E2DD] bg-white px-3.5 py-2.5 text-sm text-[#262238] focus:border-[#718A68] focus:ring-1 focus:ring-[#718A68]/20 focus:outline-none transition placeholder:text-[#9D9AAE]";
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#17201D]/75 p-3 sm:p-5 backdrop-blur-sm transition-opacity duration-200">
-      <div className="relative w-full max-w-4xl rounded-3xl border border-[#E8E8E3] bg-white shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[92vh] animate-fade-in-up">
-        {/* Left Panel: Authentic Indian Agriculture Photography & Editorial Brand Ethos */}
-        <div className="hidden md:flex md:w-5/12 bg-[#173D32] relative flex-col justify-between p-8 text-white overflow-hidden">
-          {/* Background Photography with Natural Light and Earth Tones */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#262238]/60 p-3 sm:p-5 backdrop-blur-sm transition-opacity duration-200">
+      <div className="relative w-full max-w-4xl rounded-[28px] border border-[#E4E2DD] bg-white shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[92vh] animate-fade-in-up">
+        {/* Left Panel: Brand Photography */}
+        <div className="hidden md:flex md:w-5/12 bg-[#262238] relative flex-col justify-between p-8 text-white overflow-hidden">
           <div
-            className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-103 opacity-40 mix-blend-overlay"
+            className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-overlay"
             style={{
               backgroundImage:
                 "url('https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=1000&auto=format&fit=crop&q=80')",
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0F2820] via-[#173D32]/90 to-[#173D32]/80" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1A1729] via-[#262238]/90 to-[#262238]/80" />
 
-          {/* Top Branding in Left Panel */}
-          <div className="relative z-10 space-y-3">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-medium text-[#DCE8DD]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#C99B43]" />
+          <div className="relative z-10 space-y-4">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3.5 py-1.5 text-[11px] font-medium text-white/80">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#718A68]" />
               <span>Lucknow Regional Cluster</span>
             </div>
-            <h2 className="font-serif text-2xl lg:text-3xl font-normal leading-tight text-white">
+            <h2 className="font-heading text-2xl lg:text-3xl font-normal leading-tight text-white">
               Direct markets built for better harvest decisions.
             </h2>
-            <p className="text-xs text-[#DCE8DD]/90 leading-relaxed font-sans">
+            <p className="text-sm text-white/60 leading-relaxed">
               Connecting 1,200+ verified farmers and FPOs with transparent APMC benchmarks and weather-aware fulfillment.
             </p>
           </div>
 
-          {/* Bottom Trust Micro-Cards */}
-          <div className="relative z-10 space-y-2 pt-6 border-t border-white/15">
-            <div className="flex items-center gap-2 text-xs text-[#DCE8DD]">
-              <ShieldCheck className="h-4 w-4 text-[#C99B43] shrink-0" />
+          <div className="relative z-10 space-y-2.5 pt-6 border-t border-white/10">
+            <div className="flex items-center gap-2 text-xs text-white/70">
+              <ShieldCheck className="h-4 w-4 text-[#718A68] shrink-0" />
               <span>Zero broker cut · Farm-gate escrow</span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-[#DCE8DD]">
-              <CloudSun className="h-4 w-4 text-[#BFD8E5] shrink-0" />
+            <div className="flex items-center gap-2 text-xs text-white/70">
+              <CloudSun className="h-4 w-4 text-[#C99B43] shrink-0" />
               <span>Weather-synchronized dispatch routing</span>
             </div>
           </div>
         </div>
 
-        {/* Right Panel: Clean Form Experience */}
-        <div className="w-full md:w-7/12 p-6 sm:p-8 overflow-y-auto bg-[#F7F5EF]/40 relative">
-          {/* Close Button */}
+        {/* Right Panel: Form */}
+        <div className="w-full md:w-7/12 p-6 sm:p-8 overflow-y-auto bg-[#F6F5F1]/40 relative">
           <button
             onClick={onClose}
-            className="absolute right-5 top-5 rounded-full p-2 text-[#576561] hover:bg-[#E8E8E3]/60 hover:text-[#17201D] transition cursor-pointer"
+            className="absolute right-5 top-5 rounded-full p-2 text-[#737184] hover:bg-[#E4E2DD]/60 hover:text-[#262238] transition cursor-pointer"
             aria-label="Close modal"
           >
             <X className="h-4 w-4" />
           </button>
 
-          {/* Modal Header */}
           <div className="pr-8">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-[#DCE8DD]/70 text-[#173D32] text-[10px] font-mono uppercase font-semibold mb-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#E8E4F2] text-[#262238] text-[10px] font-medium uppercase tracking-wider mb-3">
               FarmLink Verification
             </div>
-            <h3 className="font-serif text-2xl sm:text-3xl text-[#17201D] font-normal tracking-tight">
+            <h3 className="font-heading text-2xl sm:text-3xl text-[#262238] font-normal tracking-tight">
               {mode === "register" ? "Welcome to FarmLink" : "Welcome Back"}
             </h3>
-            <p className="text-xs text-[#576561] mt-1 font-sans">
+            <p className="text-sm text-[#737184] mt-1.5">
               {mode === "register"
                 ? "Join a direct market built for transparent prices and harvest planning."
                 : "Sign in to access your farm, market orders, and logistics terminal."}
             </p>
 
-            {/* Mode Switch Pills */}
-            <div className="mt-4 flex rounded-xl bg-[#E8E8E3]/60 p-1 border border-[#E8E8E3]">
+            <div className="mt-4 flex rounded-2xl bg-[#E4E2DD]/40 p-1 border border-[#E4E2DD]">
               <button
                 type="button"
-                onClick={() => {
-                  setMode("register");
-                  setError(null);
-                }}
-                className={`flex-1 rounded-lg py-1.5 text-xs font-semibold transition cursor-pointer ${
+                onClick={() => { setMode("register"); setError(null); }}
+                className={`flex-1 rounded-xl py-2 text-sm font-medium transition cursor-pointer ${
                   mode === "register"
-                    ? "bg-white text-[#173D32] shadow-2xs"
-                    : "text-[#576561] hover:text-[#17201D]"
+                    ? "bg-white text-[#262238] shadow-sm"
+                    : "text-[#737184] hover:text-[#262238]"
                 }`}
               >
                 Create Account
               </button>
               <button
                 type="button"
-                onClick={() => {
-                  setMode("login");
-                  setError(null);
-                }}
-                className={`flex-1 rounded-lg py-1.5 text-xs font-semibold transition cursor-pointer ${
+                onClick={() => { setMode("login"); setError(null); }}
+                className={`flex-1 rounded-xl py-2 text-sm font-medium transition cursor-pointer ${
                   mode === "login"
-                    ? "bg-white text-[#173D32] shadow-2xs"
-                    : "text-[#576561] hover:text-[#17201D]"
+                    ? "bg-white text-[#262238] shadow-sm"
+                    : "text-[#737184] hover:text-[#262238]"
                 }`}
               >
                 Sign In
@@ -344,15 +334,15 @@ export function AuthModal({
           </div>
 
           {error && (
-            <div className="mt-3.5 rounded-xl bg-[#F8ECE8] p-3 border border-[#C86B4A]/30 text-xs font-medium text-[#C86B4A]">
+            <div className="mt-4 rounded-2xl bg-[#F8ECE8] p-3.5 border border-[#C86B4A]/20 text-sm font-medium text-[#C86B4A]">
               {error}
             </div>
           )}
 
           {/* Role Selector */}
-          <div className="mt-4">
-            <label className="block text-[11px] font-mono uppercase tracking-wider text-[#576561] mb-1.5">
-              Select Stakeholder Role / खाता प्रकार
+          <div className="mt-5">
+            <label className="block text-xs font-medium text-[#737184] uppercase tracking-wider mb-2">
+              Select Role
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {roleConfigs.map((cfg) => {
@@ -363,18 +353,18 @@ export function AuthModal({
                     key={cfg.id}
                     type="button"
                     onClick={() => setRole(cfg.id as any)}
-                    className={`rounded-xl border p-2 text-left text-xs transition flex flex-col justify-between cursor-pointer ${
+                    className={`rounded-2xl border p-3 text-left transition flex flex-col justify-between cursor-pointer ${
                       isSelected
-                        ? "border-[#173D32] bg-[#DCE8DD]/40 text-[#173D32] ring-1 ring-[#173D32]/30 shadow-2xs"
-                        : "border-[#E8E8E3] bg-white text-[#17201D] hover:border-[#D4D4CE]"
+                        ? "border-[#718A68] bg-[#E3EBE0]/40 text-[#262238] ring-1 ring-[#718A68]/30 shadow-sm"
+                        : "border-[#E4E2DD] bg-white text-[#262238] hover:border-[#D4CEE8]"
                     }`}
                   >
-                    <div className="flex items-center justify-between mb-1">
-                      <Icon className="h-3.5 w-3.5 text-[#173D32]" />
-                      {isSelected && <CheckCircle2 className="h-3 w-3 text-[#173D32]" />}
+                    <div className="flex items-center justify-between mb-1.5">
+                      <Icon className={`h-4 w-4 ${isSelected ? "text-[#718A68]" : "text-[#737184]"}`} />
+                      {isSelected && <CheckCircle2 className="h-3.5 w-3.5 text-[#718A68]" />}
                     </div>
-                    <span className="font-semibold text-[11px] leading-tight">{cfg.label}</span>
-                    <span className="text-[9px] text-[#576561] line-clamp-1 mt-0.5">{cfg.desc}</span>
+                    <span className="font-medium text-xs leading-tight">{cfg.label}</span>
+                    <span className="text-[10px] text-[#737184] line-clamp-1 mt-0.5">{cfg.desc}</span>
                   </button>
                 );
               })}
@@ -382,177 +372,115 @@ export function AuthModal({
           </div>
 
           {/* Google SSO Container */}
-          <div className="space-y-2 pt-3">
+          <div className="space-y-2.5 pt-4">
             <div className="flex justify-center min-h-[40px]" ref={googleBtnContainerRef} />
-
             {googleLoading && (
-              <p className="text-center text-xs text-[#576561] animate-pulse font-medium">
+              <p className="text-center text-xs text-[#737184] animate-pulse font-medium">
                 Verifying Google credentials...
               </p>
             )}
-
-            <div className="relative flex items-center justify-center text-[10px] uppercase font-mono tracking-wider text-[#576561]/80">
+            <div className="relative flex items-center justify-center text-[10px] uppercase font-medium tracking-wider text-[#9D9AAE]">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#E8E8E3]" />
+                <div className="w-full border-t border-[#E4E2DD]" />
               </div>
-              <span className="relative bg-[#FAF9F5] px-3">or continue with credentials</span>
+              <span className="relative bg-[#F8F7F3] px-3">or continue with credentials</span>
             </div>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-3 pt-2">
-            {/* Name & Phone for Register */}
+          <form onSubmit={handleSubmit} className="space-y-3.5 pt-3">
             {mode === "register" && (
               <>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-2.5">
                   <div>
-                    <label className="block text-[11px] font-medium text-[#17201D] mb-1">
-                      First Name
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      placeholder="e.g. Ramesh"
-                      className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none transition shadow-2xs"
-                    />
+                    <label className="block text-xs font-medium text-[#262238] mb-1.5">First Name</label>
+                    <input type="text" required value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="e.g. Ramesh" className={inputClass} />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-medium text-[#17201D] mb-1">
-                      Last Name
-                    </label>
-                    <input
-                      type="text"
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      placeholder="e.g. Yadav"
-                      className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none transition shadow-2xs"
-                    />
+                    <label className="block text-xs font-medium text-[#262238] mb-1.5">Last Name</label>
+                    <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="e.g. Yadav" className={inputClass} />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-medium text-[#17201D] mb-1">
-                    Phone Number (OTP verification)
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="9876543210"
-                    className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none transition shadow-2xs"
-                  />
+                  <label className="block text-xs font-medium text-[#262238] mb-1.5">Phone Number</label>
+                  <input type="tel" required value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="9876543210" className={inputClass} />
                 </div>
 
-                {/* Pillar 1: Government AgriStack & Land Records Verification (Farmer Role Only) */}
+                {/* Pillar 1: Government AgriStack */}
                 {role === "farmer" && (
-                  <div className="rounded-2xl border-2 border-[#173D32]/25 bg-[#F7F5EF] p-3.5 space-y-3 shadow-xs">
-                    <div className="flex items-start justify-between gap-2 border-b border-[#E8E8E3] pb-2.5">
+                  <div className="rounded-[20px] border-2 border-[#718A68]/25 bg-[#E3EBE0]/20 p-4 space-y-3">
+                    <div className="flex items-start justify-between gap-2 border-b border-[#E4E2DD] pb-3">
                       <div>
-                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#173D32] uppercase tracking-wider">
-                          <span className="flex h-2 w-2 rounded-full bg-emerald-600 animate-pulse" />
-                          <span>Pillar 1: Govt. AgriStack Verification</span>
+                        <div className="flex items-center gap-1.5 text-xs font-semibold text-[#718A68] uppercase tracking-wider">
+                          <span className="flex h-2 w-2 rounded-full bg-[#718A68] animate-pulse" />
+                          <span>Govt. AgriStack Verification</span>
                         </div>
-                        <p className="text-[10px] text-[#5C584E] mt-0.5 leading-snug">
-                          Live authentication against UP Bhulekh (राजस्व परिषद) & PM-KISAN Central Registry
+                        <p className="text-[11px] text-[#737184] mt-0.5 leading-snug">
+                          Live authentication against UP Bhulekh & PM-KISAN Registry
                         </p>
                       </div>
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#DCE8DD] text-[#173D32] border border-[#173D32]/20 shrink-0">
+                      <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-[#E3EBE0] text-[#718A68] border border-[#718A68]/20 shrink-0">
                         Mandatory
                       </span>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                       <div>
-                        <label className="block text-[11px] font-medium text-[#17201D] mb-1">
-                          PM-KISAN ID / Farmer ID *
-                        </label>
+                        <label className="block text-xs font-medium text-[#262238] mb-1.5">PM-KISAN ID *</label>
                         <input
-                          type="text"
-                          required
-                          value={pmKisanId}
-                          onChange={(e) => {
-                            setPmKisanId(e.target.value);
-                            setGovVerifiedRecord(null);
-                            setGovError(null);
-                          }}
+                          type="text" required value={pmKisanId}
+                          onChange={(e) => { setPmKisanId(e.target.value); setGovVerifiedRecord(null); setGovError(null); }}
                           placeholder="e.g. UP20248849201"
-                          className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-mono text-[#17201D] focus:border-[#173D32] focus:outline-none transition uppercase shadow-2xs"
+                          className={`${inputClass} font-mono uppercase`}
                         />
                       </div>
-
                       <div>
-                        <label className="block text-[11px] font-medium text-[#17201D] mb-1">
-                          Khasra Number (खसरा संख्या) *
-                        </label>
+                        <label className="block text-xs font-medium text-[#262238] mb-1.5">Khasra Number *</label>
                         <input
-                          type="text"
-                          required
-                          value={khasraNumber}
-                          onChange={(e) => {
-                            setKhasraNumber(e.target.value);
-                            setGovVerifiedRecord(null);
-                            setGovError(null);
-                          }}
+                          type="text" required value={khasraNumber}
+                          onChange={(e) => { setKhasraNumber(e.target.value); setGovVerifiedRecord(null); setGovError(null); }}
                           placeholder="e.g. 142/2A"
-                          className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-mono text-[#17201D] focus:border-[#173D32] focus:outline-none transition shadow-2xs"
+                          className={`${inputClass} font-mono`}
                         />
                       </div>
                     </div>
 
-                    {/* Live Government Verification Action */}
-                    <div className="flex items-center gap-2 pt-1">
-                      <button
-                        type="button"
-                        onClick={handleLiveGovVerify}
-                        disabled={govVerifying || (!pmKisanId.trim() && !khasraNumber.trim())}
-                        className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-[#173D32] bg-[#173D32] px-3 py-2 text-xs font-semibold text-white hover:bg-[#122F27] transition shadow-xs disabled:opacity-50 cursor-pointer"
-                      >
-                        {govVerifying ? (
-                          <>
-                            <RotateCw className="h-3.5 w-3.5 animate-spin text-white" />
-                            <span>Connecting to UP Bhulekh & PM-KISAN...</span>
-                          </>
-                        ) : (
-                          <>
-                            <ShieldCheck className="h-3.5 w-3.5 text-[#C99B43]" />
-                            <span>Verify with Government Registry</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
+                    <button
+                      type="button"
+                      onClick={handleLiveGovVerify}
+                      disabled={govVerifying || (!pmKisanId.trim() && !khasraNumber.trim())}
+                      className="w-full flex items-center justify-center gap-2 rounded-full bg-[#262238] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1A1729] transition disabled:opacity-50 cursor-pointer"
+                    >
+                      {govVerifying ? (
+                        <>
+                          <RotateCw className="h-4 w-4 animate-spin" />
+                          <span>Connecting to UP Bhulekh & PM-KISAN...</span>
+                        </>
+                      ) : (
+                        <>
+                          <ShieldCheck className="h-4 w-4 text-[#718A68]" />
+                          <span>Verify with Government Registry</span>
+                        </>
+                      )}
+                    </button>
 
-                    {/* Government Verification Success Card */}
                     {govVerifiedRecord && (
-                      <div className="rounded-xl border border-emerald-300 bg-emerald-50/80 p-3 text-xs space-y-1.5 animate-calm-reveal">
+                      <div className="rounded-2xl border border-emerald-300 bg-emerald-50/80 p-3.5 text-xs space-y-2 animate-calm-reveal">
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-emerald-900 flex items-center gap-1">
-                            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-700" />
-                            <span>Govt. Verified Producer: {govVerifiedRecord.beneficiary_name}</span>
+                          <span className="font-semibold text-emerald-900 flex items-center gap-1.5">
+                            <CheckCircle2 className="h-4 w-4 text-emerald-700" />
+                            <span>Verified: {govVerifiedRecord.beneficiary_name}</span>
                           </span>
-                          <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-emerald-200/60 text-emerald-900">
+                          <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-emerald-200/60 text-emerald-900">
                             {govVerifiedRecord.pfms_status || "Aadhaar Seeded"}
                           </span>
                         </div>
-                        <div className="grid grid-cols-2 gap-2 text-[11px] text-emerald-800 pt-1 border-t border-emerald-200/50">
-                          <div>
-                            <span className="text-emerald-950 font-medium">Village & Tehsil: </span>
-                            {govVerifiedRecord.village}, {govVerifiedRecord.tehsil}
-                          </div>
-                          <div>
-                            <span className="text-emerald-950 font-medium">Holding Area: </span>
-                            {govVerifiedRecord.land_size_acres} Acres
-                          </div>
-                          <div>
-                            <span className="text-emerald-950 font-medium">Khasra Parcel: </span>
-                            {govVerifiedRecord.khasra_number}
-                          </div>
-                          <div>
-                            <span className="text-emerald-950 font-medium">Registry: </span>
-                            UP Bhulekh RoR
-                          </div>
+                        <div className="grid grid-cols-2 gap-2 text-[11px] text-emerald-800 pt-1.5 border-t border-emerald-200/50">
+                          <div><span className="text-emerald-950 font-medium">Village: </span>{govVerifiedRecord.village}, {govVerifiedRecord.tehsil}</div>
+                          <div><span className="text-emerald-950 font-medium">Area: </span>{govVerifiedRecord.land_size_acres} Acres</div>
+                          <div><span className="text-emerald-950 font-medium">Khasra: </span>{govVerifiedRecord.khasra_number}</div>
+                          <div><span className="text-emerald-950 font-medium">Registry: </span>UP Bhulekh RoR</div>
                         </div>
                         <div className="text-[9px] font-mono text-emerald-700 pt-0.5 flex items-center justify-between">
                           <span>Seal: {govVerifiedRecord.government_seal}</span>
@@ -561,15 +489,12 @@ export function AuthModal({
                       </div>
                     )}
 
-                    {/* Government Verification Error Notice */}
                     {govError && (
-                      <div className="rounded-xl border border-red-200 bg-red-50 p-2.5 text-xs text-red-800 flex items-start gap-2 animate-calm-reveal">
+                      <div className="rounded-2xl border border-red-200 bg-red-50 p-3 text-xs text-red-800 flex items-start gap-2 animate-calm-reveal">
                         <AlertCircle className="h-4 w-4 text-red-600 shrink-0 mt-0.5" />
                         <div>
                           <strong className="block font-semibold">Government Registry Check Failed</strong>
-                          <span className="text-[11px] leading-tight text-red-700 block mt-0.5">
-                            {govError}
-                          </span>
+                          <span className="text-[11px] text-red-700 block mt-0.5">{govError}</span>
                         </div>
                       </div>
                     )}
@@ -577,39 +502,33 @@ export function AuthModal({
                 )}
 
                 {/* Location Picker */}
-                <div className="rounded-xl border border-[#E8E8E3] bg-white p-3 space-y-1.5 shadow-2xs">
+                <div className="rounded-2xl border border-[#E4E2DD] bg-white p-3.5 space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-[11px] font-medium text-[#17201D] flex items-center gap-1">
-                      <MapPin className="h-3.5 w-3.5 text-[#173D32]" />
-                      <span>{role === "buyer" ? "Delivery Receiving Dock" : "Farm Gate Location"}</span>
+                    <label className="text-xs font-medium text-[#262238] flex items-center gap-1.5">
+                      <MapPin className="h-3.5 w-3.5 text-[#718A68]" />
+                      <span>{role === "buyer" ? "Delivery Dock" : "Farm Location"}</span>
                     </label>
                     <button
                       type="button"
                       onClick={() => setShowLocationPicker(true)}
-                      className="text-[11px] font-semibold text-[#173D32] hover:underline flex items-center gap-1 bg-[#DCE8DD]/40 px-2 py-0.5 rounded-lg border border-[#DCE8DD] cursor-pointer"
+                      className="text-xs font-medium text-[#718A68] hover:underline flex items-center gap-1 bg-[#E3EBE0]/40 px-2.5 py-1 rounded-full border border-[#E3EBE0] cursor-pointer"
                     >
                       <span>🗺️ Set on Map</span>
                     </button>
                   </div>
-
                   <input
-                    type="text"
-                    required
-                    value={location}
+                    type="text" required value={location}
                     onChange={(e) => setLocation(e.target.value)}
                     placeholder="e.g. Bakshi Ka Talab, Lucknow"
-                    className="w-full rounded-lg border border-[#E8E8E3] bg-[#F7F5EF]/50 px-2.5 py-1.5 text-xs font-semibold text-[#17201D] focus:border-[#173D32] focus:outline-none"
+                    className={`${inputClass} !rounded-xl`}
                   />
-
-                  <div className="flex items-center justify-between text-[10px] text-[#576561] pt-0.5">
-                    <span className="font-mono">
-                      📍 GPS: <strong className="text-[#17201D]">{geoLat.toFixed(4)}, {geoLng.toFixed(4)}</strong>
-                    </span>
+                  <div className="flex items-center justify-between text-[10px] text-[#737184]">
+                    <span className="font-mono">📍 GPS: <strong className="text-[#262238]">{geoLat.toFixed(4)}, {geoLng.toFixed(4)}</strong></span>
                     <a
                       href={`https://www.google.com/maps/search/?api=1&query=${geoLat},${geoLng}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-semibold text-[#173D32] hover:underline"
+                      className="font-medium text-[#718A68] hover:underline"
                     >
                       Verify on Maps &rarr;
                     </a>
@@ -617,15 +536,14 @@ export function AuthModal({
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-medium text-[#17201D] mb-1">
+                  <label className="block text-xs font-medium text-[#262238] mb-1.5">
                     {role === "buyer" ? "Organization Name (Optional)" : "Farm / FPO Name (Optional)"}
                   </label>
                   <input
-                    type="text"
-                    value={orgName}
+                    type="text" value={orgName}
                     onChange={(e) => setOrgName(e.target.value)}
                     placeholder={role === "buyer" ? "e.g. Green Valley Kitchens" : "e.g. Malihabad Mango Growers FPO"}
-                    className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none transition shadow-2xs"
+                    className={inputClass}
                   />
                 </div>
               </>
@@ -633,42 +551,34 @@ export function AuthModal({
 
             {/* Username & Password */}
             <div>
-              <label className="block text-[11px] font-medium text-[#17201D] mb-1">
-                Username
-              </label>
+              <label className="block text-xs font-medium text-[#262238] mb-1.5">Username</label>
               <input
-                type="text"
-                required
-                value={username}
+                type="text" required value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder={mode === "login" ? "Enter your username" : "Choose username (e.g. ramesh_kisan)"}
-                className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none transition shadow-2xs"
+                className={inputClass}
               />
             </div>
 
             <div>
-              <label className="block text-[11px] font-medium text-[#17201D] mb-1">
-                Password
-              </label>
+              <label className="block text-xs font-medium text-[#262238] mb-1.5">Password</label>
               <input
-                type="password"
-                required
-                value={password}
+                type="password" required value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full rounded-xl border border-[#E8E8E3] bg-white px-3 py-2 text-xs font-normal text-[#17201D] focus:border-[#173D32] focus:outline-none transition shadow-2xs"
+                className={inputClass}
               />
             </div>
 
-            {/* Submit Action */}
+            {/* Submit */}
             <div className="pt-2">
               <button
                 type="submit"
                 disabled={loading || googleLoading}
-                className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#173D32] py-2.5 text-xs font-semibold text-white hover:bg-[#0F2820] transition-all shadow-xs disabled:opacity-50 cursor-pointer active:scale-99"
+                className="w-full flex items-center justify-center gap-2 rounded-full bg-[#262238] py-3 text-sm font-semibold text-white hover:bg-[#1A1729] transition-all shadow-sm disabled:opacity-50 cursor-pointer active:scale-[0.98]"
               >
-                <span>{loading ? "Processing..." : mode === "register" ? "Join FarmLink Network" : "Sign In to Terminal"}</span>
-                <ArrowRight className="h-3.5 w-3.5 text-[#C99B43]" />
+                <span>{loading ? "Processing..." : mode === "register" ? "Join FarmLink Network" : "Sign In"}</span>
+                <ArrowRight className="h-4 w-4 text-[#718A68]" />
               </button>
             </div>
           </form>

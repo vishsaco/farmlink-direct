@@ -2,88 +2,164 @@
 
 @layer base {
   :root {
-    --forest-green: #173D32;
-    --forest-green-dark: #0F2820;
-    --forest-green-light: #235445;
-    --deep-ink: #17201D;
-    --warm-ivory: #F7F5EF;
-    --warm-ivory-surface: #F2EFE8;
-    --soft-sage: #DCE8DD;
-    --soft-sage-light: #EDF3EE;
-    --weather-blue: #BFD8E5;
-    --weather-blue-light: #E4EEF3;
-    --mist-border: #E8E8E3;
-    --mist-border-dark: #D4D4CE;
-    --harvest-gold: #C99B43;
-    --harvest-gold-light: #F7F0E2;
+    /* ─── New Premium Design Tokens ─── */
+    --bg: #F6F5F1;
+    --bg-surface: #EFEDE8;
+    --primary-dark: #262238;
+    --primary-muted: #737184;
+    --soft-lavender: #E8E4F2;
+    --soft-lavender-deep: #D4CEE8;
+    --soft-green: #718A68;
+    --soft-green-light: #E3EBE0;
+    --soft-green-dark: #5A7352;
+    --white: #FFFFFF;
+    --border: #E4E2DD;
+    --border-strong: #D1CEC8;
+    --text-primary: #262238;
+    --text-secondary: #737184;
+    --text-tertiary: #9D9AAE;
+    --card-white: #FFFFFF;
+    --dark-section: #28243D;
+    --dark-section-surface: #332E4D;
     --clay-alert: #C86B4A;
     --clay-alert-light: #F8ECE8;
-    --card-white: #FFFFFF;
-    
-    /* Legacy aliases mapped to the refined palette */
-    --color-primary: #173D32;
-    --color-primary-dark: #0F2820;
-    --color-accent: #173D32;
-    --color-accent-hover: #235445;
+    --harvest-gold: #C99B43;
+
+    /* Legacy aliases for backward compatibility */
+    --color-primary: #262238;
+    --color-primary-dark: #1A1729;
+    --color-accent: #718A68;
+    --color-accent-hover: #5A7352;
     --color-gold: #C99B43;
     --color-gold-muted: #F7F0E2;
-    --color-surface: #F7F5EF;
+    --color-surface: #F6F5F1;
     --color-card: #FFFFFF;
-    --color-text-main: #17201D;
-    --color-text-muted: #576561;
-    --color-border: #E8E8E3;
+    --color-text-main: #262238;
+    --color-text-muted: #737184;
+    --color-border: #E4E2DD;
+
+    /* Old aliases mapped to new palette for component compat */
+    --forest-green: #262238;
+    --forest-green-dark: #1A1729;
+    --forest-green-light: #332E4D;
+    --deep-ink: #262238;
+    --warm-ivory: #F6F5F1;
+    --warm-ivory-surface: #EFEDE8;
+    --soft-sage: #E8E4F2;
+    --soft-sage-light: #F3F0FA;
+    --weather-blue: #BFD8E5;
+    --weather-blue-light: #E4EEF3;
+    --mist-border: #E4E2DD;
+    --mist-border-dark: #D1CEC8;
   }
 
   body {
-    background-color: var(--warm-ivory);
-    color: var(--deep-ink);
-    font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font-sans), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    line-height: 1.6;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    letter-spacing: -0.02em;
-    color: var(--deep-ink);
+    font-family: var(--font-heading), 'Manrope', var(--font-sans), sans-serif;
+    color: var(--text-primary);
+    letter-spacing: -0.025em;
+    line-height: 1.15;
   }
 
-  /* Fixed-width tabular numerals for all financial and metric displays */
+  /* Fixed-width tabular numerals for financial/metric displays */
   .font-mono {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     font-feature-settings: "tnum" 1, "zero" 1;
   }
 }
 
-/* Typography font classes */
-.font-serif {
-  font-family: var(--font-serif), "Playfair Display", Georgia, serif;
+/* ───────────────────────────────────────────────────────────── */
+/* TYPOGRAPHY UTILITIES                                         */
+/* ───────────────────────────────────────────────────────────── */
+
+.font-heading {
+  font-family: var(--font-heading), 'Manrope', sans-serif;
 }
 
 .font-sans {
-  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-sans), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Handwritten Font Utility for Human Annotations */
+/* Legacy alias */
+.font-serif {
+  font-family: var(--font-heading), 'Manrope', sans-serif;
+}
+
+/* Handwritten annotation font */
 .font-caveat {
   font-family: var(--font-caveat), 'Caveat', cursive;
 }
 
+/* Editorial headline — large, light weight */
+.text-editorial {
+  font-family: var(--font-heading), 'Manrope', sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
 /* ───────────────────────────────────────────────────────────── */
-/* BESPOKE EDITORIAL & FINANCIAL TERMINAL CARD STYLES */
+/* PREMIUM CARD SYSTEM                                          */
 /* ───────────────────────────────────────────────────────────── */
 
 .editorial-card {
-  background-color: #FFFFFF;
-  border: 1px solid #E8E8E3;
-  border-radius: 16px;
-  box-shadow: 0 1px 3px rgba(23, 32, 29, 0.03), 0 8px 20px -4px rgba(23, 32, 29, 0.03);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  background-color: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: 0 1px 3px rgba(38, 34, 56, 0.03), 0 8px 24px -6px rgba(38, 34, 56, 0.04);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .editorial-card:hover {
-  border-color: #DCE8DD;
-  box-shadow: 0 2px 6px rgba(23, 32, 29, 0.04), 0 14px 28px -6px rgba(23, 32, 29, 0.06);
+  border-color: var(--soft-lavender);
+  box-shadow: 0 2px 8px rgba(38, 34, 56, 0.05), 0 16px 32px -8px rgba(38, 34, 56, 0.08);
+}
+
+/* Interactive card with subtle lift + border glow */
+.editorial-card-interactive {
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.editorial-card-interactive:hover {
+  transform: translateY(-3px);
+  border-color: rgba(113, 138, 104, 0.35);
+  box-shadow: 0 4px 14px -2px rgba(38, 34, 56, 0.06), 0 1px 3px rgba(38, 34, 56, 0.04);
+}
+
+.editorial-card-interactive .photo-zoom {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.editorial-card-interactive:hover .photo-zoom {
+  transform: scale(1.03);
+}
+
+/* Glassmorphism card variant */
+.glass-card {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(228, 226, 221, 0.6);
+  border-radius: 24px;
+}
+
+/* Dark section card */
+.dark-card {
+  background: rgba(51, 46, 77, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(232, 228, 242, 0.12);
+  border-radius: 24px;
 }
 
 /* Physical Wooden Crate Stamp */
@@ -92,31 +168,103 @@
   align-items: center;
   gap: 0.375rem;
   font-family: ui-monospace, monospace;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 0.65rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   padding: 0.2rem 0.55rem;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid currentColor;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
-/* Antique Gold Contour Border */
+/* Gold contour border */
 .gold-contour-border {
   border-color: rgba(201, 155, 67, 0.35) !important;
 }
 
-/* Authentic APMC Trading Ledger Row */
+/* Mandi ledger row hover */
 .mandi-ledger-row {
   transition: background-color 0.15s ease;
 }
 .mandi-ledger-row:hover {
-  background-color: rgba(220, 232, 221, 0.35);
+  background-color: rgba(232, 228, 242, 0.35);
 }
 
 /* ───────────────────────────────────────────────────────────── */
-/* CALM FLUID MICRO-ANIMATIONS */
+/* PILL BUTTON SYSTEM                                           */
+/* ───────────────────────────────────────────────────────────── */
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 9999px;
+  background-color: var(--primary-dark);
+  color: var(--white);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: -0.01em;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 2px rgba(38, 34, 56, 0.12);
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: var(--forest-green-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px -2px rgba(38, 34, 56, 0.2);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 9999px;
+  background-color: var(--white);
+  color: var(--text-primary);
+  font-weight: 500;
+  font-size: 0.8125rem;
+  border: 1px solid var(--border);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  border-color: var(--soft-lavender-deep);
+  background-color: var(--soft-lavender);
+  transform: translateY(-1px);
+}
+
+.btn-green {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 9999px;
+  background-color: var(--soft-green);
+  color: var(--white);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.btn-green:hover {
+  background-color: var(--soft-green-dark);
+  transform: translateY(-1px);
+}
+
+/* ───────────────────────────────────────────────────────────── */
+/* PREMIUM MICRO-ANIMATIONS                                     */
 /* ───────────────────────────────────────────────────────────── */
 
 /* Continuous Financial Ticker */
@@ -147,9 +295,9 @@
 
 /* Price Updated Flash — gentle glow */
 @keyframes priceUpdatedGlow {
-  0% { box-shadow: 0 0 0 0 rgba(23, 61, 50, 0.4); background-color: rgba(220, 232, 221, 0.4); }
-  50% { box-shadow: 0 0 10px 2px rgba(23, 61, 50, 0.2); background-color: rgba(220, 232, 221, 0.2); }
-  100% { box-shadow: 0 0 0 0 rgba(23, 61, 50, 0); background-color: transparent; }
+  0% { box-shadow: 0 0 0 0 rgba(113, 138, 104, 0.4); background-color: rgba(232, 228, 242, 0.4); }
+  50% { box-shadow: 0 0 10px 2px rgba(113, 138, 104, 0.2); background-color: rgba(232, 228, 242, 0.2); }
+  100% { box-shadow: 0 0 0 0 rgba(113, 138, 104, 0); background-color: transparent; }
 }
 
 .animate-price-updated {
@@ -178,46 +326,7 @@
 .animate-audio-bar-4 { animation: audioWave 0.9s ease-in-out infinite 0.45s; }
 .animate-audio-bar-5 { animation: audioWave 1.2s ease-in-out infinite 0.2s; }
 
-/* Custom Clean Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #F7F5EF;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #D4D4CE;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #576561;
-}
-
-/* Leaflet Map overrides for Clean Warm Palette */
-.leaflet-container {
-  width: 100%;
-  height: 100%;
-  border-radius: 14px;
-  background-color: #F7F5EF !important;
-}
-
-.leaflet-popup-content-wrapper {
-  background: #FFFFFF !important;
-  color: #17201D !important;
-  border: 1px solid #E8E8E3 !important;
-  border-radius: 12px !important;
-  box-shadow: 0 10px 25px -5px rgba(23, 32, 29, 0.08) !important;
-}
-
-/* ───────────────────────────────────────────────────────────── */
-/* PURPOSEFUL & REFINED EDITORIAL MOTION DESIGN TOKENS */
-/* ───────────────────────────────────────────────────────────── */
-
-/* 1. Subtle Upward Fade Entrance (Hero, Cards, Modals) */
+/* 1. Subtle Upward Fade Entrance */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -230,10 +339,10 @@
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* 2. SVG Line Draw Animation (Checkmarks, Route Paths, Timeline) */
+/* 2. SVG Line Draw */
 @keyframes lineDraw {
   to {
     stroke-dashoffset: 0;
@@ -246,14 +355,14 @@
   animation: lineDraw 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* 3. Hero Produce Moisture Shimmer (Single Restrained Pass on Load) */
+/* 3. Hero Shimmer Pass */
 @keyframes shimmerPassOnce {
   0% {
     transform: translateX(-150%) rotate(25deg);
     opacity: 0;
   }
   20% {
-    opacity: 0.15;
+    opacity: 0.12;
   }
   100% {
     transform: translateX(250%) rotate(25deg);
@@ -270,23 +379,23 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.2) 50%,
     transparent 100%
   );
   animation: shimmerPassOnce 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s 1 forwards;
   pointer-events: none;
 }
 
-/* 4. Active Step Quiet Green Halo Pulse */
+/* 4. Active Step Halo Pulse */
 @keyframes quietHaloPulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(23, 61, 50, 0.22);
+    box-shadow: 0 0 0 0 rgba(113, 138, 104, 0.22);
   }
   70% {
-    box-shadow: 0 0 0 8px rgba(23, 61, 50, 0);
+    box-shadow: 0 0 0 8px rgba(113, 138, 104, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(23, 61, 50, 0);
+    box-shadow: 0 0 0 0 rgba(113, 138, 104, 0);
   }
 }
 
@@ -294,7 +403,7 @@
   animation: quietHaloPulse 2.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* 5. Underline Draw on Hero Keywords */
+/* 5. Underline Draw on Keywords */
 @keyframes underlineDraw {
   from {
     transform: scaleX(0);
@@ -316,14 +425,14 @@
   bottom: -2px;
   width: 100%;
   height: 3px;
-  background-color: #173D32;
+  background-color: var(--soft-green);
   transform-origin: left;
   animation: underlineDraw 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
   transform: scaleX(0);
   border-radius: 2px;
 }
 
-/* 6. Weather Icon Mount Accents (Sun Flare & Rain Drops) */
+/* 6. Weather Icon Mount Accents */
 @keyframes sunFlareOnce {
   0% { transform: scale(0.9) rotate(-10deg); opacity: 0.6; }
   50% { transform: scale(1.08) rotate(5deg); opacity: 1; filter: drop-shadow(0 0 4px rgba(201, 155, 67, 0.4)); }
@@ -344,7 +453,7 @@
   animation: dropFallOnce 0.6s ease-out 1 forwards;
 }
 
-/* 7. Subtle Badge Pulse Once */
+/* 7. Badge Pulse Once */
 @keyframes badgePulseOnce {
   0% { transform: scale(0.96); opacity: 0; }
   60% { transform: scale(1.02); opacity: 1; }
@@ -355,28 +464,41 @@
   animation: badgePulseOnce 0.4s cubic-bezier(0.16, 1, 0.3, 1) 1 forwards;
 }
 
-/* 8. Interactive Card Physics (2px-3px lift, thin green border, photo zoom) */
-.editorial-card-interactive {
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+/* 8. Scroll Reveal (used by IntersectionObserver) */
+@keyframes scrollReveal {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
-.editorial-card-interactive:hover {
-  transform: translateY(-3px);
-  border-color: rgba(23, 61, 50, 0.28);
-  box-shadow: 0 4px 12px -2px rgba(23, 32, 29, 0.06), 0 1px 3px rgba(23, 32, 29, 0.04);
+.scroll-reveal {
+  opacity: 0;
+  animation: scrollReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.editorial-card-interactive .photo-zoom {
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+/* Staggered delays for scroll-reveal children */
+.scroll-reveal-delay-1 { animation-delay: 80ms; }
+.scroll-reveal-delay-2 { animation-delay: 160ms; }
+.scroll-reveal-delay-3 { animation-delay: 240ms; }
+.scroll-reveal-delay-4 { animation-delay: 320ms; }
+.scroll-reveal-delay-5 { animation-delay: 400ms; }
+
+/* 9. Number Count-Up shimmer (used with JS counter) */
+@keyframes numberReveal {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.editorial-card-interactive:hover .photo-zoom {
-  transform: scale(1.02);
+.animate-number-reveal {
+  animation: numberReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* 9. Faint Topographic Contour Background Line Drift (3% opacity) */
+/* 10. Contour Background Drift */
 @keyframes contourDrift {
   0% { transform: translate(0, 0); }
   50% { transform: translate(4px, 6px); }
@@ -387,7 +509,78 @@
   animation: contourDrift 30s ease-in-out infinite;
 }
 
-/* 10. Strict Accessibility: Respect prefers-reduced-motion */
+/* 11. Gentle parallax for hero blobs */
+@keyframes blobFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(8px, -12px) scale(1.02); }
+  66% { transform: translate(-6px, 8px) scale(0.98); }
+}
+
+.animate-blob-float {
+  animation: blobFloat 20s ease-in-out infinite;
+}
+
+.animate-blob-float-delayed {
+  animation: blobFloat 24s ease-in-out infinite 4s;
+}
+
+/* 12. Chart line draw */
+@keyframes chartLineDraw {
+  from { stroke-dashoffset: 1000; }
+  to { stroke-dashoffset: 0; }
+}
+
+.animate-chart-line {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: chartLineDraw 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ───────────────────────────────────────────────────────────── */
+/* CUSTOM SCROLLBAR                                             */
+/* ───────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-muted);
+}
+
+/* ───────────────────────────────────────────────────────────── */
+/* LEAFLET MAP OVERRIDES                                        */
+/* ───────────────────────────────────────────────────────────── */
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  background-color: var(--bg) !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: var(--white) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 10px 25px -5px rgba(38, 34, 56, 0.08) !important;
+}
+
+/* ───────────────────────────────────────────────────────────── */
+/* STRICT ACCESSIBILITY: prefers-reduced-motion                 */
+/* ───────────────────────────────────────────────────────────── */
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -411,5 +604,13 @@
   .animate-shimmer-once {
     display: none !important;
   }
+  .animate-blob-float,
+  .animate-blob-float-delayed {
+    animation: none !important;
+  }
+  .scroll-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
 }
-
