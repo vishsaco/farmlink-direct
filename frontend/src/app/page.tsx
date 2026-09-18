@@ -31,7 +31,6 @@ import {
   Eye,
   ArrowUpRight,
   ChevronRight,
-  Quote,
   Leaf,
   Droplets,
   Thermometer,
@@ -114,7 +113,6 @@ export default function HomePage() {
   const ecosystemRef = useInView();
   const traceRef = useInView();
   const statsRef = useInView();
-  const testimonialRef = useInView();
   const blogRef = useInView();
   const ctaRef = useInView();
 
@@ -757,41 +755,9 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════
-          13. TESTIMONIALS
+          13. BLOG / AGRICULTURAL INSIGHTS
           ════════════════════════════════════════════════════════ */}
-      <section ref={testimonialRef.ref} className="py-20 lg:py-28">
-        <div className={`mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ${testimonialRef.inView ? "scroll-reveal" : "opacity-0"}`}>
-          <div className="text-center mb-12">
-            <span className="text-xs font-medium text-[#718A68] uppercase tracking-widest">From the Field</span>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { quote: "Direct selling through FarmLink gave me 30% better returns on my tomato harvest. No middleman takes.", name: "Ramesh Kumar", role: "Farmer", location: "Malihabad" },
-              { quote: "We source fresh produce for 200+ daily meals. FarmLink's lot visibility and delivery tracking changed our procurement.", name: "Priya Singh", role: "Restaurant Buyer", location: "Gomti Nagar" },
-              { quote: "Aggregating from 50+ farmers into bulk lots is seamless. Our cooperative payout transparency improved dramatically.", name: "Suresh Patel", role: "FPO Manager", location: "Kakori" },
-            ].map(t => (
-              <div key={t.name} className="editorial-card p-8 space-y-6">
-                <Quote className="h-8 w-8 text-[#D4CEE8]" />
-                <p className="text-base text-[#262238] leading-relaxed italic">&ldquo;{t.quote}&rdquo;</p>
-                <div className="flex items-center gap-3 pt-4 border-t border-[#E4E2DD]">
-                  <div className="h-10 w-10 rounded-full bg-[#E8E4F2] flex items-center justify-center text-sm font-semibold text-[#262238]">
-                    {t.name.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-[#262238]">{t.name}</p>
-                    <p className="text-xs text-[#737184]">{t.role} · {t.location}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════
-          14. BLOG / AGRICULTURAL INSIGHTS
-          ════════════════════════════════════════════════════════ */}
-      <section ref={blogRef.ref} className="py-20 lg:py-28 bg-white border-y border-[#E4E2DD]">
+      <section ref={blogRef.ref} className="py-20 lg:py-28">
         <div className={`mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-12 ${blogRef.inView ? "scroll-reveal" : "opacity-0"}`}>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
