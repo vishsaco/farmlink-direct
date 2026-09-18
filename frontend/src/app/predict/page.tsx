@@ -978,14 +978,6 @@ export default function MarketPredictorPage() {
         {/* Top Editorial Header Banner with Live Agmarknet Beacon */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#E4E2DD] pb-6">
           <div>
-            <div className="flex items-center gap-2 text-xs font-semibold text-[#262238] uppercase tracking-wider mb-2">
-              <span className={`flex h-2 w-2 rounded-full ${isLiveApi ? "bg-emerald-600" : "bg-[#718A68]"} animate-pulse`} />
-              <span>
-                {lang === "hi"
-                  ? `${isLiveApi ? "लाइव" : "ऑफलाइन"} डेटा • लखनऊ की 5 प्रमुख मंडियां (अपडेट: ${lastSyncTime})`
-                  : `${isLiveApi ? "LIVE" : "Cached"} Data • All 5 Lucknow Mandis (${lastSyncTime})`}
-              </span>
-            </div>
             <h1 className="font-serif text-3xl sm:text-4xl text-[#262238] font-normal tracking-tight">
               {lang === "hi" ? "बाज़ार मूल्य पूर्वानुमान व निर्णय इंजन" : "Market Price Predictor & Action Engine"}
             </h1>
