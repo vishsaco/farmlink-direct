@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { useLanguage } from "@/lib/LanguageContext";
 import { Navbar } from "@/components/Navbar";
+import { AnimatedFarmCanvas } from "@/components/AnimatedFarmCanvas";
 import {
   Sprout,
   ShoppingBag,
@@ -189,68 +190,9 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right Column — Premium Visual Composition */}
+            {/* Right Column — Animated Farm Landscape & Logistics Canvas */}
             <div className={`relative ${heroRef.inView ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "200ms" }}>
-              {/* Main produce image */}
-              <div className="relative rounded-[28px] overflow-hidden bg-white border border-[#E4E2DD] shadow-2xl group">
-                <div className="relative h-[400px] sm:h-[480px] w-full overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=1200&auto=format&fit=crop&q=85"
-                    alt="Fresh produce from Lucknow farms"
-                    className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                  />
-                  <div className="animate-shimmer-once" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#262238]/60 via-transparent to-transparent" />
-                </div>
-
-                {/* Floating micro-info cards */}
-                <div className="absolute top-4 left-4 glass-card px-3 py-2 text-xs animate-fade-in-up" style={{ animationDelay: "400ms" }}>
-                  <div className="flex items-center gap-2">
-                    <span className="font-heading font-medium text-[#262238]">APMC Tomato</span>
-                    <span className="font-mono font-semibold text-[#718A68]">₹40.4/kg</span>
-                    <span className="text-[10px] font-semibold text-[#718A68]">+9.4%</span>
-                  </div>
-                </div>
-
-                <div className="absolute top-4 right-4 glass-card px-3 py-2 text-xs animate-fade-in-up" style={{ animationDelay: "500ms" }}>
-                  <div className="flex items-center gap-2">
-                    <CloudSun className="h-3.5 w-3.5 text-[#C99B43]" />
-                    <span className="text-[#737184]">Rain after 2 PM</span>
-                  </div>
-                </div>
-
-                <div className="absolute bottom-20 left-4 glass-card px-3 py-2 text-xs animate-fade-in-up" style={{ animationDelay: "600ms" }}>
-                  <div className="flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#718A68]" />
-                    <span className="text-[#262238] font-medium">Harvest Window</span>
-                    <span className="text-[#718A68] font-semibold">Optimal</span>
-                  </div>
-                </div>
-
-                <div className="absolute bottom-20 right-4 glass-card px-3 py-2 text-xs animate-fade-in-up" style={{ animationDelay: "700ms" }}>
-                  <div className="flex items-center gap-2">
-                    <ShieldCheck className="h-3.5 w-3.5 text-[#718A68]" />
-                    <span className="text-[#262238] font-medium">Verified Farm</span>
-                    <span className="text-[#737184]">Malihabad</span>
-                  </div>
-                </div>
-
-                {/* Bottom weather bar */}
-                <div className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl p-4 border-t border-[#E4E2DD]">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="flex items-center gap-1.5 font-medium text-[#262238]">
-                      <CloudSun className="h-4 w-4 text-[#C99B43]" />
-                      Tomorrow's Farm Outlook
-                    </span>
-                    <span className="font-mono text-[11px] text-[#718A68] bg-[#E3EBE0] px-2.5 py-0.5 rounded-full">
-                      26°C · Light rain after 2 PM
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-[#737184] mt-1.5">
-                    <strong className="text-[#262238]">Recommended:</strong> Schedule tomato pickup from Malihabad before noon.
-                  </p>
-                </div>
-              </div>
+              <AnimatedFarmCanvas />
             </div>
           </div>
         </div>
