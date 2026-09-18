@@ -638,29 +638,29 @@
 
 @keyframes truckJourney {
   0% {
-    transform: translate(250px, 385px) scale(1.05) rotate(-3deg);
+    transform: translate(500px, 392px) scale(1.04) rotate(-3deg);
   }
-  20% {
-    transform: translate(340px, 376px) scale(1.06) rotate(-1deg);
+  25% {
+    transform: translate(630px, 382px) scale(1.06) rotate(-1deg);
   }
-  45% {
-    transform: translate(430px, 385px) scale(1.08) rotate(3deg);
+  50% {
+    transform: translate(770px, 390px) scale(1.08) rotate(3deg);
   }
-  70% {
-    transform: translate(540px, 405px) scale(1.1) rotate(5deg);
+  75% {
+    transform: translate(920px, 412px) scale(1.1) rotate(4deg);
   }
-  88% {
-    transform: translate(645px, 424px) scale(1.12) rotate(3deg);
+  90% {
+    transform: translate(1025px, 428px) scale(1.12) rotate(2deg);
   }
   95% {
-    transform: translate(650px, 426px) scale(1.12) rotate(2deg);
+    transform: translate(1030px, 430px) scale(1.12) rotate(1deg);
   }
   100% {
-    transform: translate(720px, 435px) scale(1.14) rotate(1deg);
+    transform: translate(1100px, 438px) scale(1.14) rotate(0deg);
   }
 }
 .animate-truck-journey {
-  animation: truckJourney 9s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+  animation: truckJourney 10s cubic-bezier(0.42, 0, 0.58, 1) infinite;
 }
 
 @keyframes spinWheel {

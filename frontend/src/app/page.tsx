@@ -131,15 +131,30 @@ export default function HomePage() {
       {/* ════════════════════════════════════════════════════════
           1. HERO SECTION
           ════════════════════════════════════════════════════════ */}
-      <section ref={heroRef.ref} className="relative pt-8 pb-20 lg:pt-16 lg:pb-32 overflow-hidden">
-        {/* Abstract organic blobs */}
-        <div className="absolute top-20 right-[10%] w-[500px] h-[500px] rounded-full bg-[#E8E4F2]/40 blur-[100px] animate-blob-float pointer-events-none" />
-        <div className="absolute bottom-0 left-[5%] w-[400px] h-[400px] rounded-full bg-[#E3EBE0]/40 blur-[80px] animate-blob-float-delayed pointer-events-none" />
+      {/* ════════════════════════════════════════════════════════
+          1. HERO SECTION (Seamless Panoramic Landscape)
+          ════════════════════════════════════════════════════════ */}
+      <section ref={heroRef.ref} className="relative pt-6 pb-16 lg:pt-12 lg:pb-24 overflow-hidden bg-[#F6F5F1]">
+        {/* ── Layer 0: Expansive Panoramic Animated Farm Canvas ── */}
+        <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
+          <AnimatedFarmCanvas />
+        </div>
 
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            {/* Left Column */}
-            <div className={`space-y-8 ${heroRef.inView ? "animate-fade-in-up" : "opacity-0"}`}>
+        {/* ── Layer 1: Atmospheric Gradient Scrim (Text contrast protection) ── */}
+        {/* Desktop: Solid #F6F5F1 on left under headline & CTAs, smoothly fading out towards center-right */}
+        <div className="hidden lg:block absolute inset-0 pointer-events-none bg-gradient-to-r from-[#F6F5F1] via-[#F6F5F1]/92 via-42% to-transparent to-75% z-[5]" />
+
+        {/* Mobile & Tablet: Feathered gradient protecting text at the top and letting landscape emerge below */}
+        <div className="lg:hidden absolute inset-0 pointer-events-none bg-gradient-to-b from-[#F6F5F1] via-[#F6F5F1]/88 via-55% to-transparent z-[5]" />
+
+        {/* Bottom subtle edge blend into market ticker */}
+        <div className="absolute bottom-0 left-0 right-0 h-12 pointer-events-none bg-gradient-to-t from-[#F6F5F1] to-transparent z-[6]" />
+
+        {/* ── Layer 2: Editorial Foreground Content ── */}
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pointer-events-none">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center min-h-[480px] lg:min-h-[520px]">
+            {/* Left Column: 7 cols on desktop, full width on mobile */}
+            <div className={`lg:col-span-7 space-y-8 py-4 pointer-events-auto ${heroRef.inView ? "animate-fade-in-up" : "opacity-0"}`}>
 
               {/* Main Headline */}
               <h1 className="font-heading text-[clamp(2.5rem,5vw,4.5rem)] font-normal leading-[1.08] tracking-[-0.03em]">
@@ -190,10 +205,8 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right Column — Animated Farm Landscape & Logistics Canvas */}
-            <div className={`relative ${heroRef.inView ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "200ms" }}>
-              <AnimatedFarmCanvas />
-            </div>
+            {/* Right Column: 5 cols on desktop, open space allowing the panoramic farm landscape, truck, and dock to breathe */}
+            <div className="lg:col-span-5 h-[180px] sm:h-[240px] lg:h-full flex items-end justify-end pointer-events-none" />
           </div>
         </div>
       </section>
