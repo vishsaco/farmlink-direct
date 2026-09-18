@@ -28,12 +28,14 @@ interface PriceGuidanceCardProps {
   commodity: Commodity;
   cluster?: string;
   onSelectPrice?: (price: number) => void;
+  onGuidanceLoaded?: (guidance: PriceGuidance) => void;
 }
 
 export function PriceGuidanceCard({
   commodity,
   cluster = "Lucknow",
   onSelectPrice,
+  onGuidanceLoaded,
 }: PriceGuidanceCardProps) {
   const [guidance, setGuidance] = useState<PriceGuidance | null>(null);
   const [loading, setLoading] = useState(true);
@@ -48,6 +50,9 @@ export function PriceGuidanceCard({
       .getForecast(commodity, cluster)
       .then((data) => {
         setGuidance(data);
+        if (onGuidanceLoaded) {
+          onGuidanceLoaded(data);
+        }
         setLoading(false);
       })
       .catch((err) => {

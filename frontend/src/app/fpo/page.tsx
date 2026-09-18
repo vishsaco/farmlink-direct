@@ -47,15 +47,15 @@ interface MemberFarmer {
 
 const COMMODITY_OPTIONS: { id: Commodity; label: string; icon: string; image: string; defaultPrice: number }[] = [
   { id: "tomato", label: "Tomato (Tamatar)", icon: "🍅", image: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&auto=format&fit=crop&q=80", defaultPrice: 38 },
-  { id: "onion", label: "Onion (Pyaaz)", icon: "🧅", image: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=800&auto=format&fit=crop&q=80", defaultPrice: 30 },
-  { id: "potato", label: "Potato (Aaloo)", icon: "🥔", image: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=800&auto=format&fit=crop&q=80", defaultPrice: 24 },
-  { id: "mango", label: "Mango (Malihabadi)", icon: "🥭", image: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=800&auto=format&fit=crop&q=80", defaultPrice: 65 },
-  { id: "chilli", label: "Green Chilli (Mirch)", icon: "🌶️", image: "https://images.unsplash.com/photo-1588252303782-cb80119abd6d?w=800&auto=format&fit=crop&q=80", defaultPrice: 48 },
+  { id: "onion", label: "Onion (Pyaaz)", icon: "🧅", image: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=800&auto=format&fit=crop&q=80", defaultPrice: 42 },
+  { id: "potato", label: "Potato (Aaloo)", icon: "🥔", image: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=800&auto=format&fit=crop&q=80", defaultPrice: 26 },
+  { id: "mango", label: "Mango (Malihabadi)", icon: "🥭", image: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=800&auto=format&fit=crop&q=80", defaultPrice: 95 },
+  { id: "chilli", label: "Green Chilli (Mirch)", icon: "🌶️", image: "https://images.unsplash.com/photo-1588252303782-cb80119abd6d?w=800&auto=format&fit=crop&q=80", defaultPrice: 52 },
   { id: "garlic", label: "Garlic (Lahsun)", icon: "🧄", image: "https://images.unsplash.com/photo-1540148426945-6cf22a6b2383?w=800&auto=format&fit=crop&q=80", defaultPrice: 140 },
-  { id: "ginger", label: "Ginger (Adrak)", icon: "🫚", image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=800&auto=format&fit=crop&q=80", defaultPrice: 120 },
-  { id: "spinach", label: "Spinach (Palak)", icon: "🥬", image: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=800&auto=format&fit=crop&q=80", defaultPrice: 20 },
+  { id: "ginger", label: "Ginger (Adrak)", icon: "🫚", image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=800&auto=format&fit=crop&q=80", defaultPrice: 95 },
+  { id: "spinach", label: "Spinach (Palak)", icon: "🥬", image: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=800&auto=format&fit=crop&q=80", defaultPrice: 22 },
   { id: "cauliflower", label: "Cauliflower (Gobhi)", icon: "🥦", image: "https://images.unsplash.com/photo-1568584711075-3d021a7c3ca3?w=800&auto=format&fit=crop&q=80", defaultPrice: 28 },
-  { id: "wheat", label: "Wheat (Gehu)", icon: "🌾", image: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&auto=format&fit=crop&q=80", defaultPrice: 26 },
+  { id: "wheat", label: "Wheat (Gehu)", icon: "🌾", image: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&auto=format&fit=crop&q=80", defaultPrice: 27 },
 ];
 
 export default function FPOAggregatorPage() {
@@ -73,13 +73,45 @@ export default function FPOAggregatorPage() {
   const [commodity, setCommodity] = useState<Commodity>("tomato");
   const [grade, setGrade] = useState<Grade>("A");
   const [availableQty, setAvailableQty] = useState<number>(3500);
-  const [askingPrice, setAskingPrice] = useState<number>(38);
+  const [askingPrice, setAskingPrice] = useState<number>(42);
   const [collectionHub, setCollectionHub] = useState<string>("Bakshi Ka Talab Central Hub, Lucknow");
   const [qualityNotes, setQualityNotes] = useState<string>("Cooperative bulk lot aggregated from Lucknow cluster farmers");
   const [photoUrl, setPhotoUrl] = useState<string>("https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&auto=format&fit=crop&q=80");
   const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>([]);
   const [publishing, setPublishing] = useState(false);
   const [publishSuccess, setPublishSuccess] = useState(false);
+  const [livePrices, setLivePrices] = useState<Record<string, { price: number; source: string; is_live: boolean }>>({});
+  const [priceSynced, setPriceSynced] = useState<boolean>(true);
+
+  useEffect(() => {
+    api.getLivePrices().then((res) => {
+      if (res?.prices) {
+        setLivePrices(res.prices);
+        const live = res.prices[commodity]?.price;
+        if (live && live > 0) {
+          const rec = grade === "A" ? Math.round(live * 1.10) : grade === "C" ? Math.max(1, Math.round(live * 0.90)) : Math.round(live);
+          setAskingPrice(rec);
+        }
+      }
+    }).catch(() => {});
+  }, []);
+
+  const getMarketRecommendedPrice = (c: Commodity, g: Grade = grade) => {
+    const live = livePrices[c];
+    let base = 0;
+    if (live && live.price > 0) {
+      base = live.price;
+    } else {
+      const found = COMMODITY_OPTIONS.find((item) => item.id === c);
+      base = found ? found.defaultPrice : 30;
+    }
+    let recommended = base;
+    if (g === "A") recommended = Math.round(base * 1.10);
+    else if (g === "C") recommended = Math.max(1, Math.round(base * 0.90));
+    else recommended = Math.round(base);
+
+    return { recommendedPrice: recommended, basePrice: Math.round(base * 10) / 10 };
+  };
 
   // New Member Modal State
   const [newMemberName, setNewMemberName] = useState("");
@@ -144,8 +176,17 @@ export default function FPOAggregatorPage() {
     const found = COMMODITY_OPTIONS.find((item) => item.id === c);
     if (found) {
       setPhotoUrl(found.image);
-      setAskingPrice(found.defaultPrice);
     }
+    const info = getMarketRecommendedPrice(c, grade);
+    setAskingPrice(info.recommendedPrice);
+    setPriceSynced(true);
+  };
+
+  const handleSelectGrade = (g: Grade) => {
+    setGrade(g);
+    const info = getMarketRecommendedPrice(commodity, g);
+    setAskingPrice(info.recommendedPrice);
+    setPriceSynced(true);
   };
 
   const handlePublishBulkLot = async (e: React.FormEvent) => {
@@ -413,30 +454,89 @@ export default function FPOAggregatorPage() {
                 <form onSubmit={handlePublishBulkLot} className="space-y-5">
                   {/* Select Commodity */}
                   <div>
-                    <label className="block text-[11px] font-mono uppercase tracking-wider text-[#737184] mb-2">
-                      Select Bulk Produce Commodity
-                    </label>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-[11px] font-mono uppercase tracking-wider text-[#737184]">
+                        Select Bulk Produce Commodity
+                      </label>
+                      <span className="text-[10px] text-[#718A68] font-medium flex items-center gap-1">
+                        <span className="relative flex h-1.5 w-1.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#718A68] opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#718A68]"></span>
+                        </span>
+                        <span>Live APMC Mandi Rates</span>
+                      </span>
+                    </div>
                     <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
-                      {COMMODITY_OPTIONS.map((item) => (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => selectCommodity(item.id)}
-                          className={`rounded-[16px] border p-3 text-xs font-medium transition flex items-center gap-2 cursor-pointer ${
-                            commodity === item.id
-                              ? "border-[#262238] bg-[#E8E4F2] text-[#262238] shadow-xs"
-                              : "border-[#E4E2DD] bg-white text-[#262238] hover:border-[#262238]/30"
-                          }`}
-                        >
-                          <span className="text-lg">{item.icon}</span>
-                          <span className="truncate">{item.label.split(" ")[0]}</span>
-                        </button>
-                      ))}
+                      {COMMODITY_OPTIONS.map((item) => {
+                        const cropLive = livePrices[item.id]?.price || item.defaultPrice;
+                        const isSelected = commodity === item.id;
+                        return (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => selectCommodity(item.id)}
+                            className={`rounded-[16px] border p-2.5 text-xs font-medium transition flex flex-col items-start gap-1 cursor-pointer ${
+                              isSelected
+                                ? "border-[#262238] bg-[#E8E4F2] text-[#262238] shadow-xs ring-1 ring-[#262238]"
+                                : "border-[#E4E2DD] bg-white text-[#262238] hover:border-[#262238]/30"
+                            }`}
+                          >
+                            <div className="flex items-center gap-1.5 w-full">
+                              <span className="text-lg">{item.icon}</span>
+                              <span className="truncate font-semibold">{item.label.split(" ")[0]}</span>
+                            </div>
+                            <div className="flex items-baseline justify-between w-full mt-0.5">
+                              <span className="text-[10px] font-mono text-[#737184]">
+                                ₹{Math.round(cropLive)}/kg
+                              </span>
+                              {isSelected && (
+                                <span className="text-[9px] font-semibold text-[#718A68] bg-[#E3EBE0] px-1.5 py-0.2 rounded">
+                                  Live
+                                </span>
+                              )}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Quality Grade */}
+                  <div>
+                    <label className="block text-[11px] font-mono uppercase tracking-wider text-[#737184] mb-2">
+                      Quality Sorting & Grade
+                    </label>
+                    <div className="grid grid-cols-3 gap-2.5">
+                      {(["A", "B", "C"] as Grade[]).map((g) => {
+                        const rec = getMarketRecommendedPrice(commodity, g).recommendedPrice;
+                        const isSelected = grade === g;
+                        return (
+                          <button
+                            key={g}
+                            type="button"
+                            onClick={() => handleSelectGrade(g)}
+                            className={`rounded-[16px] border p-2.5 text-xs font-medium transition cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
+                              isSelected
+                                ? "border-[#262238] bg-[#E8E4F2] text-[#262238] shadow-xs ring-1 ring-[#262238]"
+                                : "border-[#E4E2DD] bg-white text-[#737184] hover:border-[#262238]/30"
+                            }`}
+                          >
+                            <span className="font-semibold text-[#262238]">
+                              Grade {g} {g === "A" ? "(Premium)" : g === "B" ? "(Standard)" : "(Bulk)"}
+                            </span>
+                            <span className={`text-[10px] font-mono font-medium px-2 py-0.5 rounded-full ${
+                              isSelected ? "bg-[#262238] text-white" : "bg-[#F6F5F1] text-[#718A68]"
+                            }`}>
+                              ₹{rec}/kg
+                            </span>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
 
                   {/* Quantity & Asking Price */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-semibold text-[#262238] mb-1.5">
                         Total Pooled Quantity (kg)
@@ -447,21 +547,56 @@ export default function FPOAggregatorPage() {
                         max={100000}
                         value={availableQty}
                         onChange={(e) => setAvailableQty(Number(e.target.value))}
-                        className="w-full rounded-[16px] border border-[#E4E2DD] bg-[#F6F5F1] px-4 py-2.5 text-sm font-semibold text-[#262238] focus:bg-white focus:border-[#262238] focus:outline-none"
+                        className="w-full rounded-[16px] border border-[#E4E2DD] bg-[#F6F5F1] px-4 py-3 text-sm font-semibold text-[#262238] focus:bg-white focus:border-[#262238] focus:outline-none transition"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-[#262238] mb-1.5">
-                        Wholesale Asking Price (₹/kg)
-                      </label>
-                      <input
-                        type="number"
-                        min={1}
-                        max={500}
-                        value={askingPrice}
-                        onChange={(e) => setAskingPrice(Number(e.target.value))}
-                        className="w-full rounded-[16px] border border-[#E4E2DD] bg-[#F6F5F1] px-4 py-2.5 text-sm font-semibold text-[#718A68] focus:bg-white focus:border-[#262238] focus:outline-none"
-                      />
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="block text-xs font-semibold text-[#262238]">
+                          Wholesale Asking Price (₹/kg)
+                        </label>
+                        <div className="flex items-center gap-1.5">
+                          {priceSynced ? (
+                            <span className="inline-flex items-center gap-1 rounded-full bg-[#E3EBE0] px-2 py-0.5 text-[10px] font-semibold text-[#718A68] border border-[#718A68]/20">
+                              <span className="relative flex h-1.5 w-1.5">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#718A68] opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#718A68]"></span>
+                              </span>
+                              <span>AI Synced</span>
+                            </span>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const info = getMarketRecommendedPrice(commodity, grade);
+                                setAskingPrice(info.recommendedPrice);
+                                setPriceSynced(true);
+                              }}
+                              className="text-[10px] font-medium text-[#718A68] hover:text-[#262238] flex items-center gap-1 cursor-pointer bg-[#E8E4F2] px-2 py-0.5 rounded-full transition"
+                            >
+                              <span>Sync AI Rate</span>
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                      <div className="relative">
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-[#737184]">₹</span>
+                        <input
+                          type="number"
+                          min={1}
+                          max={500}
+                          value={askingPrice}
+                          onChange={(e) => {
+                            setAskingPrice(Number(e.target.value));
+                            setPriceSynced(false);
+                          }}
+                          className={`w-full rounded-[16px] border pl-8 pr-4 py-3 text-sm font-semibold text-[#262238] focus:bg-white focus:outline-none transition shadow-xs ${
+                            priceSynced
+                              ? "border-[#718A68]/50 bg-[#E3EBE0]/20 focus:border-[#718A68]"
+                              : "border-[#E4E2DD] bg-[#F6F5F1] focus:border-[#262238]"
+                          }`}
+                        />
+                      </div>
                     </div>
                   </div>
 
@@ -513,7 +648,17 @@ export default function FPOAggregatorPage() {
               <PriceGuidanceCard
                 commodity={commodity}
                 cluster="Lucknow"
-                onSelectPrice={(p) => setAskingPrice(p)}
+                onSelectPrice={(p) => {
+                  setAskingPrice(p);
+                  setPriceSynced(false);
+                }}
+                onGuidanceLoaded={(g) => {
+                  if (priceSynced && g.today?.base) {
+                    const base = g.today.base;
+                    const rec = grade === "A" ? Math.round(base * 1.10) : grade === "C" ? Math.max(1, Math.round(base * 0.90)) : Math.round(base);
+                    setAskingPrice(rec);
+                  }
+                }}
               />
             </div>
           </div>

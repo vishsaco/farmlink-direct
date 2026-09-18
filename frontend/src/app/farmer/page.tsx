@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/lib/api";
-import { Lot, Order, Commodity, Grade } from "@/lib/types";
+import { Lot, Order, Commodity, Grade, PriceGuidance } from "@/lib/types";
 import { useLanguage } from "@/lib/LanguageContext";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { Navbar } from "@/components/Navbar";
@@ -43,15 +43,15 @@ import { getLiveAccurateLocation } from "@/lib/geo";
 
 const COMMODITY_OPTIONS: { id: Commodity; label: string; hindi: string; icon: string; image: string; defaultPrice: number }[] = [
   { id: "tomato", label: "Tomato (Tamatar)", hindi: "टमाटर", icon: "🍅", image: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&auto=format&fit=crop&q=80", defaultPrice: 38 },
-  { id: "onion", label: "Onion (Pyaaz)", hindi: "प्याज़", icon: "🧅", image: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=800&auto=format&fit=crop&q=80", defaultPrice: 30 },
-  { id: "potato", label: "Potato (Aaloo)", hindi: "आलू", icon: "🥔", image: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=800&auto=format&fit=crop&q=80", defaultPrice: 24 },
-  { id: "mango", label: "Mango (Dussehri)", hindi: "दशहरी आम", icon: "🥭", image: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=800&auto=format&fit=crop&q=80", defaultPrice: 65 },
-  { id: "chilli", label: "Green Chilli (Mirch)", hindi: "हरी मिर्च", icon: "🌶️", image: "https://images.unsplash.com/photo-1588252303782-cb80119abd6d?w=800&auto=format&fit=crop&q=80", defaultPrice: 48 },
+  { id: "onion", label: "Onion (Pyaaz)", hindi: "प्याज़", icon: "🧅", image: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=800&auto=format&fit=crop&q=80", defaultPrice: 42 },
+  { id: "potato", label: "Potato (Aaloo)", hindi: "आलू", icon: "🥔", image: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=800&auto=format&fit=crop&q=80", defaultPrice: 26 },
+  { id: "mango", label: "Mango (Dussehri)", hindi: "दशहरी आम", icon: "🥭", image: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=800&auto=format&fit=crop&q=80", defaultPrice: 95 },
+  { id: "chilli", label: "Green Chilli (Mirch)", hindi: "हरी मिर्च", icon: "🌶️", image: "https://images.unsplash.com/photo-1588252303782-cb80119abd6d?w=800&auto=format&fit=crop&q=80", defaultPrice: 52 },
   { id: "garlic", label: "Garlic (Lahsun)", hindi: "लहसुन", icon: "🧄", image: "https://images.unsplash.com/photo-1540148426945-6cf22a6b2383?w=800&auto=format&fit=crop&q=80", defaultPrice: 140 },
   { id: "ginger", label: "Ginger (Adrak)", hindi: "अदरक", icon: "🫚", image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=800&auto=format&fit=crop&q=80", defaultPrice: 95 },
   { id: "spinach", label: "Spinach (Palak)", hindi: "पालक", icon: "🥬", image: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=800&auto=format&fit=crop&q=80", defaultPrice: 22 },
   { id: "cauliflower", label: "Cauliflower (Gobhi)", hindi: "फूलगोभी", icon: "🥦", image: "https://images.unsplash.com/photo-1568584711075-3d021a7c3ca3?w=800&auto=format&fit=crop&q=80", defaultPrice: 28 },
-  { id: "wheat", label: "Wheat (Gehu)", hindi: "गेहूं", icon: "🌾", image: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&auto=format&fit=crop&q=80", defaultPrice: 26 },
+  { id: "wheat", label: "Wheat (Gehu)", hindi: "गेहूं", icon: "🌾", image: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&auto=format&fit=crop&q=80", defaultPrice: 27 },
 ];
 
 export default function FarmerDashboardPage() {
@@ -68,7 +68,7 @@ export default function FarmerDashboardPage() {
   const [commodity, setCommodity] = useState<Commodity>("tomato");
   const [grade, setGrade] = useState<Grade>("A");
   const [availableQty, setAvailableQty] = useState<number>(500);
-  const [askingPrice, setAskingPrice] = useState<number>(38);
+  const [askingPrice, setAskingPrice] = useState<number>(42);
   const [selectedFarmId, setSelectedFarmId] = useState<number | undefined>(undefined);
   const [qualityNotes, setQualityNotes] = useState<string>("Farm harvested, graded & sorted");
   const [photoUrl, setPhotoUrl] = useState<string>("https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&auto=format&fit=crop&q=80");
@@ -100,6 +100,12 @@ export default function FarmerDashboardPage() {
   const [savingPayout, setSavingPayout] = useState(false);
   const [payoutSavedMsg, setPayoutSavedMsg] = useState("");
 
+  // Live Market Predictor & Synced Pricing State
+  const [livePrices, setLivePrices] = useState<Record<string, { price: number; min_price: number; max_price: number; source: string; is_live: boolean; market_name: string }>>({});
+  const [currentGuidance, setCurrentGuidance] = useState<PriceGuidance | null>(null);
+  const [priceSynced, setPriceSynced] = useState<boolean>(true);
+  const [fetchingPrice, setFetchingPrice] = useState<boolean>(false);
+
   useEffect(() => {
     if (user) {
       if (user.payout_upi_id) setPayoutUpi(user.payout_upi_id);
@@ -109,13 +115,124 @@ export default function FarmerDashboardPage() {
     }
   }, [user]);
 
-  const selectCommodity = (c: Commodity) => {
+  // Load real-time Agmarknet & Lucknow Mandi rates from engine
+  useEffect(() => {
+    const loadMarketData = async () => {
+      try {
+        const liveRes = await api.getLivePrices();
+        if (liveRes && liveRes.prices) {
+          setLivePrices(liveRes.prices);
+        }
+      } catch (err) {
+        console.warn("Live prices load error", err);
+      }
+    };
+
+    loadMarketData();
+    const pollInterval = setInterval(loadMarketData, 20000);
+    return () => clearInterval(pollInterval);
+  }, []);
+
+  const getMarketRecommendedPrice = (c: Commodity, g: Grade = grade): {
+    recommendedPrice: number;
+    basePrice: number;
+    source: string;
+    isLive: boolean;
+    marketName: string;
+    trend: "rising" | "falling" | "stable";
+  } => {
+    const live = livePrices[c];
+    let base = 0;
+    let source = "Lucknow Mandi AI Model";
+    let isLive = false;
+    let marketName = "Dubagga APMC Wholesale Mandi";
+    let trend: "rising" | "falling" | "stable" = "stable";
+
+    if (live && live.price > 0) {
+      base = live.price;
+      source = live.source;
+      isLive = live.is_live;
+      marketName = live.market_name || marketName;
+    } else if (currentGuidance && currentGuidance.commodity === c && currentGuidance.today?.base) {
+      base = currentGuidance.today.base;
+      source = currentGuidance.source_meta?.source || source;
+      isLive = currentGuidance.source_meta?.is_live_api || false;
+      marketName = currentGuidance.source_meta?.market_name || marketName;
+      trend = currentGuidance.trend || trend;
+    } else {
+      const found = COMMODITY_OPTIONS.find((item) => item.id === c);
+      base = found ? found.defaultPrice : 30;
+    }
+
+    // Grade multiplier:
+    // Grade A (Premium): +10%
+    // Grade B (Standard): modal base price
+    // Grade C (Bulk): -10%
+    let recommended = base;
+    if (g === "A") {
+      recommended = Math.round(base * 1.10);
+    } else if (g === "C") {
+      recommended = Math.max(1, Math.round(base * 0.90));
+    } else {
+      recommended = Math.round(base);
+    }
+
+    return {
+      recommendedPrice: recommended,
+      basePrice: Math.round(base * 10) / 10,
+      source,
+      isLive,
+      marketName,
+      trend,
+    };
+  };
+
+  // Sync asking price on initial livePrices arrival if still on default
+  useEffect(() => {
+    if (Object.keys(livePrices).length > 0 && priceSynced) {
+      const info = getMarketRecommendedPrice(commodity, grade);
+      setAskingPrice(info.recommendedPrice);
+    }
+  }, [livePrices]);
+
+  const handleSelectCommodity = async (c: Commodity) => {
     setCommodity(c);
     const found = COMMODITY_OPTIONS.find((item) => item.id === c);
     if (found) {
       setPhotoUrl(found.image);
-      setAskingPrice(found.defaultPrice);
     }
+
+    // Instantly sync asking price with Market Predictor rate for this crop & grade
+    const info = getMarketRecommendedPrice(c, grade);
+    setAskingPrice(info.recommendedPrice);
+    setPriceSynced(true);
+
+    // Fetch fresh Agmarknet model guidance for this crop
+    setFetchingPrice(true);
+    try {
+      const gData = await api.getForecast(c, "Lucknow");
+      if (gData && gData.today?.base) {
+        setCurrentGuidance(gData);
+        const freshBase = gData.today.base;
+        const rec = grade === "A"
+          ? Math.round(freshBase * 1.10)
+          : grade === "C"
+          ? Math.max(1, Math.round(freshBase * 0.90))
+          : Math.round(freshBase);
+        setAskingPrice(rec);
+      }
+    } catch (err) {
+      console.warn("Forecast fetch error", err);
+    } finally {
+      setFetchingPrice(false);
+    }
+  };
+
+  const handleSelectGrade = (g: Grade) => {
+    setGrade(g);
+    const info = getMarketRecommendedPrice(commodity, g);
+    setAskingPrice(info.recommendedPrice);
+    setPriceSynced(true);
   };
 
   const handleGetGpsLocation = async () => {
@@ -176,11 +293,14 @@ export default function FarmerDashboardPage() {
 
   const handleVoiceApply = (data: any) => {
     if (data.commodity) {
-      selectCommodity(data.commodity);
+      handleSelectCommodity(data.commodity);
     }
-    if (data.grade) setGrade(data.grade);
+    if (data.grade) handleSelectGrade(data.grade);
     if (data.available_qty) setAvailableQty(data.available_qty);
-    if (data.asking_price) setAskingPrice(data.asking_price);
+    if (data.asking_price) {
+      setAskingPrice(data.asking_price);
+      setPriceSynced(false);
+    }
     if (data.quality_notes) setQualityNotes(data.quality_notes);
     setActiveTab("list");
   };
@@ -667,7 +787,22 @@ export default function FarmerDashboardPage() {
               <PriceGuidanceCard
                 commodity={commodity}
                 cluster="Lucknow"
-                onSelectPrice={(p) => setAskingPrice(p)}
+                onSelectPrice={(p) => {
+                  setAskingPrice(p);
+                  setPriceSynced(false);
+                }}
+                onGuidanceLoaded={(g) => {
+                  setCurrentGuidance(g);
+                  if (priceSynced && g.today?.base) {
+                    const base = g.today.base;
+                    const rec = grade === "A"
+                      ? Math.round(base * 1.10)
+                      : grade === "C"
+                      ? Math.max(1, Math.round(base * 0.90))
+                      : Math.round(base);
+                    setAskingPrice(rec);
+                  }
+                }}
               />
             </div>
           </div>
@@ -709,111 +844,249 @@ export default function FarmerDashboardPage() {
                   </p>
                 </div>
               ) : (
-                <form onSubmit={handlePublishLot} className="space-y-5">
-                  {/* Commodity */}
-                  <div>
-                    <label className="block text-[11px] font-mono uppercase tracking-wider text-[#737184] mb-2">
-                      {lang === "hi" ? "1. फसल चुनें" : "1. Select Produce Commodity"}
-                    </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
-                      {COMMODITY_OPTIONS.map((item) => (
+                (() => {
+                  const currentMarket = getMarketRecommendedPrice(commodity, grade);
+                  const gradeAPrice = Math.round(currentMarket.basePrice * 1.10);
+                  const gradeBPrice = Math.round(currentMarket.basePrice);
+                  const gradeCPrice = Math.max(1, Math.round(currentMarket.basePrice * 0.90));
+
+                  return (
+                    <form onSubmit={handlePublishLot} className="space-y-5">
+                      {/* Commodity */}
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <label className="block text-[11px] font-mono uppercase tracking-wider text-[#737184]">
+                            {lang === "hi" ? "1. फसल चुनें" : "1. Select Produce Commodity"}
+                          </label>
+                          <span className="text-[10px] text-[#718A68] font-medium flex items-center gap-1">
+                            <span className="relative flex h-1.5 w-1.5">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#718A68] opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#718A68]"></span>
+                            </span>
+                            <span>{lang === "hi" ? "लाइव मंडी भाव" : "Live APMC Rates"}</span>
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                          {COMMODITY_OPTIONS.map((item) => {
+                            const cropLive = livePrices[item.id]?.price || item.defaultPrice;
+                            const isSelected = commodity === item.id;
+                            return (
+                              <button
+                                key={item.id}
+                                type="button"
+                                onClick={() => handleSelectCommodity(item.id)}
+                                className={`rounded-[16px] border p-2.5 text-xs font-medium transition flex flex-col items-start gap-1 cursor-pointer ${
+                                  isSelected
+                                    ? "border-[#262238] bg-[#E8E4F2] text-[#262238] shadow-xs ring-1 ring-[#262238]"
+                                    : "border-[#E4E2DD] bg-white text-[#262238] hover:border-[#262238]/40"
+                                }`}
+                              >
+                                <div className="flex items-center gap-1.5 w-full">
+                                  <span className="text-lg">{item.icon}</span>
+                                  <span className="truncate font-semibold">{lang === "hi" ? item.hindi : item.label.split(" (")[0]}</span>
+                                </div>
+                                <div className="flex items-baseline justify-between w-full mt-0.5">
+                                  <span className="text-[10px] font-mono text-[#737184]">
+                                    ₹{Math.round(cropLive)}/kg
+                                  </span>
+                                  {isSelected && (
+                                    <span className="text-[9px] font-semibold text-[#718A68] bg-[#E3EBE0] px-1.5 py-0.2 rounded">
+                                      Live
+                                    </span>
+                                  )}
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Quality Grade */}
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <label className="block text-[11px] font-mono uppercase tracking-wider text-[#737184]">
+                            {lang === "hi" ? "2. गुणवत्ता ग्रेड चुनें" : "2. Quality Sorting & Grade"}
+                          </label>
+                          <span className="text-[10px] text-[#737184]">
+                            {lang === "hi" ? "भाव ग्रेड के अनुसार स्वतः अपडेट होगा" : "Rate automatically updates with selected grade"}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-2.5">
+                          {(["A", "B", "C"] as Grade[]).map((g) => {
+                            const gPrice = g === "A" ? gradeAPrice : g === "B" ? gradeBPrice : gradeCPrice;
+                            const isSelected = grade === g;
+                            return (
+                              <button
+                                key={g}
+                                type="button"
+                                onClick={() => handleSelectGrade(g)}
+                                className={`rounded-[16px] border p-3 text-xs font-medium transition cursor-pointer flex flex-col items-center justify-center gap-1 text-center ${
+                                  isSelected
+                                    ? "border-[#262238] bg-[#E8E4F2] text-[#262238] shadow-xs ring-1 ring-[#262238]"
+                                    : "border-[#E4E2DD] bg-white text-[#737184] hover:border-[#262238]/30"
+                                }`}
+                              >
+                                <span className="font-semibold text-[#262238]">
+                                  Grade {g} {g === "A" ? "(Premium)" : g === "B" ? "(Standard)" : "(Bulk)"}
+                                </span>
+                                <span className={`text-[10px] font-mono font-medium px-2 py-0.5 rounded-full ${
+                                  isSelected ? "bg-[#262238] text-white" : "bg-[#F6F5F1] text-[#718A68]"
+                                }`}>
+                                  ₹{gPrice}/kg {g === "A" ? "(+10%)" : g === "C" ? "(-10%)" : "(Base)"}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Quantity & Asking Price */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-semibold text-[#262238] mb-1.5">
+                            {lang === "hi" ? "फसल की कुल मात्रा (किलो में)" : "Batch Quantity (kg)"}
+                          </label>
+                          <input
+                            type="number"
+                            min={10}
+                            max={50000}
+                            value={availableQty}
+                            onChange={(e) => setAvailableQty(Number(e.target.value))}
+                            className="w-full rounded-[16px] border border-[#E4E2DD] bg-[#F6F5F1] px-4 py-3 text-sm font-semibold text-[#262238] focus:bg-white focus:border-[#262238] focus:outline-none transition shadow-xs"
+                          />
+                        </div>
+
+                        <div>
+                          <div className="flex items-center justify-between mb-1.5">
+                            <label className="block text-xs font-semibold text-[#262238]">
+                              {lang === "hi" ? "मांगा गया भाव (₹/किलो)" : "Asking Price (₹/kg)"}
+                            </label>
+                            <div className="flex items-center gap-1.5">
+                              {priceSynced ? (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-[#E3EBE0] px-2 py-0.5 text-[10px] font-semibold text-[#718A68] border border-[#718A68]/20">
+                                  <span className="relative flex h-1.5 w-1.5">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#718A68] opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#718A68]"></span>
+                                  </span>
+                                  <span>{lang === "hi" ? "AI प्रिडिक्टर से सिंक" : "AI Predictor Synced"}</span>
+                                </span>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const info = getMarketRecommendedPrice(commodity, grade);
+                                    setAskingPrice(info.recommendedPrice);
+                                    setPriceSynced(true);
+                                  }}
+                                  className="text-[10px] font-medium text-[#718A68] hover:text-[#262238] flex items-center gap-1 cursor-pointer bg-[#E8E4F2] hover:bg-[#d8d3e6] px-2 py-0.5 rounded-full transition"
+                                  title="Sync with live market predictor rates"
+                                >
+                                  <Sparkles className="h-3 w-3 text-[#718A68]" />
+                                  <span>{lang === "hi" ? `AI भाव सिंक करें (₹${currentMarket.recommendedPrice})` : `Sync with AI (₹${currentMarket.recommendedPrice})`}</span>
+                                </button>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="relative">
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-[#737184]">₹</span>
+                            <input
+                              type="number"
+                              min={1}
+                              max={500}
+                              value={askingPrice}
+                              onChange={(e) => {
+                                setAskingPrice(Number(e.target.value));
+                                setPriceSynced(false);
+                              }}
+                              className={`w-full rounded-[16px] border pl-8 pr-4 py-3 text-sm font-semibold text-[#262238] focus:bg-white focus:outline-none transition shadow-xs ${
+                                priceSynced
+                                  ? "border-[#718A68]/50 bg-[#E3EBE0]/20 focus:border-[#718A68]"
+                                  : "border-[#E4E2DD] bg-[#F6F5F1] focus:border-[#262238]"
+                              }`}
+                            />
+                            {fetchingPrice && (
+                              <div className="absolute right-3.5 top-1/2 -translate-y-1/2">
+                                <span className="text-[10px] text-[#718A68] font-medium animate-pulse">Syncing...</span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Mandi Base & Quick Sync Chips */}
+                          <div className="mt-2 flex flex-wrap items-center justify-between gap-1.5 text-[11px] text-[#737184]">
+                            <span className="flex items-center gap-1">
+                              <span>{lang === "hi" ? "मंडी मॉडल भाव:" : "Mandi Modal Base:"}</span>
+                              <strong className="text-[#262238]">₹{currentMarket.basePrice}/kg</strong>
+                            </span>
+                            
+                            <div className="flex items-center gap-1">
+                              <button
+                                type="button"
+                                onClick={() => handleSelectGrade("A")}
+                                className={`px-2 py-0.5 rounded-full text-[10px] font-medium transition cursor-pointer border ${
+                                  grade === "A" && askingPrice === gradeAPrice
+                                    ? "bg-[#262238] text-white border-[#262238]"
+                                    : "bg-white text-[#737184] border-[#E4E2DD] hover:border-[#262238]/30"
+                                }`}
+                              >
+                                Grade A: ₹{gradeAPrice}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleSelectGrade("B")}
+                                className={`px-2 py-0.5 rounded-full text-[10px] font-medium transition cursor-pointer border ${
+                                  grade === "B" && askingPrice === gradeBPrice
+                                    ? "bg-[#262238] text-white border-[#262238]"
+                                    : "bg-white text-[#737184] border-[#E4E2DD] hover:border-[#262238]/30"
+                                }`}
+                              >
+                                Grade B: ₹{gradeBPrice}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleSelectGrade("C")}
+                                className={`px-2 py-0.5 rounded-full text-[10px] font-medium transition cursor-pointer border ${
+                                  grade === "C" && askingPrice === gradeCPrice
+                                    ? "bg-[#262238] text-white border-[#262238]"
+                                    : "bg-white text-[#737184] border-[#E4E2DD] hover:border-[#262238]/30"
+                                }`}
+                              >
+                                Grade C: ₹{gradeCPrice}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Quality Notes */}
+                      <div>
+                        <label className="block text-xs font-semibold text-[#262238] mb-1.5">
+                          {lang === "hi" ? "फसल एवं तुड़ाई विवरण" : "Quality Notes & Harvest Details"}
+                        </label>
+                        <input
+                          type="text"
+                          value={qualityNotes}
+                          onChange={(e) => setQualityNotes(e.target.value)}
+                          placeholder="उदा. आज सुबह की ताज़ा तुड़ाई, छंटाई की हुई"
+                          className="w-full rounded-[16px] border border-[#E4E2DD] bg-[#F6F5F1] px-4 py-2.5 text-xs font-normal text-[#262238] focus:bg-white focus:border-[#262238] focus:outline-none"
+                        />
+                      </div>
+
+                      {/* Submit Button */}
+                      <div className="pt-3">
                         <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => selectCommodity(item.id)}
-                          className={`rounded-[16px] border p-3 text-xs font-medium transition flex items-center gap-2 cursor-pointer ${
-                            commodity === item.id
-                              ? "border-[#262238] bg-[#E8E4F2] text-[#262238] shadow-xs"
-                              : "border-[#E4E2DD] bg-white text-[#262238] hover:border-[#262238]/30"
-                          }`}
+                          type="submit"
+                          disabled={publishing}
+                          className="w-full rounded-full bg-[#262238] py-3.5 text-xs font-medium text-white hover:bg-[#342e4c] transition shadow-xs disabled:opacity-50 cursor-pointer active:scale-99"
                         >
-                          <span className="text-lg">{item.icon}</span>
-                          <span className="truncate">{lang === "hi" ? item.hindi : item.label.split(" (")[0]}</span>
+                          {publishing
+                            ? (lang === "hi" ? "फसल लिस्ट हो रही है..." : "Publishing Lot...")
+                            : (lang === "hi" ? "🌾 फसल बाज़ार में लिस्ट करें" : "🌾 Publish Produce Lot")}
                         </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Quality Grade */}
-                  <div>
-                    <label className="block text-[11px] font-mono uppercase tracking-wider text-[#737184] mb-2">
-                      {lang === "hi" ? "2. गुणवत्ता ग्रेड चुनें" : "2. Quality Sorting & Grade"}
-                    </label>
-                    <div className="grid grid-cols-3 gap-2.5">
-                      {(["A", "B", "C"] as Grade[]).map((g) => (
-                        <button
-                          key={g}
-                          type="button"
-                          onClick={() => setGrade(g)}
-                          className={`rounded-[16px] border p-3 text-xs font-medium transition cursor-pointer ${
-                            grade === g
-                              ? "border-[#262238] bg-[#E8E4F2] text-[#262238] shadow-xs"
-                              : "border-[#E4E2DD] bg-white text-[#737184] hover:border-[#262238]/30"
-                          }`}
-                        >
-                          Grade {g} {g === "A" ? "(Premium)" : g === "B" ? "(Standard)" : "(Bulk)"}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Quantity & Asking Price */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-semibold text-[#262238] mb-1.5">
-                        {lang === "hi" ? "फसल की कुल मात्रा (किलो में)" : "Batch Quantity (kg)"}
-                      </label>
-                      <input
-                        type="number"
-                        min={10}
-                        max={50000}
-                        value={availableQty}
-                        onChange={(e) => setAvailableQty(Number(e.target.value))}
-                        className="w-full rounded-[16px] border border-[#E4E2DD] bg-[#F6F5F1] px-4 py-3 text-sm font-semibold text-[#262238] focus:bg-white focus:border-[#262238] focus:outline-none"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-[#262238] mb-1.5">
-                        {lang === "hi" ? "मांगा गया भाव (₹/किलो)" : "Asking Price (₹/kg)"}
-                      </label>
-                      <input
-                        type="number"
-                        min={1}
-                        max={500}
-                        value={askingPrice}
-                        onChange={(e) => setAskingPrice(Number(e.target.value))}
-                        className="w-full rounded-[16px] border border-[#E4E2DD] bg-[#F6F5F1] px-4 py-3 text-sm font-semibold text-[#718A68] focus:bg-white focus:border-[#262238] focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Quality Notes */}
-                  <div>
-                    <label className="block text-xs font-semibold text-[#262238] mb-1.5">
-                      {lang === "hi" ? "फसल एवं तुड़ाई विवरण" : "Quality Notes & Harvest Details"}
-                    </label>
-                    <input
-                      type="text"
-                      value={qualityNotes}
-                      onChange={(e) => setQualityNotes(e.target.value)}
-                      placeholder="उदा. आज सुबह की ताज़ा तुड़ाई, छंटाई की हुई"
-                      className="w-full rounded-[16px] border border-[#E4E2DD] bg-[#F6F5F1] px-4 py-2.5 text-xs font-normal text-[#262238] focus:bg-white focus:border-[#262238] focus:outline-none"
-                    />
-                  </div>
-
-                  {/* Submit Button */}
-                  <div className="pt-3">
-                    <button
-                      type="submit"
-                      disabled={publishing}
-                      className="w-full rounded-full bg-[#262238] py-3.5 text-xs font-medium text-white hover:bg-[#342e4c] transition shadow-xs disabled:opacity-50 cursor-pointer active:scale-99"
-                    >
-                      {publishing
-                        ? (lang === "hi" ? "फसल लिस्ट हो रही है..." : "Publishing Lot...")
-                        : (lang === "hi" ? "🌾 फसल बाज़ार में लिस्ट करें" : "🌾 Publish Produce Lot")}
-                    </button>
-                  </div>
-                </form>
+                      </div>
+                    </form>
+                  );
+                })()
               )}
             </div>
 
@@ -822,7 +1095,22 @@ export default function FarmerDashboardPage() {
               <PriceGuidanceCard
                 commodity={commodity}
                 cluster="Lucknow"
-                onSelectPrice={(p) => setAskingPrice(p)}
+                onSelectPrice={(p) => {
+                  setAskingPrice(p);
+                  setPriceSynced(false);
+                }}
+                onGuidanceLoaded={(g) => {
+                  setCurrentGuidance(g);
+                  if (priceSynced && g.today?.base) {
+                    const freshBase = g.today.base;
+                    const rec = grade === "A"
+                      ? Math.round(freshBase * 1.10)
+                      : grade === "C"
+                      ? Math.max(1, Math.round(freshBase * 0.90))
+                      : Math.round(freshBase);
+                    setAskingPrice(rec);
+                  }
+                }}
               />
             </div>
           </div>
