@@ -1,0 +1,15 @@
+name: Keep Render Backend Alive 24/7
+
+on:
+  schedule:
+    # Runs every 10 minutes to prevent Render free instance from sleeping
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping FarmLink Render Backend
+        run: |
+          curl -s -f -I -m 25 https://farmlink-direct.onrender.com/api/lots/ || true
