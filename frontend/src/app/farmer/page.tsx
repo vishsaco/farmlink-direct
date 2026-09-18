@@ -56,7 +56,7 @@ const COMMODITY_OPTIONS: { id: Commodity; label: string; hindi: string; icon: st
 
 export default function FarmerDashboardPage() {
   const { lang, t } = useLanguage();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   const [lots, setLots] = useState<Lot[]>([]);
   const [farms, setFarms] = useState<any[]>([]);
@@ -78,14 +78,15 @@ export default function FarmerDashboardPage() {
   const [publishSuccess, setPublishSuccess] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<"login" | "register">("login");
 
   // New Farm Form State
   const [farmName, setFarmName] = useState("");
-  const [farmVillage, setFarmVillage] = useState("Bakshi Ka Talab");
+  const [farmVillage, setFarmVillage] = useState("");
   const [farmDistrict, setFarmDistrict] = useState("Lucknow");
-  const [farmAcres, setFarmAcres] = useState(3.5);
-  const [farmLat, setFarmLat] = useState<number>(26.9124);
-  const [farmLng, setFarmLng] = useState<number>(80.8947);
+  const [farmAcres, setFarmAcres] = useState(1);
+  const [farmLat, setFarmLat] = useState<number>(0);
+  const [farmLng, setFarmLng] = useState<number>(0);
   const [capturingGps, setCapturingGps] = useState(false);
   const [creatingFarm, setCreatingFarm] = useState(false);
   const [farmCreatedMsg, setFarmCreatedMsg] = useState<string | null>(null);
@@ -249,7 +250,118 @@ export default function FarmerDashboardPage() {
     .filter((o) => ["delivered", "settlement_ready", "settled"].includes(o.status))
     .reduce((sum, o) => sum + o.requested_qty * o.agreed_price * 0.93, 0);
 
-  const displayHarvestVal = totalInventoryVal > 0 ? totalInventoryVal : 24560;
+  const displayHarvestVal = totalInventoryVal;
+
+  // ACCESS GATE: Unauthenticated users must sign in as farmer
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-[#F6F5F1] text-[#262238] flex flex-col selection:bg-[#E8E4F2] selection:text-[#262238]">
+        <Navbar />
+        <main className="flex-1 max-w-3xl mx-auto px-4 py-16 sm:px-6 w-full flex items-center justify-center">
+          <div className="w-full rounded-[28px] bg-white border border-[#E4E2DD] p-8 sm:p-12 shadow-sm text-center space-y-6">
+            <div className="mx-auto w-16 h-16 rounded-full bg-[#E8E4F2] flex items-center justify-center text-[#262238]">
+              <Sprout className="h-8 w-8 text-[#718A68]" />
+            </div>
+            
+            <div className="space-y-2">
+              <span className="text-xs font-medium text-[#718A68] uppercase tracking-widest">Verified Producer Portal</span>
+              <h1 className="font-serif text-3xl sm:text-4xl text-[#262238] font-normal tracking-tight">
+                Farmer Sign In Required
+              </h1>
+              <p className="text-sm text-[#737184] max-w-md mx-auto font-normal leading-relaxed">
+                The Farmer Hub is reserved exclusively for verified farmers and FPOs. Sign in with your farmer account to publish produce lots, access real-time APMC price guidance, and view direct buyer orders.
+              </p>
+            </div>
+
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <button
+                onClick={() => {
+                  setAuthModalMode("login");
+                  setAuthModalOpen(true);
+                }}
+                className="w-full sm:w-auto rounded-full bg-[#262238] hover:bg-[#342e4c] text-white px-8 py-3.5 text-sm font-medium transition cursor-pointer shadow-sm"
+              >
+                Sign In as Farmer
+              </button>
+              <button
+                onClick={() => {
+                  setAuthModalMode("register");
+                  setAuthModalOpen(true);
+                }}
+                className="w-full sm:w-auto rounded-full border border-[#E4E2DD] bg-white hover:bg-[#F6F5F1] text-[#262238] px-8 py-3.5 text-sm font-medium transition cursor-pointer"
+              >
+                Register Farm Account
+              </button>
+            </div>
+
+            <div className="pt-6 border-t border-[#E4E2DD] text-xs text-[#737184]">
+              Are you a commercial buyer or distributor?{" "}
+              <a href="/buyer" className="text-[#262238] font-medium underline hover:text-[#718A68]">
+                Browse the Buyer Marketplace
+              </a>
+            </div>
+          </div>
+        </main>
+        <AuthModal
+          isOpen={authModalOpen}
+          onClose={() => setAuthModalOpen(false)}
+          defaultRole="farmer"
+          defaultMode={authModalMode}
+        />
+      </div>
+    );
+  }
+
+  // ACCESS GATE: Non-farmer roles cannot access this portal
+  if (user && user.role !== "farmer" && user.role !== "fpo") {
+    return (
+      <div className="min-h-screen bg-[#F6F5F1] text-[#262238] flex flex-col selection:bg-[#E8E4F2] selection:text-[#262238]">
+        <Navbar />
+        <main className="flex-1 max-w-3xl mx-auto px-4 py-16 sm:px-6 w-full flex items-center justify-center">
+          <div className="w-full rounded-[28px] bg-white border border-[#E4E2DD] p-8 sm:p-12 shadow-sm text-center space-y-6">
+            <div className="mx-auto w-16 h-16 rounded-full bg-[#E8E4F2] flex items-center justify-center text-[#262238]">
+              <ShieldCheck className="h-8 w-8 text-[#718A68]" />
+            </div>
+            
+            <div className="space-y-2">
+              <span className="text-xs font-medium text-[#C86B4A] uppercase tracking-widest">Access Restricted</span>
+              <h1 className="font-serif text-3xl sm:text-4xl text-[#262238] font-normal tracking-tight">
+                Farmer & FPO Portal Only
+              </h1>
+              <p className="text-sm text-[#737184] max-w-md mx-auto font-normal leading-relaxed">
+                You are currently signed in as a <strong className="text-[#262238] capitalize">{user.role}</strong> ({user.username}). This workspace is reserved for agricultural producers and FPOs.
+              </p>
+            </div>
+
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <button
+                onClick={() => {
+                  logout();
+                  setAuthModalMode("login");
+                  setAuthModalOpen(true);
+                }}
+                className="w-full sm:w-auto rounded-full bg-[#262238] hover:bg-[#342e4c] text-white px-8 py-3.5 text-sm font-medium transition cursor-pointer shadow-sm"
+              >
+                Switch to Farmer Account
+              </button>
+              <a
+                href={user.role === "buyer" ? "/buyer" : user.role === "driver" ? "/driver" : user.role === "ops" ? "/ops" : "/"}
+                className="w-full sm:w-auto rounded-full border border-[#E4E2DD] bg-white hover:bg-[#F6F5F1] text-[#262238] px-8 py-3.5 text-sm font-medium transition text-center"
+              >
+                Go to {user.role.toUpperCase()} Workspace
+              </a>
+            </div>
+          </div>
+        </main>
+        <AuthModal
+          isOpen={authModalOpen}
+          onClose={() => setAuthModalOpen(false)}
+          defaultRole="farmer"
+          defaultMode={authModalMode}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F6F5F1] text-[#262238] flex flex-col selection:bg-[#E8E4F2] selection:text-[#262238]">
@@ -272,7 +384,7 @@ export default function FarmerDashboardPage() {
 
               <div>
                 <h1 className="font-serif text-3xl sm:text-4xl text-white font-normal tracking-tight">
-                  Good morning, {user?.first_name || "Ramesh"}
+                  Good morning, {user?.first_name || user?.username || "Farmer"}
                 </h1>
                 <p className="text-xs sm:text-sm text-[#E8E4F2]/80 font-normal mt-1">
                   Your harvest is ready for the right direct market buyers.
@@ -290,7 +402,7 @@ export default function FarmerDashboardPage() {
                       ₹{displayHarvestVal.toLocaleString("en-IN")}
                     </span>
                     <span className="text-xs text-[#718A68] font-medium">
-                      across {lots.length > 0 ? lots.length : 3} active lots
+                      across {lots.length} active {lots.length === 1 ? "lot" : "lots"}
                     </span>
                   </div>
                 </div>
@@ -300,7 +412,7 @@ export default function FarmerDashboardPage() {
                     Active Stock
                   </span>
                   <span className="text-xl sm:text-2xl font-serif text-[#E8E4F2] mt-0.5 block font-normal">
-                    {(totalInventoryKg > 0 ? totalInventoryKg : 1500).toLocaleString()} kg
+                    {totalInventoryKg.toLocaleString()} kg
                   </span>
                 </div>
               </div>

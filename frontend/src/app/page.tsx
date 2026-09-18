@@ -934,7 +934,9 @@ export default function HomePage() {
             {/* Links */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-12 gap-y-3 text-sm text-white/60">
               <Link href="/buyer" className="hover:text-white transition">Marketplace</Link>
-              <Link href="/farmer" className="hover:text-white transition">For Farmers</Link>
+              {user && user.role === "farmer" && (
+                <Link href="/farmer" className="hover:text-white transition">Farmer Hub</Link>
+              )}
               <Link href="/predict" className="hover:text-white transition">Insights</Link>
               <Link href="/fpo" className="hover:text-white transition">FPO Hub</Link>
               <Link href="/driver" className="hover:text-white transition">Logistics</Link>

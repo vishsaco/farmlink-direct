@@ -102,9 +102,7 @@ export function DriverProofModal({
                 <KeyRound className="h-3.5 w-3.5 text-[#718A68]" />
                 <span>Customer Delivery OTP</span>
               </span>
-              <span className="text-[10px] text-[#737184]">
-                Demo Code: <strong>8842</strong>
-              </span>
+
             </label>
             <input
               type="text"

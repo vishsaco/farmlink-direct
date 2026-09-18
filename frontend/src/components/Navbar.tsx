@@ -128,16 +128,19 @@ export function Navbar(props: NavbarProps) {
                 Marketplace
               </Link>
 
-              <Link
-                href="/farmer"
-                className={`px-4 py-2 text-[13px] font-medium rounded-full transition-all ${
-                  isFarmerActive
-                    ? "bg-[#E8E4F2] text-[#262238]"
-                    : "text-[#737184] hover:text-[#262238] hover:bg-[#F6F5F1]"
-                }`}
-              >
-                For Farmers
-              </Link>
+              {/* Farmer Hub - Only shown after logging in as a farmer */}
+              {user && user.role === "farmer" && (
+                <Link
+                  href="/farmer"
+                  className={`px-4 py-2 text-[13px] font-medium rounded-full transition-all ${
+                    isFarmerActive
+                      ? "bg-[#E8E4F2] text-[#262238]"
+                      : "text-[#737184] hover:text-[#262238] hover:bg-[#F6F5F1]"
+                  }`}
+                >
+                  Farmer Hub
+                </Link>
+              )}
 
               <Link
                 href="/predict"
@@ -342,17 +345,19 @@ export function Navbar(props: NavbarProps) {
                 <ArrowRight className="h-3.5 w-3.5 text-[#737184]" />
               </Link>
 
-              <Link
-                href="/farmer"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between rounded-2xl bg-[#F6F5F1] px-4 py-3 text-[13px] font-medium text-[#262238]"
-              >
-                <div className="flex items-center gap-2.5">
-                  <Sprout className="h-4 w-4 text-[#718A68]" />
-                  <span>For Farmers</span>
-                </div>
-                <ArrowRight className="h-3.5 w-3.5 text-[#737184]" />
-              </Link>
+              {user && user.role === "farmer" && (
+                <Link
+                  href="/farmer"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-between rounded-2xl bg-[#F6F5F1] px-4 py-3 text-[13px] font-medium text-[#262238]"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Sprout className="h-4 w-4 text-[#718A68]" />
+                    <span>Farmer Hub</span>
+                  </div>
+                  <ArrowRight className="h-3.5 w-3.5 text-[#737184]" />
+                </Link>
+              )}
 
               <Link
                 href="/predict"
