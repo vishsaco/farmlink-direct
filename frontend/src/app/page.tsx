@@ -139,11 +139,6 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left Column */}
             <div className={`space-y-8 ${heroRef.inView ? "animate-fade-in-up" : "opacity-0"}`}>
-              {/* Eyebrow */}
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#E8E4F2] bg-white/80 backdrop-blur-sm px-4 py-1.5 text-xs font-medium text-[#737184]">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#718A68] animate-pulse" />
-                <span>{lang === "hi" ? "लखनऊ का सीधा उत्पाद नेटवर्क" : "LUCKNOW'S DIRECT PRODUCE NETWORK"}</span>
-              </div>
 
               {/* Main Headline */}
               <h1 className="font-heading text-[clamp(2.5rem,5vw,4.5rem)] font-normal leading-[1.08] tracking-[-0.03em]">
