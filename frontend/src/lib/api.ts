@@ -267,6 +267,58 @@ class ApiClient {
     });
   }
 
+  // ─── Razorpay Escrow Payments & Farmer Disbursals ───
+  async createPaymentOrder(orderId: number): Promise<{
+    razorpay_order_id: string;
+    razorpay_key_id: string;
+    amount_paise: number;
+    amount_rupees: number;
+    currency: string;
+    fee_breakdown: {
+      gross_produce_amount: number;
+      platform_fee_2pct: number;
+      logistics_fee_5pct: number;
+      net_farmer_amount: number;
+    };
+    farmer_name: string;
+    farmer_upi: string;
+  }> {
+    return this.request(`/orders/${orderId}/create-payment/`, {
+      method: "POST",
+    });
+  }
+
+  async verifyPayment(
+    orderId: number,
+    data: {
+      razorpay_order_id: string;
+      razorpay_payment_id: string;
+      razorpay_signature: string;
+    }
+  ): Promise<{
+    success: boolean;
+    message: string;
+    order: Order;
+    settlement: any;
+  }> {
+    return this.request(`/orders/${orderId}/verify-payment/`, {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updatePayoutDetails(data: {
+    payout_upi_id?: string;
+    bank_account_number?: string;
+    bank_ifsc_code?: string;
+    bank_account_name?: string;
+  }): Promise<{ message: string; user: any }> {
+    return this.request("/auth/payout-details/", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
   // ─── Forecasts & Agmarknet ───
   async getForecast(
     commodity: string,
@@ -375,7 +427,20 @@ class ApiClient {
   }
 
   async getSettlement(orderId: number): Promise<Settlement> {
-    return this.request<Settlement>(`/fulfillment/orders/${orderId}/settlement/`);
+    return this.request<Settlement>(`/fulfillment/settlements/${orderId}/`);
+  }
+
+  async disbursePayout(orderId: number): Promise<{
+    success: boolean;
+    message: string;
+    settlement_reference: string;
+    payout_reference: string;
+    payout_status: string;
+    payout_disbursed_at: string;
+  }> {
+    return this.request(`/fulfillment/settlements/${orderId}/payout/`, {
+      method: "POST",
+    });
   }
 
   async getTimeline(orderId: number): Promise<Timeline> {

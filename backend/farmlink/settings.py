@@ -152,3 +152,7 @@ FARMLINK_CONFIG = {
     "COMMODITIES": ["tomato", "onion", "potato"],
     "GRADES": ["A", "B", "C"],
 }
+
+# Razorpay Payment Gateway Integration
+RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "rzp_test_TdaeQZjpBM06vR")
+RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "bqMhLl1SbomvbDnq9QdO8ebC")

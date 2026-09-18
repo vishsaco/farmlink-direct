@@ -39,7 +39,7 @@ export function DriverProofModal({
 
     try {
       await api.submitDeliveryProof(orderId, {
-        otp: otp || "8842",
+        otp: otp.trim(),
         media_url: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&auto=format&fit=crop",
         latitude: 26.8467,
         longitude: 80.9462,

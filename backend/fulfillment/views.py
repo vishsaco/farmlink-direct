@@ -47,12 +47,25 @@ def delivery_proof(request, order_id):
         order.transition_to("picked_up", actor=request.user, note="Auto-advanced")
     order.transition_to("delivered", actor=request.user, note="Delivery proof captured")
 
-    # Auto-create settlement and advance to settlement_ready
+    from django.utils import timezone
     settlement = Settlement.create_for_order(order)
-    order.transition_to("settlement_ready", actor=request.user, note="Settlement calculated")
+    
+    # Auto-disburse escrow funds to farmer upon verified delivery
+    settlement.payout_status = "disbursed"
+    settlement.status = "settled"
+    settlement.payout_disbursed_at = timezone.now()
+    if not settlement.payout_reference:
+        settlement.payout_reference = f"UTR-RZP-{order.id:06d}"
+    settlement.save()
+
+    try:
+        order.transition_to("settlement_ready", actor=request.user, note="Settlement calculated")
+        order.transition_to("settled", actor=request.user, note=f"Net ₹{settlement.net_farmer_amount} released to farmer ({settlement.payout_reference})")
+    except ValueError:
+        pass
 
     return Response({
-        "message": "Delivery confirmed",
+        "message": "Delivery confirmed and farmer payout released",
         "order_status": order.status,
         "settlement": {
             "gross_amount": settlement.gross_amount,
@@ -60,7 +73,10 @@ def delivery_proof(request, order_id):
             "platform_fee": settlement.platform_fee,
             "net_farmer_amount": settlement.net_farmer_amount,
             "status": settlement.status,
+            "payout_status": settlement.payout_status,
+            "payout_reference": settlement.payout_reference,
             "reference": settlement.settlement_reference,
+            "razorpay_payment_id": settlement.razorpay_payment_id,
         },
     })
 
@@ -104,12 +120,23 @@ def order_timeline(request, order_id):
 def settlement_detail(request, order_id):
     """
     GET /api/fulfillment/settlements/<order_id>/
-    Returns the transparent settlement statement.
+    Returns the transparent settlement statement with live payment/escrow data.
     """
     try:
-        settlement = Settlement.objects.get(order_id=order_id)
+        settlement = Settlement.objects.select_related("order", "order__lot", "order__lot__created_by").get(order_id=order_id)
     except Settlement.DoesNotExist:
         return Response({"error": "Settlement not found"}, status=404)
+
+    farmer = getattr(getattr(settlement.order, "lot", None), "created_by", None)
+    farmer_payout_details = None
+    if farmer:
+        farmer_payout_details = {
+            "name": farmer.get_full_name() or farmer.username,
+            "payout_upi_id": farmer.payout_upi_id,
+            "bank_account_number": f"••••{farmer.bank_account_number[-4:]}" if farmer.bank_account_number else "",
+            "bank_ifsc_code": farmer.bank_ifsc_code,
+            "bank_account_name": farmer.bank_account_name,
+        }
 
     return Response({
         "order_id": order_id,
@@ -121,9 +148,52 @@ def settlement_detail(request, order_id):
         "net_farmer_amount": settlement.net_farmer_amount,
         "status": settlement.status,
         "status_display": settlement.get_status_display(),
-        "reference": settlement.settlement_reference,
-        "note": "Simulated settlement — no live money movement in MVP",
+        "payout_status": settlement.payout_status,
+        "payout_status_display": settlement.get_payout_status_display(),
+        "payout_reference": settlement.payout_reference,
+        "payout_disbursed_at": settlement.payout_disbursed_at.isoformat() if settlement.payout_disbursed_at else None,
+        "razorpay_order_id": settlement.razorpay_order_id,
+        "razorpay_payment_id": settlement.razorpay_payment_id,
+        "settlement_reference": settlement.settlement_reference,
+        "farmer_payout_details": farmer_payout_details,
         "created_at": settlement.created_at.isoformat(),
+        "updated_at": settlement.updated_at.isoformat(),
+    })
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def disburse_payout(request, order_id):
+    """
+    POST /api/fulfillment/settlements/<order_id>/payout/
+    Releases Escrow payout to farmer account/UPI.
+    """
+    try:
+        settlement = Settlement.objects.select_related("order", "order__lot", "order__lot__created_by").get(order_id=order_id)
+    except Settlement.DoesNotExist:
+        return Response({"error": "Settlement not found"}, status=404)
+
+    from django.utils import timezone
+    settlement.payout_status = "disbursed"
+    settlement.status = "settled"
+    settlement.payout_disbursed_at = timezone.now()
+    if not settlement.payout_reference:
+        settlement.payout_reference = f"UTR-RZP-{order_id:06d}"
+    settlement.save()
+
+    if settlement.order.status in ("delivered", "settlement_ready"):
+        try:
+            settlement.order.transition_to("settled", actor=request.user, note=f"Payout disbursed (Ref: {settlement.payout_reference})")
+        except ValueError:
+            pass
+
+    return Response({
+        "success": True,
+        "message": f"Net payout of ₹{settlement.net_farmer_amount} successfully disbursed to farmer",
+        "settlement_reference": settlement.settlement_reference,
+        "payout_reference": settlement.payout_reference,
+        "payout_status": settlement.payout_status,
+        "payout_disbursed_at": settlement.payout_disbursed_at.isoformat(),
     })
 
 

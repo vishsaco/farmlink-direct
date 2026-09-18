@@ -286,12 +286,12 @@ export default function DriverDispatchPage() {
                           </p>
                           <p className="flex items-center gap-1.5 text-[#737184]">
                             <MapPin className="h-3.5 w-3.5 text-[#718A68]" />
-                            <span>{ord.farmer_village || ord.lot_detail?.farm_detail?.village || "Bakshi Ka Talab"}, Lucknow</span>
+                            <span>{ord.farmer_village || ord.lot_detail?.farm_detail?.village || "Farm Gate"}, Lucknow</span>
                           </p>
                           <p className="flex items-center gap-1.5 text-[#737184]">
                             <Phone className="h-3.5 w-3.5 text-[#718A68]" />
-                            <a href={`tel:${ord.farmer_phone || "+919876543211"}`} className="font-medium text-[#262238] hover:underline">
-                              {ord.farmer_phone || "+91-9876543211"} (Tap to Call)
+                            <a href={`tel:${ord.farmer_phone || ""}`} className="font-medium text-[#262238] hover:underline">
+                              {ord.farmer_phone ? `${ord.farmer_phone} (Tap to Call)` : "Call via Dispatch"}
                             </a>
                           </p>
                         </div>
@@ -334,16 +334,16 @@ export default function DriverDispatchPage() {
 
                         <div className="text-xs space-y-1.5 text-[#262238]">
                           <p className="font-medium text-sm text-[#262238]">
-                            {ord.buyer_org || "Commercial Procurement Kitchen"} ({ord.buyer_name || "Buyer"})
+                            {ord.buyer_org || "Procurement Buyer"} ({ord.buyer_name || "Buyer"})
                           </p>
                           <p className="flex items-center gap-1.5 text-[#737184]">
                             <MapPin className="h-3.5 w-3.5 text-[#718A68]" />
-                            <span>{ord.delivery_address || "Hazratganj Central Receiving Station, Lucknow"}</span>
+                            <span>{ord.delivery_address || "Designated Receiving Dock, Lucknow"}</span>
                           </p>
                           <p className="flex items-center gap-1.5 text-[#737184]">
                             <Phone className="h-3.5 w-3.5 text-[#718A68]" />
-                            <a href={`tel:${ord.buyer_phone || "+919876543210"}`} className="font-medium text-[#262238] hover:underline">
-                              {ord.buyer_phone || "+91-9876543210"} (Tap to Call)
+                            <a href={`tel:${ord.buyer_phone || ""}`} className="font-medium text-[#262238] hover:underline">
+                              {ord.buyer_phone ? `${ord.buyer_phone} (Tap to Call)` : "Call Buyer"}
                             </a>
                           </p>
                         </div>

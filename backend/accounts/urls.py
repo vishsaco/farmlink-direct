@@ -11,5 +11,6 @@ urlpatterns = [
     path("language/", views.update_language, name="auth-language"),
     path("verify-farmer-id/", views.verify_farmer_id_view, name="auth-verify-farmer-id"),
     path("verify-kisan/", views.verify_kisan_view, name="auth-verify-kisan"),
+    path("payout-details/", views.update_payout_details, name="auth-payout-details"),
 ]
 

@@ -65,6 +65,11 @@ export interface User {
   kisan_verified_at?: string;
   kisan_verified_by?: string;
   is_verified_farmer?: boolean;
+  // Farmer Payout Bank / UPI Configuration
+  payout_upi_id?: string;
+  bank_account_number?: string;
+  bank_ifsc_code?: string;
+  bank_account_name?: string;
 }
 
 export interface AuthResponse {
@@ -382,8 +387,23 @@ export interface Settlement {
   status: string;
   status_display: string;
   reference: string;
-  note: string;
+  settlement_reference?: string;
+  payout_status?: "pending" | "escrow_held" | "disbursed" | "failed";
+  payout_status_display?: string;
+  payout_reference?: string;
+  payout_disbursed_at?: string | null;
+  razorpay_order_id?: string;
+  razorpay_payment_id?: string;
+  farmer_payout_details?: {
+    name?: string;
+    payout_upi_id?: string;
+    bank_account_number?: string;
+    bank_ifsc_code?: string;
+    bank_account_name?: string;
+  } | null;
+  note?: string;
   created_at: string;
+  updated_at?: string;
 }
 
 export interface Timeline {

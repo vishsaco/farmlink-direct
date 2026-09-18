@@ -37,6 +37,7 @@ import {
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { LocationPickerModal, LocationData } from "@/components/LocationPickerModal";
+import { openRazorpayCheckout } from "@/lib/razorpay";
 
 export default function BuyerMarketplacePage() {
   const { lang, t } = useLanguage();
@@ -56,10 +57,8 @@ export default function BuyerMarketplacePage() {
 
   // Lot Detail & Reservation Modal
   const [selectedLot, setSelectedLot] = useState<Lot | null>(null);
-  const [orderQty, setOrderQty] = useState<number>(300);
-  const [deliveryAddress, setDeliveryAddress] = useState<string>(
-    "Hazratganj Central Receiving Station, Lucknow"
-  );
+  const [orderQty, setOrderQty] = useState<number>(100);
+  const [deliveryAddress, setDeliveryAddress] = useState<string>("");
   const [deliveryLat, setDeliveryLat] = useState<number>(26.8467);
   const [deliveryLng, setDeliveryLng] = useState<number>(80.9462);
   const [showLocationPicker, setShowLocationPicker] = useState(false);
@@ -142,6 +141,48 @@ export default function BuyerMarketplacePage() {
     setReserveError("");
   };
 
+  const handlePayOrder = async (order: Order) => {
+    if (!user) {
+      setAuthModalOpen(true);
+      return;
+    }
+    try {
+      const paymentData = await api.createPaymentOrder(order.id);
+      await openRazorpayCheckout({
+        razorpayOrderId: paymentData.razorpay_order_id,
+        amountPaise: paymentData.amount_paise,
+        buyerName: user.first_name ? `${user.first_name} ${user.last_name || ""}`.trim() : user.username,
+        buyerEmail: user.email || "buyer@farmlink.org",
+        buyerPhone: user.phone || "",
+        description: `Order #${order.id} Produce Escrow Payment`,
+        notes: {
+          order_id: String(order.id),
+          farmer_name: paymentData.farmer_name,
+        },
+        onSuccess: async (rzpRes) => {
+          try {
+            await api.verifyPayment(order.id, {
+              razorpay_order_id: rzpRes.razorpay_order_id,
+              razorpay_payment_id: rzpRes.razorpay_payment_id,
+              razorpay_signature: rzpRes.razorpay_signature,
+            });
+            try {
+              confetti({ particleCount: 75, spread: 70, origin: { y: 0.6 } });
+            } catch {}
+            loadOrders();
+          } catch (verErr: any) {
+            alert(`Payment verification error: ${verErr.message}`);
+          }
+        },
+        onDismiss: () => {
+          loadOrders();
+        },
+      });
+    } catch (err: any) {
+      alert(err.message || "Failed to launch Razorpay payment");
+    }
+  };
+
   const handleCommitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedLot) return;
@@ -155,37 +196,70 @@ export default function BuyerMarketplacePage() {
     setReserveError("");
 
     try {
+      // 1. Create order in reserved status
       const newOrder = await api.createOrder({
         lot_id: selectedLot.id,
         requested_qty: orderQty,
         agreed_price: selectedLot.asking_price,
-        delivery_address: deliveryAddress,
+        delivery_address: deliveryAddress || "Bakshi Ka Talab Receiving Station, Lucknow",
         delivery_lat: deliveryLat,
         delivery_lng: deliveryLng,
-        notes: `Order created by ${user.first_name || user.username}. Quality confirmed.`,
+        notes: `Procurement order by ${user.first_name || user.username}. Razorpay escrow checkout.`,
       });
 
-      // Advance order to confirmed immediately to lock escrow
-      try {
-        await api.transitionOrder(newOrder.id, "confirmed", "Buyer payment held in escrow. Scheduled for logistics pickup.");
-      } catch {}
+      // 2. Obtain Razorpay Order from backend
+      const paymentData = await api.createPaymentOrder(newOrder.id);
 
-      try {
-        confetti({
-          particleCount: 70,
-          spread: 60,
-          origin: { y: 0.7 },
-        });
-      } catch {}
+      // 3. Launch Razorpay interactive Checkout
+      await openRazorpayCheckout({
+        razorpayOrderId: paymentData.razorpay_order_id,
+        amountPaise: paymentData.amount_paise,
+        buyerName: user.first_name ? `${user.first_name} ${user.last_name || ""}`.trim() : user.username,
+        buyerEmail: user.email || "buyer@farmlink.org",
+        buyerPhone: user.phone || "",
+        description: `${selectedLot.commodity.toUpperCase()} ${orderQty} kg @ ₹${selectedLot.asking_price}/kg`,
+        notes: {
+          order_id: String(newOrder.id),
+          farmer_name: paymentData.farmer_name,
+        },
+        onSuccess: async (rzpRes) => {
+          try {
+            await api.verifyPayment(newOrder.id, {
+              razorpay_order_id: rzpRes.razorpay_order_id,
+              razorpay_payment_id: rzpRes.razorpay_payment_id,
+              razorpay_signature: rzpRes.razorpay_signature,
+            });
 
-      setSelectedLot(null);
-      searchLots();
-      loadOrders();
-      setActiveOrderTracking(newOrder);
-      setViewMode("orders");
+            try {
+              confetti({
+                particleCount: 80,
+                spread: 70,
+                origin: { y: 0.6 },
+              });
+            } catch {}
+
+            setSelectedLot(null);
+            searchLots();
+            loadOrders();
+            setActiveOrderTracking(newOrder);
+            setViewMode("orders");
+          } catch (verErr: any) {
+            setReserveError(`Payment completed, verification error: ${verErr.message}`);
+          } finally {
+            setReserving(false);
+          }
+        },
+        onDismiss: () => {
+          setReserving(false);
+          setSelectedLot(null);
+          searchLots();
+          loadOrders();
+          setActiveOrderTracking(newOrder);
+          setViewMode("orders");
+        },
+      });
     } catch (err: any) {
       setReserveError(err.message || "Failed to commit order");
-    } finally {
       setReserving(false);
     }
   };
@@ -526,7 +600,7 @@ export default function BuyerMarketplacePage() {
                     <div className="pt-2.5 border-t border-[#E4E2DD] flex items-center justify-between text-xs">
                       <span className="flex items-center gap-1.5 font-mono font-medium text-[#262238] bg-[#E8E4F2] px-2.5 py-0.5 rounded-full border border-[#262238]/10">
                         <KeyRound className="h-3 w-3 text-[#718A68]" />
-                        <span>OTP: {ord.delivery_otp || "8842"}</span>
+                        <span>{ord.delivery_otp ? `OTP: ${ord.delivery_otp}` : "OTP pending dispatch"}</span>
                       </span>
                       <a
                         href={`https://www.google.com/maps/dir/?api=1&origin=${ord.lot_detail?.farm_detail?.latitude || 26.9124},${ord.lot_detail?.farm_detail?.longitude || 80.8947}&destination=${ord.delivery_lat || 26.8467},${ord.delivery_lng || 80.9462}&travelmode=driving`}
@@ -539,6 +613,19 @@ export default function BuyerMarketplacePage() {
                         <span>Google Maps &rarr;</span>
                       </a>
                     </div>
+
+                    {ord.status === "reserved" && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePayOrder(ord);
+                        }}
+                        className="w-full mt-2 flex items-center justify-center gap-1.5 rounded-full bg-[#262238] py-2 text-xs font-medium text-white hover:bg-[#3b3554] transition cursor-pointer"
+                      >
+                        💳 {lang === "hi" ? "Razorpay से भुगतान करें" : "Pay via Razorpay (Hold in Escrow)"} • ₹{(ord.requested_qty * ord.agreed_price).toLocaleString("en-IN")}
+                      </button>
+                    )}
                   </div>
                 ))
               )}
@@ -681,21 +768,37 @@ export default function BuyerMarketplacePage() {
                   />
                 </div>
 
-                {/* Cost Summary Box */}
-                <div className="rounded-[18px] bg-[#E8E4F2]/50 p-4 border border-[#262238]/10 space-y-1.5 text-xs">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[#737184]">Gross Produce Amount:</span>
-                    <span className="font-medium text-[#262238]">₹{(orderQty * selectedLot.asking_price).toLocaleString("en-IN")}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[#737184]">Direct Cluster Logistics:</span>
-                    <span className="font-medium text-[#718A68]">Included (₹0)</span>
-                  </div>
-                  <div className="pt-2 border-t border-[#262238]/10 flex items-center justify-between font-medium text-xs text-[#262238]">
-                    <span>Total Escrow Commitment:</span>
-                    <span className="text-base font-semibold text-[#262238]">₹{(orderQty * selectedLot.asking_price).toLocaleString("en-IN")}</span>
-                  </div>
-                </div>
+                {/* Cost Summary & Fee Breakdown Box */}
+                {(() => {
+                  const gross = orderQty * selectedLot.asking_price;
+                  const platformFee = Math.round(gross * 0.02);
+                  const logisticsFee = Math.round(gross * 0.05);
+                  const netFarmer = Math.round(gross - platformFee - logisticsFee);
+                  return (
+                    <div className="rounded-[18px] bg-[#E8E4F2]/50 p-4 border border-[#262238]/10 space-y-2 text-xs">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[#737184]">Produce Price ({orderQty} kg @ ₹{selectedLot.asking_price}):</span>
+                        <span className="font-semibold text-[#262238]">₹{gross.toLocaleString("en-IN")}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-[#C86B4A]">
+                        <span>• Cluster Logistics Fulfillment (5%):</span>
+                        <span className="font-mono font-medium">-₹{logisticsFee.toLocaleString("en-IN")}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-[#C86B4A]">
+                        <span>• Platform Facilitation Fee (2%):</span>
+                        <span className="font-mono font-medium">-₹{platformFee.toLocaleString("en-IN")}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-[#718A68] font-medium pt-1 border-t border-[#262238]/10">
+                        <span>• Net Farmer Realization (93%):</span>
+                        <span className="font-semibold">₹{netFarmer.toLocaleString("en-IN")}</span>
+                      </div>
+                      <div className="pt-2 border-t border-[#262238]/15 flex items-center justify-between font-serif text-sm text-[#262238]">
+                        <span className="font-sans text-xs font-semibold">Total Payable by Buyer (Escrow):</span>
+                        <span className="font-serif text-lg font-normal text-[#262238]">₹{gross.toLocaleString("en-IN")}</span>
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {reserveError && (
                   <div className="rounded-[16px] bg-[#C86B4A]/10 p-3 text-xs font-medium text-[#C86B4A] border border-[#C86B4A]/20 flex items-center gap-2">
@@ -707,9 +810,15 @@ export default function BuyerMarketplacePage() {
                 <button
                   type="submit"
                   disabled={reserving}
-                  className="w-full rounded-full bg-[#262238] py-3.5 text-xs font-medium text-white hover:bg-[#342e4c] transition shadow-xs disabled:opacity-50 cursor-pointer active:scale-99"
+                  className="w-full rounded-full bg-[#262238] py-3.5 text-xs font-medium text-white hover:bg-[#342e4c] transition shadow-xs disabled:opacity-50 cursor-pointer active:scale-99 flex items-center justify-center gap-2"
                 >
-                  {reserving ? (lang === "hi" ? "ऑर्डर बुक हो रहा है..." : "Locking Escrow...") : (lang === "hi" ? "🔒 ऑर्डर बुक करें (एस्क्रो सुरक्षित)" : "🔒 Reserve & Lock Escrow")}
+                  {reserving ? (
+                    <span>{lang === "hi" ? "Razorpay गेटवे खुल रहा है..." : "Connecting to Razorpay..."}</span>
+                  ) : (
+                    <span>
+                      💳 {lang === "hi" ? "Razorpay से भुगतान करें (एस्क्रो सुरक्षित)" : "Pay with Razorpay (Direct Escrow)"} • ₹{(orderQty * selectedLot.asking_price).toLocaleString("en-IN")}
+                    </span>
+                  )}
                 </button>
               </form>
             </div>

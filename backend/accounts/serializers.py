@@ -28,6 +28,8 @@ class UserSerializer(serializers.ModelSerializer):
             "pm_kisan_id", "khasra_number", "land_size_acres",
             "tehsil", "village_lgd_code", "kisan_verification_status",
             "kisan_verified_at", "kisan_verified_by", "is_verified_farmer",
+            # Direct Farmer Payout / Bank / UPI Details
+            "payout_upi_id", "bank_account_number", "bank_ifsc_code", "bank_account_name",
         ]
         read_only_fields = [
             "id", "is_verified", "kisan_verification_status",

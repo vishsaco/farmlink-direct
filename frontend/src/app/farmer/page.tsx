@@ -92,6 +92,23 @@ export default function FarmerDashboardPage() {
   const [farmCreatedMsg, setFarmCreatedMsg] = useState<string | null>(null);
   const [showFarmLocationPicker, setShowFarmLocationPicker] = useState(false);
 
+  // Farmer Payout Destination State
+  const [payoutUpi, setPayoutUpi] = useState(user?.payout_upi_id || "");
+  const [payoutBankAcc, setPayoutBankAcc] = useState(user?.bank_account_number || "");
+  const [payoutIfsc, setPayoutIfsc] = useState(user?.bank_ifsc_code || "");
+  const [payoutAccName, setPayoutAccName] = useState(user?.bank_account_name || "");
+  const [savingPayout, setSavingPayout] = useState(false);
+  const [payoutSavedMsg, setPayoutSavedMsg] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      if (user.payout_upi_id) setPayoutUpi(user.payout_upi_id);
+      if (user.bank_account_number) setPayoutBankAcc(user.bank_account_number);
+      if (user.bank_ifsc_code) setPayoutIfsc(user.bank_ifsc_code);
+      if (user.bank_account_name) setPayoutAccName(user.bank_account_name);
+    }
+  }, [user]);
+
   const selectCommodity = (c: Commodity) => {
     setCommodity(c);
     const found = COMMODITY_OPTIONS.find((item) => item.id === c);
@@ -249,6 +266,30 @@ export default function FarmerDashboardPage() {
   const readySettlementVal = orders
     .filter((o) => ["delivered", "settlement_ready", "settled"].includes(o.status))
     .reduce((sum, o) => sum + o.requested_qty * o.agreed_price * 0.93, 0);
+
+  const escrowHeldVal = orders
+    .filter((o) => ["confirmed", "pickup_scheduled", "picked_up"].includes(o.status))
+    .reduce((sum, o) => sum + o.requested_qty * o.agreed_price * 0.93, 0);
+
+  const handleSavePayoutDetails = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSavingPayout(true);
+    setPayoutSavedMsg("");
+    try {
+      await api.updatePayoutDetails({
+        payout_upi_id: payoutUpi.trim(),
+        bank_account_number: payoutBankAcc.trim(),
+        bank_ifsc_code: payoutIfsc.trim().toUpperCase(),
+        bank_account_name: payoutAccName.trim(),
+      });
+      setPayoutSavedMsg(lang === "hi" ? "भुगतान विवरण सफलतापूर्वक सहेजे गए!" : "Payout destination saved successfully!");
+      setTimeout(() => setPayoutSavedMsg(""), 3500);
+    } catch (err: any) {
+      alert(err.message || "Failed to update payout details");
+    } finally {
+      setSavingPayout(false);
+    }
+  };
 
   const displayHarvestVal = totalInventoryVal;
 
@@ -833,13 +874,13 @@ export default function FarmerDashboardPage() {
                       <div className="flex items-center justify-between">
                         <span className="font-medium text-[#262238] flex items-center gap-1.5">
                           <ShoppingBag className="h-3.5 w-3.5 text-[#718A68]" />
-                          <span>{ord.buyer_org || "Fresh Mart Procurement Kitchen"}</span>
+                          <span>{ord.buyer_org || "Commercial Buyer"}</span>
                         </span>
-                        <span className="text-[11px] text-[#737184]">{ord.buyer_name || "Ankit Sharma"}</span>
+                        <span className="text-[11px] text-[#737184]">{ord.buyer_name || "Buyer"}</span>
                       </div>
                       <p className="text-[11px] font-normal text-[#718A68] flex items-center gap-1">
                         <Phone className="h-3 w-3" />
-                        <span>{ord.buyer_phone || "+91-9876543210"}</span>
+                        <span>{ord.buyer_phone || "Contact via FarmLink"}</span>
                       </p>
                     </div>
 
@@ -849,10 +890,10 @@ export default function FarmerDashboardPage() {
                         <span>Assigned Fleet Logistics</span>
                       </span>
                       <p className="font-medium text-[#262238]">
-                        {ord.driver_name || "Suresh Chauhan"} ({ord.driver_phone || "+91-9876543212"})
+                        {ord.driver_name ? `${ord.driver_name} (${ord.driver_phone || "Driver"})` : "Assigned Fleet Dispatch"}
                       </p>
                       <p className="text-[11px] text-[#737184]">
-                        {ord.vehicle_info || "Tata Ace Gold (UP 32 TA 4092)"}
+                        {ord.vehicle_info || "Dedicated Fleet Transport"}
                       </p>
                     </div>
 
@@ -1070,41 +1111,111 @@ export default function FarmerDashboardPage() {
         {/* TAB 5: PAYOUTS & SETTLEMENTS */}
         {activeTab === "wallet" && (
           <div className="space-y-6">
+            {/* Top KPI Banner */}
             <div className="p-6 sm:p-8 space-y-6 bg-white rounded-[28px] border border-[#E4E2DD] shadow-xs">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E4E2DD] pb-5">
                 <div>
                   <span className="text-xs uppercase font-mono tracking-wider font-medium text-[#262238]">
-                    Farmer Settlement Ledger
+                    Zero-Leakage Farmer Wallet & Escrow
                   </span>
                   <h2 className="font-serif text-2xl sm:text-3xl text-[#262238] font-normal mt-1">
-                    {formatCurrency(readySettlementVal > 0 ? readySettlementVal : 45000)} ready for payout
+                    {formatCurrency(readySettlementVal)} Disbursed / Ready
                   </h2>
                   <p className="text-xs text-[#737184] mt-1 font-normal">
-                    Direct automated disbursal to Bank Account / UPI within 24 hours of delivery proof.
+                    Direct automated disbursal to your verified Bank Account or UPI immediately upon delivery OTP verification.
                   </p>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => alert("Statement downloaded (PDF).")}
-                    className="rounded-full border border-[#E4E2DD] bg-white px-5 py-2.5 text-xs font-medium text-[#262238] hover:bg-[#F6F5F1] transition shadow-xs cursor-pointer"
-                  >
-                    📄 Download Statement (PDF)
-                  </button>
+                  <div className="rounded-[18px] bg-[#E8E4F2] px-4 py-2 text-right">
+                    <span className="text-[10px] uppercase font-mono text-[#737184] block font-medium">Locked in Escrow</span>
+                    <span className="font-serif text-lg font-normal text-[#262238]">{formatCurrency(escrowHeldVal)}</span>
+                  </div>
                 </div>
               </div>
 
+              {/* Farmer Payout Destination Settings */}
+              <div className="rounded-[24px] bg-[#F6F5F1] p-6 border border-[#E4E2DD] space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="h-8 w-8 rounded-full bg-[#262238] text-white flex items-center justify-center text-xs font-semibold">
+                      ₹
+                    </div>
+                    <div>
+                      <h4 className="font-serif text-lg text-[#262238] font-normal">
+                        Direct Payout Destination
+                      </h4>
+                      <p className="text-[11px] text-[#737184]">
+                        Configure where your 93% net earnings will be credited automatically.
+                      </p>
+                    </div>
+                  </div>
+                  {payoutSavedMsg && (
+                    <span className="text-xs font-medium text-[#718A68] bg-[#EBF3E8] border border-[#718A68]/30 px-3 py-1 rounded-full">
+                      ✓ {payoutSavedMsg}
+                    </span>
+                  )}
+                </div>
+
+                <form onSubmit={handleSavePayoutDetails} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                  <div>
+                    <label className="block text-[11px] font-semibold text-[#262238] mb-1">
+                      UPI ID (VPA)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="kisan@okaxis"
+                      value={payoutUpi}
+                      onChange={(e) => setPayoutUpi(e.target.value)}
+                      className="w-full rounded-[14px] border border-[#E4E2DD] bg-white px-3 py-2 text-xs text-[#262238] focus:border-[#262238] focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-[#262238] mb-1">
+                      Bank Account Number
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="5010023456789"
+                      value={payoutBankAcc}
+                      onChange={(e) => setPayoutBankAcc(e.target.value)}
+                      className="w-full rounded-[14px] border border-[#E4E2DD] bg-white px-3 py-2 text-xs text-[#262238] focus:border-[#262238] focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-[#262238] mb-1">
+                      Bank IFSC Code
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="HDFC0001234"
+                      value={payoutIfsc}
+                      onChange={(e) => setPayoutIfsc(e.target.value.toUpperCase())}
+                      className="w-full rounded-[14px] border border-[#E4E2DD] bg-white px-3 py-2 text-xs font-mono text-[#262238] focus:border-[#262238] focus:outline-none uppercase"
+                    />
+                  </div>
+                  <div className="flex items-end">
+                    <button
+                      type="submit"
+                      disabled={savingPayout}
+                      className="w-full rounded-full bg-[#262238] py-2.5 text-xs font-medium text-white hover:bg-[#342e4c] transition shadow-xs cursor-pointer disabled:opacity-50"
+                    >
+                      {savingPayout ? "Saving..." : "Save Payout Details"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+
               {/* Settlement History Cards */}
-              <div className="space-y-4">
+              <div className="space-y-4 pt-2">
                 <h4 className="font-serif text-xl text-[#262238] font-normal">
-                  Order Payout Invoices
+                  Order Settlement Statements ({orders.length})
                 </h4>
 
                 {orders.length === 0 ? (
-                  <p className="text-xs text-[#737184]">
-                    No completed deliveries yet.
-                  </p>
+                  <div className="rounded-[20px] border border-dashed border-[#E4E2DD] bg-[#F6F5F1] p-8 text-center text-xs text-[#737184]">
+                    No order settlements recorded yet. Once buyers order and pay through Razorpay, your itemized statements and payout timestamps will appear here.
+                  </div>
                 ) : (
                   orders.map((ord) => (
                     <div key={ord.id} className="pt-1">

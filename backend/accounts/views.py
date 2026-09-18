@@ -92,6 +92,44 @@ def update_language(request):
     return Response(UserSerializer(request.user).data)
 
 
+@api_view(["POST", "PATCH"])
+@permission_classes([IsAuthenticated])
+def update_payout_details(request):
+    """
+    POST/PATCH /api/auth/payout-details/
+    Body: {
+      "payout_upi_id": "farmer@okhdfcbank",
+      "bank_account_number": "5010023456789",
+      "bank_ifsc_code": "HDFC0001234",
+      "bank_account_name": "Vikas Yadav"
+    }
+    Updates payout destination details for direct fund transfer.
+    """
+    user = request.user
+    payout_upi_id = request.data.get("payout_upi_id", "").strip()
+    bank_account_number = request.data.get("bank_account_number", "").strip()
+    bank_ifsc_code = request.data.get("bank_ifsc_code", "").strip().upper()
+    bank_account_name = request.data.get("bank_account_name", "").strip()
+
+    if payout_upi_id:
+        user.payout_upi_id = payout_upi_id
+    if bank_account_number:
+        user.bank_account_number = bank_account_number
+    if bank_ifsc_code:
+        user.bank_ifsc_code = bank_ifsc_code
+    if bank_account_name:
+        user.bank_account_name = bank_account_name
+
+    user.save(update_fields=[
+        "payout_upi_id", "bank_account_number", "bank_ifsc_code", "bank_account_name"
+    ])
+
+    return Response({
+        "message": "Payout details updated successfully",
+        "user": UserSerializer(user).data
+    }, status=status.HTTP_200_OK)
+
+
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def google_auth_view(request):

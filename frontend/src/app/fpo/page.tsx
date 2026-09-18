@@ -87,7 +87,7 @@ export default function FPOAggregatorPage() {
   const [newMemberPhone, setNewMemberPhone] = useState("");
   const [newMemberAcres, setNewMemberAcres] = useState(4.0);
   const [newMemberCrops, setNewMemberCrops] = useState("Tomato, Onion");
-  const [newMemberBank, setNewMemberBank] = useState("SBI •••• 1234");
+  const [newMemberBank, setNewMemberBank] = useState("");
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
 
   // Load persistent real members
@@ -102,12 +102,12 @@ export default function FPOAggregatorPage() {
             {
               id: "FPO-M-01",
               name: user.first_name ? `${user.first_name} ${user.last_name || ""}` : "Primary Producer",
-              village: user.organization_detail?.location || "Bakshi Ka Talab",
-              phone: user.phone || "+91-9876543210",
+              village: user.organization_detail?.location || "Cluster Center",
+              phone: user.phone || "",
               acres: 5.0,
               crops: ["Tomato", "Dussehri Mango"],
-              totalTonnageKg: 3500,
-              bankAccount: "SBI •••• 4912",
+              totalTonnageKg: 0,
+              bankAccount: "Direct Escrow",
               status: "verified",
             },
           ];
@@ -198,11 +198,11 @@ export default function FPOAggregatorPage() {
       id: `FPO-M-0${members.length + 1}`,
       name: newMemberName.trim(),
       village: newMemberVillage,
-      phone: newMemberPhone || "+91-9876500000",
+      phone: newMemberPhone,
       acres: Number(newMemberAcres) || 3.0,
       crops: newMemberCrops.split(",").map((c) => c.trim()),
       totalTonnageKg: 0,
-      bankAccount: newMemberBank || "SBI •••• 9999",
+      bankAccount: newMemberBank || "Direct Bank Account",
       status: "verified",
     };
     const updated = [newMember, ...members];
@@ -774,7 +774,7 @@ export default function FPOAggregatorPage() {
                     required
                     value={newMemberPhone}
                     onChange={(e) => setNewMemberPhone(e.target.value)}
-                    placeholder="+91-9876543210"
+                    placeholder="10-digit mobile number"
                     className="w-full rounded-[16px] border border-[#E4E2DD] bg-[#F6F5F1] p-3 text-xs font-medium text-[#262238] focus:bg-white focus:border-[#262238] focus:outline-none"
                   />
                 </div>

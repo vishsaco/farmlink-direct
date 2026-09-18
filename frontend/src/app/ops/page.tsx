@@ -294,7 +294,7 @@ export default function OperationsControlTowerPage() {
                           </td>
                           <td className="py-3.5 px-4">
                             <p className="font-medium text-[#262238]">{ord.buyer_org || "Direct Buyer"}</p>
-                            <p className="text-[11px] text-[#737184] font-mono">OTP: {ord.delivery_otp || "8842"}</p>
+                            <p className="text-[11px] text-[#737184] font-mono">{ord.delivery_otp ? `OTP: ${ord.delivery_otp}` : "OTP pending"}</p>
                           </td>
                           <td className="py-3.5 px-4">
                             <p className="font-medium text-[#262238]">{ord.driver_name || "Assigned Driver"}</p>

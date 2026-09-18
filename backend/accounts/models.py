@@ -79,6 +79,12 @@ class User(AbstractUser):
     kisan_verified_at = models.DateTimeField(null=True, blank=True)
     kisan_verified_by = models.CharField(max_length=120, blank=True, default="")
 
+    # Direct Farmer Payouts & Banking
+    payout_upi_id = models.CharField(max_length=100, blank=True, default="", help_text="Farmer UPI VPA for direct settlement (e.g. kisan@upi)")
+    bank_account_number = models.CharField(max_length=50, blank=True, default="", help_text="Farmer bank account number")
+    bank_ifsc_code = models.CharField(max_length=20, blank=True, default="", help_text="Bank IFSC code")
+    bank_account_name = models.CharField(max_length=120, blank=True, default="", help_text="Account holder name")
+
     class Meta:
         db_table = "users"
 

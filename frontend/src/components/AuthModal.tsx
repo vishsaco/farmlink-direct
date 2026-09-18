@@ -208,10 +208,10 @@ export function AuthModal({
           password,
           first_name: firstName.trim(),
           last_name: lastName.trim(),
-          phone: cleanPhone || "+91-9876543210",
+          phone: cleanPhone || "",
           role,
           organization_name: orgName.trim(),
-          location: location.trim() || "Bakshi Ka Talab, Lucknow",
+          location: location.trim(),
           language: "en",
           pm_kisan_id: pmKisanId.trim(),
           khasra_number: khasraNumber.trim(),
@@ -394,11 +394,11 @@ export function AuthModal({
                 <div className="grid grid-cols-2 gap-2.5">
                   <div>
                     <label className="block text-xs font-medium text-[#262238] mb-1.5">First Name</label>
-                    <input type="text" required value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="e.g. Ramesh" className={inputClass} />
+                    <input type="text" required value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="Your first name" className={inputClass} />
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-[#262238] mb-1.5">Last Name</label>
-                    <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="e.g. Yadav" className={inputClass} />
+                    <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Your last name" className={inputClass} />
                   </div>
                 </div>
 
@@ -555,7 +555,7 @@ export function AuthModal({
               <input
                 type="text" required value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder={mode === "login" ? "Enter your username" : "Choose username (e.g. ramesh_kisan)"}
+                placeholder={mode === "login" ? "Enter your username" : "Choose username"}
                 className={inputClass}
               />
             </div>

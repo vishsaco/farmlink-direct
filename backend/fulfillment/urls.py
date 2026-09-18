@@ -8,5 +8,6 @@ urlpatterns = [
     path("orders/<int:order_id>/timeline/", views.order_timeline, name="order-timeline"),
     path("orders/<int:order_id>/otp/", views.generate_otp, name="generate-otp"),
     path("settlements/<int:order_id>/", views.settlement_detail, name="settlement-detail"),
+    path("settlements/<int:order_id>/payout/", views.disburse_payout, name="settlement-payout"),
     path("exceptions/", views.exceptions_list, name="exceptions-list"),
 ]

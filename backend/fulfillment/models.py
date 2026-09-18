@@ -69,6 +69,13 @@ class Settlement(models.Model):
         ("disputed", "Disputed"),
     ]
 
+    PAYOUT_STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("escrow_held", "Escrow Held"),
+        ("disbursed", "Disbursed to Farmer"),
+        ("failed", "Payout Failed"),
+    ]
+
     order = models.OneToOneField(
         "orders.Order",
         on_delete=models.CASCADE,
@@ -83,8 +90,19 @@ class Settlement(models.Model):
     )
     settlement_reference = models.CharField(
         max_length=100, blank=True,
-        help_text="Simulated transaction reference"
+        help_text="Transaction reference"
     )
+    # Razorpay Inbound Payment (Buyer → Escrow)
+    razorpay_order_id = models.CharField(max_length=100, blank=True, default="")
+    razorpay_payment_id = models.CharField(max_length=100, blank=True, default="")
+    razorpay_signature = models.CharField(max_length=255, blank=True, default="")
+    
+    # Outbound Payout (Escrow → Farmer)
+    payout_reference = models.CharField(max_length=100, blank=True, default="")
+    payout_status = models.CharField(
+        max_length=20, choices=PAYOUT_STATUS_CHOICES, default="pending"
+    )
+    payout_disbursed_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

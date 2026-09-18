@@ -95,15 +95,15 @@ export function OrderTimelineCard({ order, onRefresh }: OrderTimelineCardProps) 
             <span>Origin Farm / Kisan</span>
           </span>
           <p className="font-medium text-[#262238] text-sm">
-            {order.farmer_name || order.lot_detail?.created_by_name || "Vikas Yadav"}
+            {order.farmer_name || order.lot_detail?.created_by_name || "Verified Producer"}
           </p>
           <p className="text-[#737184] flex items-center gap-1.5">
             <MapPin className="h-3 w-3 text-[#718A68]" />
-            <span>{order.farmer_village || order.lot_detail?.farm_detail?.village || "Bakshi Ka Talab"}, Lucknow</span>
+            <span>{order.farmer_village || order.lot_detail?.farm_detail?.village || "Farm Gate"}, Lucknow</span>
           </p>
           <p className="text-[#737184] flex items-center gap-1.5">
             <Phone className="h-3 w-3 text-[#718A68]" />
-            <span>{order.farmer_phone || "+91-9876543211"}</span>
+            <span>{order.farmer_phone || "Contact via FarmLink"}</span>
           </p>
         </div>
 
@@ -114,14 +114,14 @@ export function OrderTimelineCard({ order, onRefresh }: OrderTimelineCardProps) 
             <span>Logistics Dispatch</span>
           </span>
           <p className="font-medium text-[#262238] text-sm">
-            {order.driver_name || "Suresh Chauhan"}
+            {order.driver_name || "Assigned Driver"}
           </p>
           <p className="text-[#737184]">
-            {order.vehicle_info || "Tata Ace (UP 32 TA 4092)"}
+            {order.vehicle_info || "Dedicated Fleet Vehicle"}
           </p>
           <p className="text-[#737184] flex items-center gap-1.5">
             <Phone className="h-3 w-3 text-[#718A68]" />
-            <span>{order.driver_phone || "+91-9876543212"}</span>
+            <span>{order.driver_phone || "Fleet Dispatch"}</span>
           </p>
         </div>
 
@@ -133,8 +133,8 @@ export function OrderTimelineCard({ order, onRefresh }: OrderTimelineCardProps) 
               <span>Buyer Delivery OTP</span>
             </span>
             <div className="mt-1 flex items-baseline gap-2">
-              <span className="font-mono text-2xl font-semibold text-[#262238] tracking-wider">
-                {order.delivery_otp || "8842"}
+              <span className="font-mono text-sm font-semibold tracking-wider text-[#262238]">
+                {order.delivery_otp || "Pending Dispatch"}
               </span>
               <span className="text-[10px] text-[#737184]">(Share with driver)</span>
             </div>
