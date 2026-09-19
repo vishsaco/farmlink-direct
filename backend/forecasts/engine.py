@@ -791,16 +791,16 @@ def seed_historical_prices(commodity: str, days_back: int = 90):
 
 # Agmarknet commodity query canonical names for fast, rate-limit-safe matching
 AGMARKNET_COMMODITY_ALIASES = {
-    "tomato": ["Tomato"],
-    "onion": ["Onion"],
-    "potato": ["Potato"],
-    "mango": ["Mango"],
-    "chilli": ["Green Chilli"],
-    "garlic": ["Garlic"],
-    "ginger": ["Ginger(Green)"],
-    "spinach": ["Spinach"],
-    "cauliflower": ["Cauliflower"],
-    "wheat": ["Wheat"],
+    "tomato": ["Tomato", "Tomato(Deshi)", "Tomato(Hybrid)"],
+    "onion": ["Onion", "Onion(Nashik)"],
+    "potato": ["Potato", "Potato(Deshi)"],
+    "mango": ["Mango", "Mango (Dussehri)", "Mango(Dussehri)", "Mango (Langra)", "Mango (Chausa)"],
+    "chilli": ["Green Chilly", "Green Chilli", "Green Chillies", "Chillies(Green)"],
+    "garlic": ["Garlic", "Garlic(Deshi)"],
+    "ginger": ["Ginger(Green)", "Ginger", "Ginger(Dry)"],
+    "spinach": ["Spinach", "Palak(Spinach)"],
+    "cauliflower": ["Cauliflower", "Cauliflower(Kathal)"],
+    "wheat": ["Wheat", "Wheat(Sharbati)", "Wheat(Dara)"],
 }
 
 
@@ -982,14 +982,15 @@ def fetch_real_lucknow_mandi_prices(commodity: str, api_key: str = None) -> dict
                     logger.warning(f"data.gov.in query failed for {agmarknet_name}: {e}")
                     continue
 
-    # Step 2: Fall back to verified DB records from Lucknow/UP (within 3 days)
+    # Step 2: Fall back to verified DB records from Lucknow/UP (within 7 days)
+    # Wider window ensures we use real market data even on weekends/holidays
     # Check Lucknow mandis first
     recent_lucknow = MarketPrice.objects.filter(
         commodity=commodity,
         market__icontains="lucknow",
         modal_price__gte=min_viable,
         modal_price__lte=max_viable,
-        date__gte=date.today() - timedelta(days=3),
+        date__gte=date.today() - timedelta(days=7),
     ).order_by("-date").first()
 
     if recent_lucknow:
@@ -1005,12 +1006,12 @@ def fetch_real_lucknow_mandi_prices(commodity: str, api_key: str = None) -> dict
             "last_sync": recent_lucknow.date.isoformat(),
         }
 
-    # Check UP regional mandis in DB (within 3 days)
+    # Check UP regional mandis in DB (within 7 days)
     recent_any = MarketPrice.objects.filter(
         commodity=commodity,
         modal_price__gte=min_viable,
         modal_price__lte=max_viable,
-        date__gte=date.today() - timedelta(days=3),
+        date__gte=date.today() - timedelta(days=7),
     ).order_by("-date").first()
 
     if recent_any:
@@ -2104,8 +2105,18 @@ def get_price_guidance(commodity, market_cluster="Lucknow"):
 
     config = COMMODITIES.get(commodity, COMMODITIES["tomato"])
 
-    # Get real/cached live price
-    live_meta = fetch_real_lucknow_mandi_prices(commodity)
+    # Get real/cached live price — use in-memory cache to avoid duplicate API call
+    # (generate_forecasts above already called the API via seed_historical_prices)
+    _live_cached = get_live_price_cached(commodity)
+    live_meta = {
+        "source": _live_cached.get("source", "reference_benchmark"),
+        "is_live_api": _live_cached.get("is_live", False),
+        "base_price": _live_cached.get("price", config["base"]),
+        "min_price": _live_cached.get("min_price", round(config["base"] * 0.88, 1)),
+        "max_price": _live_cached.get("max_price", round(config["base"] * 1.12, 1)),
+        "market_name": _live_cached.get("market_name", config.get("market", "Lucknow Mandi")),
+        "last_sync": _live_cached.get("last_sync", datetime.now().isoformat()),
+    }
     live_base = float(live_meta.get("base_price", config["base"]))
     today_price = live_base
 

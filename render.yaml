@@ -3,7 +3,7 @@ services:
     name: farmlink-direct
     env: python
     buildCommand: "pip install -r backend/requirements.txt && python backend/manage.py migrate && python backend/manage.py collectstatic --no-input"
-    startCommand: "cd backend && gunicorn farmlink.wsgi:application --bind 0.0.0.0:$PORT"
+    startCommand: "cd backend && gunicorn farmlink.wsgi:application --bind 0.0.0.0:$PORT --preload --workers 2 --timeout 120 --keep-alive 5"
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.0
@@ -15,3 +15,10 @@ services:
         value: "True"
       - key: DATA_GOV_IN_API_KEY
         value: "579b464db66ec23bdd000001154c67779ae44f07596666938a696d0c"
+  # Keep-alive cron: pings backend every 14 min to prevent free-tier cold starts
+  - type: cron
+    name: keep-alive-ping
+    env: python
+    schedule: "*/14 * * * *"
+    buildCommand: "pip install requests"
+    startCommand: "python -c \"import requests; print(requests.get('https://farmlink-direct.onrender.com/', timeout=30).json())\""

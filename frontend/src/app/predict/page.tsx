@@ -704,18 +704,24 @@ export default function MarketPredictorPage() {
     }
   };
 
-  // ── Initial load + auto-refresh every 15 seconds ──
+  // ── Initial load + auto-refresh ──
   useEffect(() => {
+    // Full forecast: load once on crop switch (heavy ML pipeline)
     loadForecast(selectedCrop);
     fetchLivePrices();
 
-    // Full forecast refresh every 15 seconds
-    const forecastInterval = setInterval(() => {
-      loadForecast(selectedCrop, true);
+    // Lightweight live price poll every 15 seconds (fast, cached server-side)
+    const livePriceInterval = setInterval(() => {
       fetchLivePrices();
     }, 15000);
 
+    // Full forecast refresh every 2 minutes (background, silent)
+    const forecastInterval = setInterval(() => {
+      loadForecast(selectedCrop, true);
+    }, 120000);
+
     return () => {
+      clearInterval(livePriceInterval);
       clearInterval(forecastInterval);
     };
   }, [selectedCrop]);
